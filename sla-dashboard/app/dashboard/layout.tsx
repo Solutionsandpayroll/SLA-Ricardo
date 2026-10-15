@@ -1,27 +1,32 @@
-import { getServerSession } from "next-auth/next"
-import { redirect } from "next/navigation"
-import { authOptions } from "@/lib/auth"
-import { Sidebar } from "@/components/sidebar"
-
+import { getServerSession } from "next-auth/next";
+import { redirect } from "next/navigation";
+import { authOptions } from "@/lib/auth";
+import { Sidebar } from "@/components/sidebar";
+import "./layout.css";
 export default async function DashboardLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOptions)
+  const session = await getServerSession(authOptions);
 
-  if (!session) {
-    redirect("/")
+  if (!session?.user) {
+    redirect("/");
   }
 
   return (
-    <div className="flex h-screen bg-slate-50">
-      <Sidebar user={session.user} />
-      <main className="flex-1 overflow-auto">
-        <div className="p-8">
-          {children}
-        </div>
+    <div className="sla-layout">
+      <Sidebar
+        user={{
+          name: session.user.name ?? null,
+          email: session.user.email ?? null,
+          image: session.user.image ?? null,
+        }}
+      />
+
+      <main className="sla-layout-main">
+        <div className="sla-layout-content">{children}</div>
       </main>
     </div>
-  )
+  );
 }

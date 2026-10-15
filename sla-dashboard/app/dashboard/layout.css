@@ -1,0 +1,83 @@
+/* =====================================
+   LAYOUT GENERAL DEL SISTEMA SLA
+   Azul oscuro, blanco y rojo
+===================================== */
+
+.sla-layout {
+  --sla-azul: #102a43;
+  --sla-azul-secundario: #173f5f;
+  --sla-rojo: #d62839;
+  --sla-blanco: #ffffff;
+  --sla-fondo: #f4f7fb;
+  --sla-borde: #e1e8f0;
+
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--sla-fondo);
+}
+
+/* Área principal */
+
+.sla-layout-main {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+  background: var(--sla-fondo);
+}
+
+/* Espacio del contenido */
+
+.sla-layout-content {
+  width: 100%;
+  min-height: 100%;
+  padding: 28px;
+  color: var(--sla-azul);
+}
+
+/* Selección de texto */
+
+.sla-layout ::selection {
+  color: var(--sla-blanco);
+  background: var(--sla-rojo);
+}
+
+/* Barras de desplazamiento */
+
+.sla-layout-main::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.sla-layout-main::-webkit-scrollbar-track {
+  background: var(--sla-fondo);
+}
+
+.sla-layout-main::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: #b8c6d6;
+}
+
+.sla-layout-main::-webkit-scrollbar-thumb:hover {
+  background: var(--sla-azul-secundario);
+}
+
+/* Tabletas */
+
+@media (max-width: 768px) {
+  .sla-layout-content {
+    padding: 20px;
+  }
+}
+
+/* Celulares */
+
+@media (max-width: 480px) {
+  .sla-layout-content {
+    padding: 14px;
+  }
+}

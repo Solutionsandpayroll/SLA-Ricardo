@@ -13,16 +13,15 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
   ext_expires_in    Int?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -36,13 +35,14 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String      @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?     @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
+  solicitudes   Solicitud[]
 }
 
 model VerificationToken {
@@ -54,46 +54,47 @@ model VerificationToken {
 }
 
 model Cliente {
-  id        String   @id @default(cuid())
-  nombre    String
-  dominio   String   @unique
-  pais      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
+  id          String      @id @default(cuid())
+  nombre      String
+  dominio     String      @unique
+  pais        String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
   solicitudes Solicitud[]
 }
 
 model Solicitud {
-  id              String    @id @default(cuid())
-  asunto          String
-  cuerpo          String    @db.Text
-  remitente       String
-  encargado       String?   // Persona de la empresa que recibió el correo
-  fechaRecibido   DateTime
-  inicioConteoSLA DateTime?  // Cuándo empieza a contar el SLA
-  vencimientoSLA  DateTime?  // Fecha límite para responder
-  fechaRespuesta  DateTime?
-  tiempoHabil     String?    // Tiempo transcurrido en formato "X h Y min"
-  estadoSLA       String?    // dentro_sla, proximo_vencer, vencido, no_verificable
-  estado          String    @default("en_gestion") // en_gestion, respondida, cerrada
-  slaHoras        Int       @default(2)           // SLA de 2 horas hábiles
-  conversationId  String?
-  
-  clienteId       String?
-  cliente         Cliente?  @relation(fields: [clienteId], references: [id])
-  
-  nombreCliente   String?   // Nombre del cliente extraído por IA
-  tipoProceso     String?
-  paisCliente     String?
-  correoCliente   String?
-  
-  evidenciaRespuesta String?  // Link o referencia al correo de respuesta
-  observaciones   String?
-  
-  clasificacionIA String?   // SOLICITUD, NO_SOLICITUD
-  confianzaIA     Float?
-  
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id                 String    @id @default(cuid())
+  asunto             String
+  cuerpo             String
+  remitente          String
+  encargado          String?
+  fechaRecibido      DateTime
+  inicioConteoSLA    DateTime?
+  vencimientoSLA     DateTime?
+  fechaRespuesta     DateTime?
+  tiempoHabil        String?
+  estadoSLA          String?
+  estado             String    @default("en_gestion")
+  slaHoras           Int       @default(2)
+  conversationId     String?
+  clienteId          String?
+  nombreCliente      String?
+  tipoProceso        String?
+  paisCliente        String?
+  correoCliente      String?
+  evidenciaRespuesta String?
+  observaciones      String?
+  clasificacionIA    String?
+  confianzaIA        Float?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  messageId          String?   @unique
+
+  cliente Cliente? @relation(fields: [clienteId], references: [id])
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId, fechaRecibido])
 }

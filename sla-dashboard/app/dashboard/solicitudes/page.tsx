@@ -1,11 +1,27 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useCallback, useEffect, useState } from "react";
+import "./solicitudes.css";
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { FileText, Filter, Play, Loader2, CheckCircle2, Clock, AlertCircle } from "lucide-react";
+
+import {
+  FileText,
+  Play,
+  Loader2,
+  CheckCircle2,
+  Clock,
+  RefreshCw,
+  AlertCircle,
+} from "lucide-react";
 
 interface Solicitud {
   id: string;
@@ -25,214 +41,409 @@ interface Solicitud {
   confianzaIA: number | null;
 }
 
+interface ResultadoProcesamiento {
+  total: number;
+  solicitudes: number;
+  noSolicitudes: number;
+  respondidos: number;
+  pendientes: number;
+  errores: number;
+  descartadosDominio?: number;
+}
+
+function formatearFecha(fecha: string | null) {
+  if (!fecha) return "-";
+
+  const date = new Date(fecha);
+
+  if (Number.isNaN(date.getTime())) return "-";
+
+  return date.toLocaleString("es-CO", {
+    dateStyle: "short",
+    timeStyle: "short",
+    timeZone: "America/Bogota",
+  });
+}
+
+function etiquetaEstadoSLA(estado: string | null) {
+  switch (estado) {
+    case "dentro_sla":
+      return (
+        <Badge className="sol-badge sol-badge-ok">
+          Dentro del SLA
+        </Badge>
+      );
+
+    case "proximo_vencer":
+      return (
+        <Badge className="sol-badge sol-badge-aviso">
+          Próximo a vencer
+        </Badge>
+      );
+
+    case "vencido":
+      return (
+        <Badge className="sol-badge sol-badge-vencido">
+          Vencido
+        </Badge>
+      );
+
+    default:
+      return (
+        <Badge className="sol-badge sol-badge-neutro">
+          No verificable
+        </Badge>
+      );
+  }
+}
+
+function etiquetaEstado(estado: string) {
+  const normalizado = estado.toLowerCase();
+
+  if (
+    normalizado === "respondida" ||
+    normalizado === "respondido"
+  ) {
+    return (
+      <Badge className="sol-badge sol-badge-respondida">
+        <CheckCircle2 className="mr-1 h-3 w-3" />
+        Respondida
+      </Badge>
+    );
+  }
+
+  if (normalizado === "cerrada") {
+    return (
+      <Badge className="sol-badge sol-badge-cerrada">
+        Cerrada
+      </Badge>
+    );
+  }
+
+  return (
+    <Badge className="sol-badge sol-badge-gestion">
+      <Clock className="mr-1 h-3 w-3" />
+      En gestión
+    </Badge>
+  );
+}
+
 export default function SolicitudesPage() {
   const [solicitudes, setSolicitudes] = useState<Solicitud[]>([]);
   const [procesando, setProcesando] = useState(false);
-  const [resultado, setResultado] = useState<any>(null);
+  const [cargando, setCargando] = useState(true);
 
-  const cargarSolicitudes = async () => {
-    const res = await fetch("/api/procesar-correos");
-    const data = await res.json();
-    setSolicitudes(data.solicitudes || []);
-  };
+  const [resultado, setResultado] =
+    useState<ResultadoProcesamiento | null>(null);
+
+  const [error, setError] = useState("");
+
+  const cargarSolicitudes = useCallback(async () => {
+    try {
+      setError("");
+
+      const res = await fetch("/api/procesar-correos", {
+        method: "GET",
+        cache: "no-store",
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        throw new Error(
+          data.error || "No se pudieron cargar las solicitudes."
+        );
+      }
+
+      setSolicitudes(
+        Array.isArray(data.solicitudes) ? data.solicitudes : []
+      );
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Error al cargar las solicitudes."
+      );
+    } finally {
+      setCargando(false);
+    }
+  }, []);
 
   useEffect(() => {
-    cargarSolicitudes();
-  }, []);
+    void cargarSolicitudes();
+  }, [cargarSolicitudes]);
 
   const procesarCorreos = async () => {
     setProcesando(true);
     setResultado(null);
+    setError("");
 
     try {
-      const res = await fetch("/api/procesar-correos", { method: "POST" });
+      const res = await fetch("/api/procesar-correos", {
+        method: "POST",
+      });
+
       const data = await res.json();
 
-      if (data.success) {
-        setResultado(data.resumen);
-        await cargarSolicitudes();
-      } else {
-        alert(`Error: ${data.error}`);
+      if (!res.ok || !data.success) {
+        throw new Error(
+          data.error || "No se pudieron procesar los correos."
+        );
       }
-    } catch (error) {
-      alert("Error procesando correos");
+
+      setResultado(data.resumen || data);
+
+      await cargarSolicitudes();
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Error procesando los correos."
+      );
     } finally {
       setProcesando(false);
     }
   };
 
   return (
-    <div>
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900">Solicitudes</h1>
-          <p className="text-slate-600 mt-2">
-            Gestión de solicitudes recibidas en los buzones
-          </p>
-        </div>
-        <Button onClick={procesarCorreos} disabled={procesando}>
-          {procesando ? (
-            <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Procesando...
-            </>
-          ) : (
-            <>
-              <Play className="w-4 h-4 mr-2" />
-              Procesar Correos
-            </>
-          )}
-        </Button>
-      </div>
+    <div className="sla-solicitudes">
+      {/* Encabezado */}
+      <header className="sol-header">
+        <div className="sol-encabezado-texto">
+          <h1 className="sol-titulo">Solicitudes</h1>
 
+          <p className="sol-subtitulo">
+            Solicitudes detectadas en tu buzón de Microsoft.
+          </p>
+
+          <div className="sol-acento" />
+        </div>
+
+        <div className="sol-acciones">
+          <Button
+            variant="outline"
+            className="sol-btn sol-btn-actualizar"
+            onClick={() => void cargarSolicitudes()}
+            disabled={cargando || procesando}
+          >
+            {cargando ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <RefreshCw className="mr-2 h-4 w-4" />
+            )}
+            Actualizar
+          </Button>
+
+          <Button
+            className="sol-btn sol-btn-procesar"
+            onClick={procesarCorreos}
+            disabled={procesando || cargando}
+          >
+            {procesando ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Procesando...
+              </>
+            ) : (
+              <>
+                <Play className="mr-2 h-4 w-4" />
+                Procesar correos
+              </>
+            )}
+          </Button>
+        </div>
+      </header>
+
+      {/* Errores */}
+      {error && (
+        <Card className="sol-card sol-card-error">
+          <CardContent className="sol-error">
+            <AlertCircle className="sol-error-icon" />
+
+            <div>
+              <p className="sol-error-titulo">
+                No fue posible completar la operación
+              </p>
+
+              <p className="sol-error-mensaje">{error}</p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Resultado del procesamiento */}
       {resultado && (
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>Resultado del Procesamiento</CardTitle>
-            <CardDescription>
-              Correos analizados de los buzones configurados
+        <Card className="sol-card">
+          <CardHeader className="sol-card-header">
+            <CardTitle className="sol-card-title">
+              Resultado del procesamiento
+            </CardTitle>
+
+            <CardDescription className="sol-card-description">
+              Resumen de los correos analizados en tu buzón.
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-              <div className="text-center">
-                <p className="text-2xl font-bold">{resultado.total}</p>
-                <p className="text-sm text-slate-500">Total</p>
+
+          <CardContent className="sol-card-content">
+            <div className="sol-resumen">
+              <div className="sol-resumen-item">
+                <p className="sol-resumen-valor">
+                  {resultado.total}
+                </p>
+                <p className="sol-resumen-label">Analizados</p>
               </div>
-              <div className="text-center">
-                <p className="text-2xl font-bold text-blue-600">{resultado.solicitudes}</p>
-                <p className="text-sm text-slate-500">Solicitudes</p>
+
+              <div className="sol-resumen-item">
+                <p className="sol-resumen-valor sol-valor-azul">
+                  {resultado.solicitudes}
+                </p>
+                <p className="sol-resumen-label">
+                  Nuevas solicitudes
+                </p>
               </div>
-              <div className="text-center">
-                <p className="text-2xl font-bold text-slate-400">{resultado.noSolicitudes}</p>
-                <p className="text-sm text-slate-500">No Solicitudes</p>
+
+              <div className="sol-resumen-item">
+                <p className="sol-resumen-valor sol-valor-gris">
+                  {resultado.noSolicitudes}
+                </p>
+                <p className="sol-resumen-label">
+                  No son solicitudes
+                </p>
               </div>
-              <div className="text-center">
-                <p className="text-2xl font-bold text-green-600">{resultado.respondidos}</p>
-                <p className="text-sm text-slate-500">Respondidos</p>
+
+              <div className="sol-resumen-item">
+                <p className="sol-resumen-valor sol-valor-verde">
+                  {resultado.respondidos}
+                </p>
+                <p className="sol-resumen-label">Respondidos</p>
               </div>
-              <div className="text-center">
-                <p className="text-2xl font-bold text-orange-600">{resultado.pendientes}</p>
-                <p className="text-sm text-slate-500">Pendientes</p>
+
+              <div className="sol-resumen-item">
+                <p className="sol-resumen-valor sol-valor-naranja">
+                  {resultado.pendientes}
+                </p>
+                <p className="sol-resumen-label">Pendientes</p>
               </div>
-              <div className="text-center">
-                <p className="text-2xl font-bold text-red-600">{resultado.errores}</p>
-                <p className="text-sm text-slate-500">Errores</p>
+
+              <div className="sol-resumen-item">
+                <p className="sol-resumen-valor sol-valor-rojo">
+                  {resultado.errores}
+                </p>
+                <p className="sol-resumen-label">Errores</p>
               </div>
             </div>
           </CardContent>
         </Card>
       )}
 
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>Solicitudes Detectadas</CardTitle>
-              <CardDescription>
-                Correos clasificados como solicitudes por la IA
-              </CardDescription>
-            </div>
-            <Button variant="outline" size="sm">
-              <Filter className="w-4 h-4 mr-2" />
-              Filtrar
-            </Button>
-          </div>
+      {/* Tabla principal */}
+      <Card className="sol-card">
+        <CardHeader className="sol-card-header">
+          <CardTitle className="sol-card-title">
+            Solicitudes detectadas
+          </CardTitle>
+
+          <CardDescription className="sol-card-description">
+            Registros devueltos por la API para el usuario autenticado.
+          </CardDescription>
         </CardHeader>
-        <CardContent>
-          {solicitudes.length === 0 ? (
-            <div className="text-center py-8">
-              <FileText className="w-12 h-12 mx-auto mb-2 text-slate-300" />
-              <p className="text-slate-500">
-                No hay solicitudes registradas
+
+        <CardContent className="sol-card-content">
+          {cargando ? (
+            <div className="sol-vacio">
+              <Loader2 className="sol-vacio-icono animate-spin" />
+
+              <p className="sol-vacio-titulo">
+                Cargando solicitudes...
               </p>
-              <p className="text-sm text-slate-400 mt-1">
-                Haz clic en "Procesar Correos" para analizar los buzones
+
+              <p className="sol-vacio-texto">
+                Estamos consultando los registros disponibles.
+              </p>
+            </div>
+          ) : solicitudes.length === 0 ? (
+            <div className="sol-vacio">
+              <FileText className="sol-vacio-icono" />
+
+              <p className="sol-vacio-titulo">
+                No hay solicitudes detectadas
+              </p>
+
+              <p className="sol-vacio-texto">
+                Haz clic en “Procesar correos” para analizar tu buzón
+                y consultar las solicitudes encontradas.
               </p>
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Encargado</TableHead>
-                  <TableHead>Cliente</TableHead>
-                  <TableHead>Asunto</TableHead>
-                  <TableHead>Fecha Recepción</TableHead>
-                  <TableHead>Inicio SLA</TableHead>
-                  <TableHead>Vencimiento SLA</TableHead>
-                  <TableHead>Fecha Respuesta</TableHead>
-                  <TableHead>Tiempo Hábil</TableHead>
-                  <TableHead>Estado SLA</TableHead>
-                  <TableHead>Estado</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {solicitudes.map((sol) => (
-                  <TableRow key={sol.id}>
-                    <TableCell className="text-sm text-slate-500">
-                      {sol.encargado || "-"}
-                    </TableCell>
-                    <TableCell className="font-medium">
-                      {sol.nombreCliente || "-"}
-                    </TableCell>
-                    <TableCell className="max-w-[200px] truncate">
-                      {sol.asunto}
-                    </TableCell>
-                    <TableCell className="text-sm text-slate-500">
-                      {new Date(sol.fechaRecibido).toLocaleString("es-CO")}
-                    </TableCell>
-                    <TableCell className="text-sm text-slate-500">
-                      {sol.inicioConteoSLA ? new Date(sol.inicioConteoSLA).toLocaleString("es-CO") : "-"}
-                    </TableCell>
-                    <TableCell className="text-sm text-slate-500">
-                      {sol.vencimientoSLA ? new Date(sol.vencimientoSLA).toLocaleString("es-CO") : "-"}
-                    </TableCell>
-                    <TableCell className="text-sm text-slate-500">
-                      {sol.fechaRespuesta ? new Date(sol.fechaRespuesta).toLocaleString("es-CO") : "-"}
-                    </TableCell>
-                    <TableCell className="text-sm">
-                      {sol.tiempoHabil || "-"}
-                    </TableCell>
-                    <TableCell>
-                      {sol.estadoSLA === "dentro_sla" ? (
-                        <Badge className="bg-green-100 text-green-800">
-                          Dentro del SLA
-                        </Badge>
-                      ) : sol.estadoSLA === "proximo_vencer" ? (
-                        <Badge className="bg-yellow-100 text-yellow-800">
-                          Próximo a vencer
-                        </Badge>
-                      ) : sol.estadoSLA === "vencido" ? (
-                        <Badge className="bg-red-100 text-red-800">
-                          Vencido
-                        </Badge>
-                      ) : (
-                        <Badge className="bg-gray-100 text-gray-800">
-                          No verificable
-                        </Badge>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {sol.estado === "respondida" ? (
-                        <Badge className="bg-blue-100 text-blue-800">
-                          <CheckCircle2 className="w-3 h-3 mr-1" />
-                          Respondida
-                        </Badge>
-                      ) : sol.estado === "cerrada" ? (
-                        <Badge className="bg-slate-100 text-slate-800">
-                          Cerrada
-                        </Badge>
-                      ) : (
-                        <Badge className="bg-orange-100 text-orange-800">
-                          <Clock className="w-3 h-3 mr-1" />
-                          En gestión
-                        </Badge>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <div className="sol-tabla-contenedor">
+              <table className="sol-tabla">
+                <thead>
+                  <tr>
+                    <th>Encargado</th>
+                    <th>Cliente</th>
+                    <th>Asunto</th>
+                    <th>Fecha recepción</th>
+                    <th>Inicio SLA</th>
+                    <th>Vencimiento SLA</th>
+                    <th>Fecha respuesta</th>
+                    <th>Tiempo hábil</th>
+                    <th>Estado SLA</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {solicitudes.map((sol) => (
+                    <tr key={sol.id}>
+                      <td>{sol.encargado || "-"}</td>
+
+                      <td className="sol-cliente">
+                        {sol.nombreCliente || "-"}
+                      </td>
+
+                      <td>
+                        <span
+                          className="sol-asunto"
+                          title={sol.asunto}
+                        >
+                          {sol.asunto}
+                        </span>
+                      </td>
+
+                      <td className="sol-fecha">
+                        {formatearFecha(sol.fechaRecibido)}
+                      </td>
+
+                      <td className="sol-fecha">
+                        {formatearFecha(sol.inicioConteoSLA)}
+                      </td>
+
+                      <td className="sol-fecha">
+                        {formatearFecha(sol.vencimientoSLA)}
+                      </td>
+
+                      <td className="sol-fecha">
+                        {formatearFecha(sol.fechaRespuesta)}
+                      </td>
+
+                      <td className="sol-fecha">
+                        {sol.tiempoHabil || "-"}
+                      </td>
+
+                      <td>{etiquetaEstadoSLA(sol.estadoSLA)}</td>
+
+                      <td>{etiquetaEstado(sol.estado)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {!cargando && solicitudes.length > 0 && (
+            <p className="sol-contador">
+              Solicitudes mostradas: {solicitudes.length}
+            </p>
           )}
         </CardContent>
       </Card>

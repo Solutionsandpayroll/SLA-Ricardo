@@ -1,0 +1,507 @@
+
+/* ========================================
+   DASHBOARD SLA - DISEÑO RESPONSIVE
+   Colores: azul oscuro, blanco y rojo
+======================================== */
+
+.sla-dashboard {
+  --sla-azul: #102a43;
+  --sla-azul-secundario: #173f5f;
+  --sla-rojo: #d62839;
+  --sla-blanco: #ffffff;
+  --sla-fondo: #f4f7fb;
+  --sla-texto: #102a43;
+  --sla-texto-secundario: #64748b;
+  --sla-borde: #e1e8f0;
+
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+  padding: 28px;
+  color: var(--sla-texto);
+  background: var(--sla-fondo);
+  overflow-wrap: anywhere;
+}
+
+.sla-dashboard *,
+.sla-dashboard *::before,
+.sla-dashboard *::after {
+  box-sizing: border-box;
+}
+
+.sla-dashboard img,
+.sla-dashboard svg {
+  max-width: 100%;
+}
+
+/* Encabezado */
+
+.sla-dashboard .dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-width: 0;
+  margin-bottom: 28px;
+}
+
+.sla-dashboard .dashboard-header > * {
+  min-width: 0;
+}
+
+.sla-dashboard .dashboard-title {
+  margin: 0;
+  color: var(--sla-azul);
+  font-size: 29px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.7px;
+  overflow-wrap: anywhere;
+}
+
+.sla-dashboard .dashboard-subtitle {
+  margin: 8px 0 0;
+  color: var(--sla-texto-secundario);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+/* Línea decorativa */
+
+.sla-dashboard .dashboard-accent {
+  width: 52px;
+  height: 4px;
+  margin-top: 13px;
+  border-radius: 10px;
+  background: var(--sla-rojo);
+}
+
+/* Cuadrícula de indicadores */
+
+.sla-dashboard .dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 17px;
+  width: 100%;
+  min-width: 0;
+}
+
+/* Tarjetas */
+
+.sla-dashboard .dashboard-stat-card {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  padding: 20px;
+  border: 1px solid var(--sla-borde);
+  border-radius: 13px;
+  background: var(--sla-blanco);
+  box-shadow: 0 4px 14px rgb(16 42 67 / 5%);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.sla-dashboard .dashboard-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgb(16 42 67 / 9%);
+}
+
+.sla-dashboard .dashboard-stat-card::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--sla-azul);
+  content: "";
+}
+
+.sla-dashboard .dashboard-stat-card.stat-red::before {
+  background: var(--sla-rojo);
+}
+
+.sla-dashboard .dashboard-stat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+}
+
+.sla-dashboard .dashboard-stat-label {
+  min-width: 0;
+  margin: 0;
+  color: var(--sla-texto-secundario);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.sla-dashboard .dashboard-stat-icon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 39px;
+  height: 39px;
+  border-radius: 10px;
+  color: var(--sla-blanco);
+  background: var(--sla-azul);
+}
+
+.sla-dashboard .dashboard-stat-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.sla-dashboard .dashboard-stat-icon.icon-red {
+  background: var(--sla-rojo);
+}
+
+.sla-dashboard .dashboard-stat-value {
+  margin: 18px 0 0;
+  color: var(--sla-azul);
+  font-size: clamp(24px, 2.2vw, 32px);
+  font-weight: 800;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.sla-dashboard .dashboard-stat-description {
+  margin: 8px 0 0;
+  color: var(--sla-texto-secundario);
+  font-size: 11px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+/* Panel de bienvenida */
+
+.sla-dashboard .dashboard-welcome {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  margin-top: 24px;
+  padding: 25px;
+  border: 1px solid var(--sla-borde);
+  border-radius: 14px;
+  background: var(--sla-blanco);
+  box-shadow: 0 4px 14px rgb(16 42 67 / 5%);
+}
+
+.sla-dashboard .dashboard-welcome::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 5px;
+  height: 100%;
+  background: var(--sla-rojo);
+  content: "";
+}
+
+.sla-dashboard .dashboard-welcome-title {
+  margin: 0;
+  padding-right: 8px;
+  color: var(--sla-azul);
+  font-size: 19px;
+  font-weight: 750;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.sla-dashboard .dashboard-welcome-description {
+  max-width: 850px;
+  margin: 9px 0 0;
+  color: var(--sla-texto-secundario);
+  font-size: 13px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+/* Separador */
+
+.sla-dashboard .dashboard-divider {
+  width: 100%;
+  height: 1px;
+  margin: 20px 0;
+  border: 0;
+  background: var(--sla-borde);
+}
+
+/* Evitar que elementos internos ensanchen el dashboard */
+
+.sla-dashboard > *,
+.sla-dashboard .dashboard-header,
+.sla-dashboard .dashboard-stats,
+.sla-dashboard .dashboard-welcome {
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* Botones y controles */
+
+.sla-dashboard button,
+.sla-dashboard input,
+.sla-dashboard select,
+.sla-dashboard textarea {
+  max-width: 100%;
+  font: inherit;
+}
+
+.sla-dashboard button {
+  overflow-wrap: anywhere;
+}
+
+.sla-dashboard input,
+.sla-dashboard select,
+.sla-dashboard textarea {
+  min-width: 0;
+}
+
+/* Accesibilidad */
+
+.sla-dashboard *:focus-visible {
+  outline: 3px solid var(--sla-rojo);
+  outline-offset: 3px;
+}
+
+/* Pantallas grandes y portátiles */
+
+@media (min-width: 1400px) {
+  .sla-dashboard {
+    padding: 32px;
+  }
+
+  .sla-dashboard .dashboard-stats {
+    gap: 20px;
+  }
+
+  .sla-dashboard .dashboard-stat-card {
+    padding: 22px;
+  }
+}
+
+/* Portátiles y tabletas horizontales */
+
+@media (max-width: 1100px) {
+  .sla-dashboard {
+    padding: 24px;
+  }
+
+  .sla-dashboard .dashboard-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 15px;
+  }
+
+  .sla-dashboard .dashboard-title {
+    font-size: 27px;
+  }
+
+  .sla-dashboard .dashboard-stat-value {
+    font-size: 28px;
+  }
+}
+
+/* Tabletas verticales */
+
+@media (max-width: 768px) {
+  .sla-dashboard {
+    padding: 20px;
+  }
+
+  .sla-dashboard .dashboard-header {
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+
+  .sla-dashboard .dashboard-title {
+    font-size: 25px;
+    letter-spacing: -0.5px;
+  }
+
+  .sla-dashboard .dashboard-subtitle {
+    font-size: 12px;
+  }
+
+  .sla-dashboard .dashboard-stats {
+    gap: 12px;
+  }
+
+  .sla-dashboard .dashboard-stat-card {
+    padding: 17px;
+    border-radius: 11px;
+  }
+
+  .sla-dashboard .dashboard-stat-icon {
+    width: 35px;
+    height: 35px;
+  }
+
+  .sla-dashboard .dashboard-stat-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .sla-dashboard .dashboard-stat-value {
+    margin-top: 15px;
+    font-size: 26px;
+  }
+
+  .sla-dashboard .dashboard-welcome {
+    margin-top: 18px;
+    padding: 20px;
+  }
+
+  .sla-dashboard .dashboard-welcome-title {
+    font-size: 17px;
+  }
+
+  .sla-dashboard .dashboard-welcome-description {
+    font-size: 12px;
+  }
+}
+
+/* Celulares */
+
+@media (max-width: 600px) {
+  .sla-dashboard {
+    padding: 16px;
+  }
+
+  .sla-dashboard .dashboard-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .sla-dashboard .dashboard-header > * {
+    width: 100%;
+  }
+
+  .sla-dashboard .dashboard-title {
+    font-size: 23px;
+  }
+
+  .sla-dashboard .dashboard-subtitle {
+    margin-top: 6px;
+    font-size: 12px;
+  }
+
+  .sla-dashboard .dashboard-accent {
+    width: 45px;
+    margin-top: 11px;
+  }
+
+  .sla-dashboard .dashboard-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .sla-dashboard .dashboard-stat-card {
+    padding: 14px 12px;
+    border-radius: 10px;
+  }
+
+  .sla-dashboard .dashboard-stat-header {
+    align-items: flex-start;
+    gap: 7px;
+  }
+
+  .sla-dashboard .dashboard-stat-label {
+    font-size: 11px;
+  }
+
+  .sla-dashboard .dashboard-stat-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+  }
+
+  .sla-dashboard .dashboard-stat-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .sla-dashboard .dashboard-stat-value {
+    margin-top: 13px;
+    font-size: 23px;
+    line-height: 1.25;
+  }
+
+  .sla-dashboard .dashboard-stat-description {
+    margin-top: 6px;
+    font-size: 10px;
+  }
+
+  .sla-dashboard .dashboard-welcome {
+    margin-top: 16px;
+    padding: 18px 16px;
+    border-radius: 11px;
+  }
+
+  .sla-dashboard .dashboard-welcome-title {
+    font-size: 16px;
+  }
+
+  .sla-dashboard .dashboard-welcome-description {
+    margin-top: 7px;
+    font-size: 12px;
+    line-height: 1.7;
+  }
+
+  .sla-dashboard .dashboard-divider {
+    margin: 16px 0;
+  }
+}
+
+/* Celulares pequeños */
+
+@media (max-width: 360px) {
+  .sla-dashboard {
+    padding: 12px;
+  }
+
+  .sla-dashboard .dashboard-title {
+    font-size: 21px;
+  }
+
+  .sla-dashboard .dashboard-stats {
+    gap: 8px;
+  }
+
+  .sla-dashboard .dashboard-stat-card {
+    padding: 12px 9px;
+  }
+
+  .sla-dashboard .dashboard-stat-header {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .sla-dashboard .dashboard-stat-value {
+    font-size: 21px;
+  }
+
+  .sla-dashboard .dashboard-welcome {
+    padding: 15px 13px;
+  }
+}
+
+/* Reducir animaciones si el usuario lo prefiere */
+
+@media (prefers-reduced-motion: reduce) {
+  .sla-dashboard *,
+  .sla-dashboard *::before,
+  .sla-dashboard *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

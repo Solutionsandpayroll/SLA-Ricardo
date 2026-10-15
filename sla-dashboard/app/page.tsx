@@ -1,43 +1,80 @@
-import { getServerSession } from "next-auth/next"
-import { redirect } from "next/navigation"
-import { authOptions } from "@/lib/auth"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Mail } from "lucide-react"
+import { getServerSession } from "next-auth/next";
+import { redirect } from "next/navigation";
+import Image from "next/image";
+import { authOptions } from "@/lib/auth";
+import { Card, CardContent } from "@/components/ui/card";
+import MicrosoftLoginButton from "@/components/MicrosoftLoginButton";
+import "./login.css";
 
 export default async function Home() {
-  const session = await getServerSession(authOptions)
+  const session = await getServerSession(authOptions);
 
   if (session) {
-    redirect("/dashboard")
+    redirect("/dashboard");
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
-      <Card className="w-full max-w-md shadow-xl">
-        <CardHeader className="text-center">
-          <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-            <Mail className="w-8 h-8 text-primary" />
+    <main className="login-page">
+      <Card className="login-card">
+        <div className="login-top-bar" />
+
+        <CardContent className="login-card-content">
+          <div className="login-logo-container">
+            <Image
+              src="/imagen.png"
+              alt="Logo de la empresa"
+              width={280}
+              height={120}
+              priority
+              className="login-logo"
+            />
           </div>
-          <CardTitle className="text-2xl font-bold">SLA Dashboard</CardTitle>
-          <CardDescription>
-            Sistema de seguimiento de solicitudes y SLA
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form action="/api/auth/signin" method="POST">
-            <Button type="submit" className="w-full" size="lg">
-              <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24">
-                <path
-                  fill="currentColor"
-                  d="M11.5 2.5h-9v9h9v-9zm1 0v9h9v-9h-9zm-1 10h-9v9h9v-9zm1 0v9h9v-9h-9z"
-                />
-              </svg>
-              Iniciar sesión con Microsoft
-            </Button>
-          </form>
+
+          <div className="login-accent-line" />
+
+          <div className="login-heading">
+            <h1>Bienvenido</h1>
+            <p>
+              Ingresa a la plataforma para gestionar y consultar tus
+              solicitudes.
+            </p>
+          </div>
+
+          <MicrosoftLoginButton />
+
+          <div className="login-security">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M12 3 19 6v5c0 4.5-3 7.5-7 10-4-2.5-7-5.5-7-10V6l7-3Z"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinejoin="round"
+              />
+              <path
+                d="m9 12 2 2 4-4"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+
+            <span>Acceso seguro con tu cuenta corporativa</span>
+          </div>
         </CardContent>
+
+        <footer className="login-footer">
+          Gestión de solicitudes <span>·</span> SLA
+        </footer>
       </Card>
-    </div>
-  )
+
+      <p className="login-copyright">
+        Acceso exclusivo para personal autorizado
+      </p>
+    </main>
+  );
 }
