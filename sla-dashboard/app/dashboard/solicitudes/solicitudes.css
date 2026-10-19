@@ -114,6 +114,27 @@
   opacity: 0.6;
 }
 
+/* Filtro por encargado (NUEVO) */
+
+.sla-solicitudes .sol-select {
+  min-height: 42px;
+  padding: 10px 14px;
+  border: 1px solid var(--sol-borde);
+  border-radius: 9px;
+  background: var(--sol-blanco);
+  color: var(--sol-azul);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.sla-solicitudes .sol-select:hover,
+.sla-solicitudes .sol-select:focus {
+  border-color: var(--sol-azul);
+  outline: none;
+}
+
 /* Tarjetas */
 
 .sla-solicitudes .sol-card {
@@ -145,6 +166,89 @@
 
 .sla-solicitudes .sol-card-content {
   padding: 22px 24px;
+}
+
+/* Indicadores / KPIs (NUEVO) */
+
+.sla-solicitudes .sol-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.sla-solicitudes .sol-kpi {
+  min-width: 0;
+  padding: 20px 18px;
+  border: 1px solid var(--sol-borde);
+  border-radius: 14px;
+  background: var(--sol-blanco);
+  box-shadow: 0 4px 16px rgb(16 42 67 / 5%);
+}
+
+.sla-solicitudes .sol-kpi-icono {
+  width: 20px;
+  height: 20px;
+  margin-bottom: 10px;
+  color: var(--sol-rojo);
+}
+
+.sla-solicitudes .sol-kpi-valor {
+  margin: 0;
+  color: var(--sol-azul);
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+}
+
+.sla-solicitudes .sol-kpi-label {
+  margin: 8px 0 0;
+  color: var(--sol-gris);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* Esperando respuesta (NUEVO) */
+
+.sla-solicitudes .sol-alertas {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sla-solicitudes .sol-alerta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--sol-borde);
+  border-left: 4px solid var(--sol-rojo);
+  border-radius: 10px;
+  background: #fbfcfe;
+  color: var(--sol-texto);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.sla-solicitudes .sol-alerta-quien {
+  flex-shrink: 0;
+  min-width: 120px;
+  color: var(--sol-azul);
+  font-weight: 700;
+}
+
+.sla-solicitudes .sol-alerta-texto {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.sla-solicitudes .sol-alerta-texto strong {
+  color: var(--sol-rojo);
+  font-weight: 700;
 }
 
 /* Resumen */
@@ -251,6 +355,11 @@
   border-collapse: separate;
   border-spacing: 0;
   text-align: left;
+}
+
+/* Tabla de rendimiento por encargado (NUEVO): solo 4 columnas, no necesita tanto ancho */
+.sla-solicitudes .sol-tabla:has(th:nth-child(4):last-child) {
+  min-width: 520px;
 }
 
 .sla-solicitudes .sol-tabla thead {
@@ -411,6 +520,10 @@
   .sla-solicitudes .sol-resumen {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+
+  .sla-solicitudes .sol-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 768px) {
@@ -434,6 +547,10 @@
     flex: 1;
   }
 
+  .sla-solicitudes .sol-select {
+    flex: 1;
+  }
+
   .sla-solicitudes .sol-card-header {
     padding: 18px;
   }
@@ -445,6 +562,20 @@
   .sla-solicitudes .sol-resumen {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
+  }
+
+  .sla-solicitudes .sol-kpis {
+    gap: 10px;
+  }
+
+  .sla-solicitudes .sol-alerta {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .sla-solicitudes .sol-alerta-quien {
+    min-width: 0;
+    width: 100%;
   }
 }
 
@@ -464,6 +595,11 @@
     flex: none;
   }
 
+  .sla-solicitudes .sol-select {
+    width: 100%;
+    flex: none;
+  }
+
   .sla-solicitudes .sol-card-header,
   .sla-solicitudes .sol-card-content {
     padding: 15px;
@@ -476,12 +612,21 @@
   .sla-solicitudes .sol-resumen-valor {
     font-size: 23px;
   }
+
+  .sla-solicitudes .sol-kpi {
+    padding: 15px 12px;
+  }
+
+  .sla-solicitudes .sol-kpi-valor {
+    font-size: 24px;
+  }
 }
 
 /* Accesibilidad */
 
 @media (prefers-reduced-motion: reduce) {
-  .sla-solicitudes .sol-btn {
+  .sla-solicitudes .sol-btn,
+  .sla-solicitudes .sol-select {
     transition: none;
   }
 }

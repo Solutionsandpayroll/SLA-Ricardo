@@ -1,4 +1,3 @@
-
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 
@@ -51,6 +50,7 @@ function obtenerRemitente(email: {
 
 /**
  * PROCESAR CORREOS DEL USUARIO AUTENTICADO
+ * (guarda las solicitudes en la base de datos compartida)
  */
 export async function POST() {
   try {
@@ -80,6 +80,12 @@ export async function POST() {
       throw new Error("No se pudo identificar el buzón de Microsoft.");
     }
 
+    // Nombre que se mostrará como "Encargado" en la vista del equipo.
+    const encargado =
+      (perfil as { displayName?: string }).displayName?.trim() ||
+      session.user.name?.trim() ||
+      buzon;
+
     const { fechaDesde, fechaHasta } = obtenerRangoFechas();
 
     // Descargar correos del buzón autenticado.
@@ -101,6 +107,8 @@ export async function POST() {
     console.log("PROCESAMIENTO SLA");
     console.log("Usuario:", userId);
     console.log("Buzón:", buzon);
+    console.log("Encargado:", encargado);
+    console.log("Rango:", fechaDesde.toISOString(), "->", fechaHasta.toISOString());
     console.log("Correos encontrados:", correos.length);
     console.log("==================================");
 
@@ -140,9 +148,7 @@ export async function POST() {
           ? await prisma.solicitud.findFirst({
               where: {
                 userId,
-                OR: [
-                  { messageId: { in: identificadores } },
-                ],
+                OR: [{ messageId: { in: identificadores } }],
               },
             })
           : null;
@@ -195,6 +201,7 @@ export async function POST() {
         await prisma.solicitud.create({
           data: {
             userId,
+            encargado,
             messageId: correo.id,
             conversationId: correo.conversationId || null,
             asunto,
@@ -266,9 +273,11 @@ export async function POST() {
 }
 
 /**
- * CONSULTAR ÚNICAMENTE LAS SOLICITUDES DEL USUARIO ACTUAL
+ * CONSULTAR SOLICITUDES
+ *  - /api/procesar-correos                  -> solo las del usuario actual
+ *  - /api/procesar-correos?alcance=equipo   -> las de TODO el equipo
  */
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -279,15 +288,39 @@ export async function GET() {
       );
     }
 
+    const { searchParams } = new URL(request.url);
+    const verEquipo = searchParams.get("alcance") === "equipo";
+
     const solicitudesGuardadas = await prisma.solicitud.findMany({
-      where: {
-        userId: session.user.id,
-      },
+      where: verEquipo ? {} : { userId: session.user.id },
       orderBy: {
         fechaRecibido: "desc",
       },
-      take: 50,
+      // Antes: verEquipo ? 500 : 50. Ahora "mis solicitudes" también trae hasta 500.
+      take: 500,
     });
+
+    // Para filas antiguas sin "encargado", usar el nombre del usuario dueño.
+    const nombresPorUsuario = new Map<string, string>();
+
+    if (verEquipo) {
+      try {
+        const ids = Array.from(
+          new Set(solicitudesGuardadas.map((s) => s.userId).filter(Boolean))
+        ) as string[];
+
+        const usuarios = await prisma.user.findMany({
+          where: { id: { in: ids } },
+          select: { id: true, name: true, email: true },
+        });
+
+        for (const u of usuarios) {
+          nombresPorUsuario.set(u.id, u.name || u.email || "");
+        }
+      } catch (error) {
+        console.warn("No se pudieron cargar los nombres de usuario:", error);
+      }
+    }
 
     const solicitudes = solicitudesGuardadas.map((sol) => {
       const estadoOriginal = String(sol.estado || "").toLowerCase();
@@ -303,10 +336,16 @@ export async function GET() {
         estado = "cerrada";
       }
 
+      // El cuerpo de los correos NO se envía a la vista del equipo.
+      const { cuerpo: _cuerpo, ...resto } = sol;
+
       return {
-        ...sol,
+        ...resto,
         paisCliente: sol.paisCliente ?? null,
-        encargado: sol.encargado ?? null,
+        encargado:
+          sol.encargado ??
+          (sol.userId ? nombresPorUsuario.get(sol.userId) : undefined) ??
+          null,
         inicioConteoSLA: sol.inicioConteoSLA ?? null,
         vencimientoSLA: sol.vencimientoSLA ?? null,
         tiempoHabil: sol.tiempoHabil ?? null,

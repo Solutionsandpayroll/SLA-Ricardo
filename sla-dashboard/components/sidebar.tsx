@@ -11,6 +11,7 @@ import {
   FileText,
   BarChart3,
   Users,
+  FileSpreadsheet,
   LogOut,
   ChevronRight,
 } from "lucide-react";
@@ -42,6 +43,11 @@ export function Sidebar({ user }: SidebarProps) {
       title: "Clientes",
       href: "/dashboard/clientes",
       icon: Users,
+    },
+    {
+      title: "Exportar informe",
+      href: "/dashboard/exportar-informe",
+      icon: FileSpreadsheet,
     },
   ];
 
