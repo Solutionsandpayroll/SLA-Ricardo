@@ -1,235 +1,896 @@
-/* =====================================
-   LOGIN COMPACTO - SLA DASHBOARD
-===================================== */
+/* =========================================================
+   SEGUIMIENTO SLA - HOME
+   Solutions & Payroll
+   Colores: azul oscuro, blanco, gris y rojo
+   ========================================================= */
 
-.login-page {
-  position: relative;
-  display: flex;
+:root {
+  --sla-navy: #102a43;
+  --sla-navy-light: #173f5f;
+  --sla-red: #e6003d;
+  --sla-red-dark: #c81035;
+  --sla-text: #102a43;
+  --sla-muted: #647b94;
+  --sla-border: #e0e7ef;
+  --sla-background: #f4f6f8;
+  --sla-white: #ffffff;
+  --sla-green: #16805d;
+  --sla-sidebar-width: 285px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 100px;
+}
+
+body {
+  margin: 0;
+  background: var(--sla-background);
+  color: var(--sla-text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+/* ---------- Estructura general ---------- */
+
+.sla-home {
   min-height: 100vh;
-  min-height: 100dvh;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  padding: 30px 18px 55px;
-  background:
-    radial-gradient(
-      circle at 15% 15%,
-      rgba(23, 63, 95, 0.12),
-      transparent 35%
-    ),
-    #f4f7fb;
-  color: #102a43;
-}
-
-/* Tarjeta compacta */
-
-.login-card {
   width: 100%;
-  max-width: 370px;
-  overflow: hidden;
-  border: 1px solid #e1e8f0;
-  border-radius: 15px;
-  background: #ffffff;
-  box-shadow: 0 15px 40px rgba(16, 42, 67, 0.1);
-  animation: login-appear 0.4s ease-out;
-}
-
-/* Línea superior */
-
-.login-top-bar {
-  height: 4px;
-  background: linear-gradient(
-    90deg,
-    #102a43 0%,
-    #173f5f 75%,
-    #d62839 100%
-  );
-}
-
-/* Contenido */
-
-.login-card-content {
-  padding: 28px 28px 24px;
-}
-
-/* Logo */
-
-.login-logo-container {
   display: flex;
-  width: 100%;
-  height: 105px;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  border-radius: 9px;
-  background: #102a43;
-  padding: 10px 18px;
+  background: var(--sla-background);
 }
 
-.login-logo {
+.sla-sidebar {
+  width: var(--sla-sidebar-width);
+  min-width: var(--sla-sidebar-width);
+  min-height: 100vh;
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  color: #fff;
+  background: var(--sla-navy);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ---------- Logo ---------- */
+
+.sla-brand {
+  min-height: 205px;
+  padding: 30px 24px 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.sla-brand-logo {
   display: block;
   width: 100%;
-  height: 100%;
+  max-width: 235px;
+  height: auto;
+  max-height: 115px;
   object-fit: contain;
+  object-position: left center;
 }
 
-/* Detalle rojo */
-
-.login-accent-line {
-  width: 35px;
-  height: 3px;
-  margin: 23px auto 19px;
-  border-radius: 5px;
-  background: #d62839;
+.sla-brand p {
+  margin: 12px 0 0;
+  color: #cbd8e5;
+  font-size: 12px;
+  line-height: 1.6;
 }
 
-/* Título */
+/* ---------- Navegación ---------- */
 
-.login-heading {
-  margin-bottom: 23px;
-  text-align: center;
+.sla-navigation {
+  padding: 22px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.login-heading h1 {
+.sla-nav-title {
+  padding: 0 15px 6px;
+  color: #7f97ae;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.sla-nav-link {
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 15px;
+  border-radius: 11px;
+  color: #c5d3e1;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.sla-nav-link svg {
+  flex-shrink: 0;
+}
+
+.sla-nav-link:hover,
+.sla-nav-link.active {
+  color: #fff;
+  background: #294661;
+}
+
+.sla-nav-link:hover {
+  transform: translateX(2px);
+}
+
+.sla-nav-link.active {
+  box-shadow: inset 3px 0 0 var(--sla-red);
+}
+
+.sla-nav-badge {
+  margin-left: auto;
+  padding: 4px 9px;
+  border-radius: 20px;
+  color: #fff;
+  background: var(--sla-red);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* ---------- Parte inferior del menú ---------- */
+
+.sla-sidebar-bottom {
+  margin-top: auto;
+  padding: 22px 20px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.sla-session-status {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 5px;
+  color: #a9bdd0;
+  font-size: 12px;
+}
+
+.sla-status-dot {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #f4b942;
+  box-shadow: 0 0 0 4px rgba(244, 185, 66, 0.12);
+}
+
+/* Botón "Iniciar sesión admin" */
+
+.sla-admin-link {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 10px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.sla-admin-link:hover {
+  background: var(--sla-red);
+  border-color: var(--sla-red);
+}
+
+.sla-admin-link:focus-visible {
+  outline: 3px solid #8db8e8;
+  outline-offset: 3px;
+}
+
+.sla-admin-link svg {
+  flex-shrink: 0;
+}
+
+.sla-admin-link-arrow {
+  margin-left: auto;
+}
+
+.sla-sidebar-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 5px;
+  color: #9bb0c4;
+  font-size: 11px;
+}
+
+/* ---------- Contenido principal ---------- */
+
+.sla-main {
+  width: calc(100% - var(--sla-sidebar-width));
+  min-width: 0;
+  min-height: 100vh;
+  margin-left: var(--sla-sidebar-width);
+}
+
+.sla-topbar {
+  min-height: 100px;
+  padding: 20px 42px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  background: #fff;
+  border-bottom: 1px solid var(--sla-border);
+}
+
+.sla-eyebrow {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--sla-muted);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.sla-topbar h1 {
   margin: 0;
-  color: #102a43;
-  font-size: 27px;
+  color: var(--sla-navy);
+  font-size: clamp(23px, 2vw, 30px);
   font-weight: 800;
   letter-spacing: -0.8px;
 }
 
-.login-heading p {
-  margin: 10px 0 0;
-  color: #718096;
+.sla-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-left: 24px;
+  border-left: 1px solid var(--sla-border);
+}
+
+.sla-user-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  color: var(--sla-navy);
+  background: #edf1f5;
+}
+
+.sla-user > div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sla-user strong {
+  color: var(--sla-navy);
+  font-size: 13px;
+}
+
+.sla-user span {
+  color: var(--sla-muted);
   font-size: 12px;
+}
+
+/* ---------- Área de trabajo ---------- */
+
+.sla-content {
+  width: 100%;
+  max-width: 1700px;
+  margin: 0 auto;
+  padding: 32px 42px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.sla-welcome {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+}
+
+.sla-welcome h2 {
+  margin: 0 0 10px;
+  color: var(--sla-navy);
+  font-size: clamp(23px, 2vw, 30px);
+  font-weight: 800;
+  letter-spacing: -0.8px;
+}
+
+.sla-welcome p {
+  max-width: 650px;
+  margin: 0;
+  color: var(--sla-muted);
+  font-size: 15px;
   line-height: 1.7;
 }
 
-/* Botón Microsoft */
-
-.login-button {
+.sla-live-indicator {
+  flex-shrink: 0;
   display: flex;
-  width: 100%;
-  min-height: 47px;
   align-items: center;
-  justify-content: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border: 1px solid var(--sla-border);
+  border-radius: 30px;
+  color: var(--sla-muted);
+  background: #fff;
+  font-size: 11px;
+}
+
+.sla-live-indicator span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--sla-green);
+}
+
+/* ---------- Tarjetas de indicadores ---------- */
+
+.sla-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.sla-metric-card {
+  min-width: 0;
+  min-height: 225px;
+  position: relative;
+  padding: 24px 22px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background: var(--sla-white);
+  border: 1px solid var(--sla-border);
+  border-radius: 17px;
+  box-shadow: 0 2px 4px rgba(16, 42, 67, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sla-metric-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(16, 42, 67, 0.08);
+}
+
+.sla-metric-icon {
+  width: 52px;
+  height: 52px;
+  margin-bottom: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+}
+
+.sla-metric-icon.blue {
+  color: var(--sla-navy);
+  background: #edf2f7;
+}
+
+.sla-metric-icon.red {
+  color: var(--sla-red);
+  background: #fff0f3;
+}
+
+.sla-metric-icon.green {
+  color: var(--sla-green);
+  background: #eaf7f0;
+}
+
+.sla-metric-card > p {
+  min-height: 40px;
+  margin: 0 0 8px;
+  color: #5d7188;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.sla-metric-value {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
   gap: 9px;
-  border: 1px solid #102a43;
-  border-radius: 8px;
-  background: #102a43;
-  color: #ffffff;
+}
+
+.sla-metric-value strong {
+  color: #152238;
+  font-size: 29px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.sla-metric-value span {
+  color: #91a1b4;
   font-size: 12px;
-  font-weight: 700;
-  box-shadow: none;
-  transition:
-    background 0.2s ease,
-    transform 0.2s ease;
 }
 
-.login-button:hover {
-  background: #173f5f;
-  transform: translateY(-1px);
+.sla-card-badge {
+  position: absolute;
+  top: 25px;
+  right: 22px;
+  padding: 5px 9px;
+  border-radius: 20px;
+  color: var(--sla-red);
+  background: #fff0f3;
+  font-size: 10px;
+  font-weight: 800;
 }
 
-.login-button:focus-visible {
-  outline: 3px solid rgba(214, 40, 57, 0.25);
-  outline-offset: 3px;
+.sla-metric-footer {
+  width: 100%;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid #edf1f5;
+  color: #8292a5;
+  font-size: 11px;
 }
 
-.login-microsoft-icon {
-  width: 17px;
-  height: 17px;
-  flex-shrink: 0;
+/* ---------- Panel de acceso (solo empleados) ---------- */
+
+.sla-access-panel {
+  background: #fff;
+  border: 1px solid var(--sla-border);
+  border-top: 4px solid var(--sla-navy);
+  border-radius: 17px;
+  box-shadow: 0 2px 4px rgba(16, 42, 67, 0.04);
+  overflow: hidden;
 }
 
-/* Mensaje de seguridad */
-
-.login-security {
+.sla-access-header {
+  padding: 24px 28px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 7px;
-  margin-top: 19px;
-  color: #7b8a9b;
-  font-size: 10px;
-  text-align: center;
+  gap: 18px;
+  border-bottom: 1px solid #edf1f5;
 }
 
-.login-security svg {
-  width: 16px;
-  height: 16px;
+.sla-access-icon {
+  width: 56px;
+  height: 56px;
   flex-shrink: 0;
-  color: #173f5f;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  color: var(--sla-navy);
+  background: #edf2f7;
 }
 
-/* Pie */
-
-.login-footer {
-  border-top: 1px solid #edf1f5;
-  background: #fafbfd;
-  padding: 13px 10px;
-  color: #8794a5;
-  font-size: 10px;
-  font-weight: 600;
-  text-align: center;
+.sla-access-header h3 {
+  margin: 0 0 6px;
+  color: var(--sla-navy);
+  font-size: 19px;
+  font-weight: 800;
 }
 
-.login-footer span {
-  padding: 0 4px;
-  color: #d62839;
-}
-
-/* Texto inferior */
-
-.login-copyright {
-  position: absolute;
-  right: 15px;
-  bottom: 17px;
-  left: 15px;
+.sla-access-header p {
+  max-width: 620px;
   margin: 0;
-  color: #94a3b8;
-  font-size: 10px;
-  text-align: center;
+  color: var(--sla-muted);
+  font-size: 13px;
+  line-height: 1.7;
 }
 
-/* Animación */
+.sla-access-body {
+  padding: 32px 28px;
+  display: flex;
+  justify-content: center;
+  background: #f8fafc;
+}
 
-@keyframes login-appear {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
+.sla-access-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 380px;
+}
+
+.sla-access-button button,
+.sla-access-button a {
+  max-width: 100%;
+}
+
+.sla-access-footer {
+  padding: 16px 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  border-top: 1px solid #edf1f5;
+  color: #75889a;
+  font-size: 11px;
+}
+
+.sla-access-security {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.sla-access-hint {
+  color: var(--sla-muted);
+}
+
+/* ---------- Funcionalidades ---------- */
+
+.sla-section-heading {
+  margin-bottom: 18px;
+  padding-left: 12px;
+  border-left: 4px solid var(--sla-red);
+}
+
+.sla-section-heading h3 {
+  margin: 0 0 6px;
+  color: var(--sla-navy);
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.sla-section-heading p {
+  margin: 0;
+  color: var(--sla-muted);
+  font-size: 13px;
+}
+
+.sla-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.sla-feature {
+  min-width: 0;
+  padding: 20px 17px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #fff;
+  border: 1px solid var(--sla-border);
+  border-radius: 13px;
+  transition: box-shadow 0.2s ease;
+}
+
+.sla-feature:hover {
+  box-shadow: 0 5px 18px rgba(16, 42, 67, 0.06);
+}
+
+.sla-feature-icon {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  color: var(--sla-navy);
+  background: #edf2f7;
+}
+
+.sla-feature > div:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+}
+
+.sla-feature h4 {
+  margin: 2px 0 7px;
+  color: var(--sla-navy);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.sla-feature p {
+  margin: 0;
+  color: var(--sla-muted);
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.sla-feature-arrow {
+  flex-shrink: 0;
+  margin-top: 3px;
+  color: #9aabba;
+}
+
+.sla-footer {
+  padding: 20px 0 5px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  border-top: 1px solid #dfe6ed;
+  color: #8392a3;
+  font-size: 11px;
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1250px) {
+  :root {
+    --sla-sidebar-width: 245px;
   }
 
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  .sla-content,
+  .sla-topbar {
+    padding-right: 25px;
+    padding-left: 25px;
+  }
+
+  .sla-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sla-feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sla-metric-card {
+    min-height: 205px;
   }
 }
 
-/* Pantallas pequeñas */
+/* =========================================================
+   MÓVILES
+   ========================================================= */
 
-@media (max-width: 420px) {
-  .login-card-content {
-    padding: 23px 21px 21px;
+@media (max-width: 700px) {
+  .sla-home {
+    display: block;
   }
 
-  .login-logo-container {
-    height: 95px;
+  .sla-sidebar {
+    width: 100%;
+    min-width: 0;
+    min-height: auto;
+    position: relative;
+    inset: auto;
+    overflow: visible;
   }
 
-  .login-heading h1 {
-    font-size: 25px;
+  .sla-brand {
+    min-height: auto;
+    padding: 16px 20px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 14px;
+  }
+
+  .sla-brand-logo {
+    width: 170px;
+    max-width: 55%;
+    max-height: 75px;
+  }
+
+  .sla-brand p {
+    max-width: 140px;
+    margin: 0;
+    font-size: 10px;
+  }
+
+  .sla-navigation {
+    padding: 12px;
+    flex-direction: row;
+    gap: 8px;
+    overflow-x: auto;
+  }
+
+  .sla-nav-title {
+    display: none;
+  }
+
+  .sla-nav-link {
+    min-height: 42px;
+    flex-shrink: 0;
+    padding: 0 12px;
+    gap: 8px;
+    font-size: 12px;
+  }
+
+  .sla-nav-link svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .sla-nav-badge {
+    display: none;
+  }
+
+  .sla-sidebar-bottom {
+    padding: 10px 16px;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .sla-session-status {
+    font-size: 11px;
+  }
+
+  .sla-admin-link {
+    min-height: 38px;
+    margin-left: auto;
+    font-size: 12px;
+  }
+
+  .sla-admin-link-arrow,
+  .sla-sidebar-note {
+    display: none;
+  }
+
+  .sla-main {
+    width: 100%;
+    min-height: auto;
+    margin-left: 0;
+  }
+
+  .sla-topbar {
+    min-height: 75px;
+    padding: 15px 18px;
+  }
+
+  .sla-eyebrow {
+    font-size: 9px;
+  }
+
+  .sla-topbar h1 {
+    font-size: 21px;
+  }
+
+  .sla-user {
+    gap: 8px;
+    padding-left: 12px;
+  }
+
+  .sla-user-icon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .sla-user-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .sla-user strong,
+  .sla-user span {
+    font-size: 10px;
+  }
+
+  .sla-content {
+    padding: 24px 16px;
+    gap: 22px;
+  }
+
+  .sla-welcome {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .sla-welcome h2 {
+    font-size: 23px;
+  }
+
+  .sla-welcome p {
+    font-size: 13px;
+  }
+
+  .sla-live-indicator {
+    font-size: 10px;
+  }
+
+  .sla-metrics {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .sla-metric-card {
+    min-height: 185px;
+    padding: 20px;
+  }
+
+  .sla-metric-icon {
+    width: 46px;
+    height: 46px;
+    margin-bottom: 16px;
+  }
+
+  .sla-metric-card > p {
+    min-height: 0;
+  }
+
+  .sla-access-header {
+    padding: 20px 17px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .sla-access-header h3 {
+    font-size: 17px;
+  }
+
+  .sla-access-body {
+    padding: 24px 17px;
+  }
+
+  .sla-access-footer {
+    padding: 14px 17px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sla-feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sla-footer {
+    flex-direction: column;
+    font-size: 10px;
   }
 }
 
-/* Accesibilidad */
+/* Pantallas muy pequeñas */
 
-@media (prefers-reduced-motion: reduce) {
-  .login-card {
-    animation: none;
+@media (max-width: 360px) {
+  .sla-brand {
+    padding: 12px;
   }
 
-  .login-button {
-    transition: none;
+  .sla-brand-logo {
+    width: 145px;
+  }
+
+  .sla-brand p {
+    font-size: 9px;
+  }
+
+  .sla-topbar {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .sla-user-icon {
+    display: none;
+  }
+
+  .sla-content {
+    padding-right: 12px;
+    padding-left: 12px;
   }
 }

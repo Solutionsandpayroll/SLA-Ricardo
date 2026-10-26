@@ -1,56 +1,95 @@
-/* =====================================
+
+/* ==========================================
    LAYOUT GENERAL DEL SISTEMA SLA
-   Azul oscuro, blanco y rojo
-===================================== */
+   Diseño corporativo y responsive
+   Azul oscuro, blanco, gris y rojo
+========================================== */
 
 .sla-layout {
   --sla-azul: #102a43;
-  --sla-azul-secundario: #173f5f;
+  --sla-azul-secundario: #243f59;
   --sla-rojo: #d62839;
   --sla-blanco: #ffffff;
-  --sla-fondo: #f4f7fb;
-  --sla-borde: #e1e8f0;
+  --sla-fondo: #f5f6f8;
+  --sla-borde: #e2e8f0;
 
   display: flex;
+  align-items: stretch;
+
   width: 100%;
   height: 100vh;
   height: 100dvh;
+
+  min-width: 0;
+  min-height: 0;
+
   overflow: hidden;
   background: var(--sla-fondo);
 }
 
-/* Área principal */
+/* ==========================================
+   ÁREA PRINCIPAL
+========================================== */
 
 .sla-layout-main {
-  flex: 1;
+  flex: 1 1 auto;
+
+  width: 0;
   min-width: 0;
   height: 100%;
-  overflow-x: auto;
+
+  overflow-x: hidden;
   overflow-y: auto;
+
   background: var(--sla-fondo);
+
+  scrollbar-gutter: stable;
 }
 
-/* Espacio del contenido */
+/* ==========================================
+   CONTENIDO DE LAS PÁGINAS
+========================================== */
 
 .sla-layout-content {
   width: 100%;
+  min-width: 0;
   min-height: 100%;
+
+  margin: 0;
   padding: 28px;
+
   color: var(--sla-azul);
+  background: var(--sla-fondo);
 }
 
-/* Selección de texto */
+/* Evita que los elementos internos ensanchen el layout */
+
+.sla-layout-content > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* ==========================================
+   SELECCIÓN DE TEXTO
+========================================== */
 
 .sla-layout ::selection {
   color: var(--sla-blanco);
   background: var(--sla-rojo);
 }
 
-/* Barras de desplazamiento */
+/* ==========================================
+   BARRAS DE DESPLAZAMIENTO
+========================================== */
+
+.sla-layout-main {
+  scrollbar-width: thin;
+  scrollbar-color: #b8c6d6 var(--sla-fondo);
+}
 
 .sla-layout-main::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
 }
 
 .sla-layout-main::-webkit-scrollbar-track {
@@ -66,7 +105,19 @@
   background: var(--sla-azul-secundario);
 }
 
-/* Tabletas */
+/* ==========================================
+   PORTÁTILES
+========================================== */
+
+@media (max-width: 1200px) {
+  .sla-layout-content {
+    padding: 24px;
+  }
+}
+
+/* ==========================================
+   TABLETAS
+========================================== */
 
 @media (max-width: 768px) {
   .sla-layout-content {
@@ -74,10 +125,27 @@
   }
 }
 
-/* Celulares */
+/* ==========================================
+   CELULARES
+========================================== */
 
 @media (max-width: 480px) {
   .sla-layout-content {
-    padding: 14px;
+    padding: 15px;
+  }
+}
+
+/* ==========================================
+   ACCESIBILIDAD
+========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .sla-layout *,
+  .sla-layout *::before,
+  .sla-layout *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

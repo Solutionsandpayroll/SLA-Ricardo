@@ -1,15 +1,29 @@
 "use client";
 
+import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 
 export default function MicrosoftLoginButton() {
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async () => {
+    try {
+      setLoading(true);
+      await signIn("azure-ad", { callbackUrl: "/dashboard" });
+    } catch (error) {
+      console.error("Error al iniciar sesión con Microsoft:", error);
+      setLoading(false);
+    }
+  };
+
   return (
     <Button
       type="button"
       size="lg"
       className="login-button"
-      onClick={() => signIn("azure-ad", { callbackUrl: "/dashboard" })}
+      onClick={handleLogin}
+      disabled={loading}
     >
       <svg
         className="login-microsoft-icon"
@@ -22,7 +36,7 @@ export default function MicrosoftLoginButton() {
         <path fill="#ffb900" d="M13 13h10v10H13z" />
       </svg>
 
-      Iniciar sesión con Microsoft
+      {loading ? "Redirigiendo..." : "Iniciar sesión con Microsoft"}
     </Button>
   );
 }

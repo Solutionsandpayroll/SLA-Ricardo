@@ -1,0 +1,423 @@
+
+/* =====================================================
+   LOGIN ADMINISTRATIVO - SLA DASHBOARD
+   Diseño centrado: azul, rojo, blanco y gris
+   ===================================================== */
+
+.admin-login-page {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 36px 20px;
+
+  overflow: hidden;
+  background: #f4f6f9;
+  color: #102a43;
+
+  font-family: Arial, Helvetica, sans-serif;
+  box-sizing: border-box;
+}
+
+.admin-login-page *,
+.admin-login-page *::before,
+.admin-login-page *::after {
+  box-sizing: border-box;
+}
+
+/* Decoración de fondo */
+
+.admin-login-decoration {
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: 50%;
+}
+
+.admin-decoration-one {
+  top: -170px;
+  right: -130px;
+  width: 390px;
+  height: 390px;
+  background: rgba(16, 42, 67, 0.055);
+}
+
+.admin-decoration-two {
+  bottom: -210px;
+  left: -130px;
+  width: 440px;
+  height: 440px;
+  background: rgba(214, 40, 40, 0.045);
+}
+
+/* Tarjeta principal */
+
+.admin-login-card {
+  position: relative;
+  width: 100%;
+  max-width: 470px;
+  margin: auto;
+  padding: 30px 36px 25px;
+
+  background: #ffffff;
+  border: 1px solid #e6eaf0;
+  border-radius: 20px;
+
+  box-shadow:
+    0 18px 50px rgba(16, 42, 67, 0.09),
+    0 3px 10px rgba(16, 42, 67, 0.035);
+}
+
+/* Enlace para volver */
+
+.admin-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  color: #526579;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+
+  transition: color 0.2s ease;
+}
+
+.admin-back-link:hover {
+  color: #d62828;
+}
+
+/* Logo */
+
+.admin-login-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  margin: 24px 0 17px;
+}
+
+.admin-login-logo {
+  display: block;
+  width: 190px;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Icono de administrador */
+
+.admin-login-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 18px;
+
+  color: #ffffff;
+  background: #102a43;
+  border-radius: 18px;
+
+  box-shadow: 0 8px 18px rgba(16, 42, 67, 0.16);
+}
+
+/* Encabezado */
+
+.admin-login-heading {
+  margin-bottom: 26px;
+  text-align: center;
+}
+
+.admin-login-eyebrow {
+  display: inline-block;
+  margin-bottom: 9px;
+
+  color: #d62828;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.7px;
+}
+
+.admin-login-heading h1 {
+  margin: 0 0 11px;
+
+  color: #102a43;
+  font-size: 27px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.7px;
+}
+
+.admin-login-heading p {
+  max-width: 345px;
+  margin: 0 auto;
+
+  color: #68788a;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+/* Formulario */
+
+.admin-login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 19px;
+  width: 100%;
+}
+
+.admin-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.admin-form-group label {
+  color: #263d52;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.admin-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  width: 100%;
+  min-height: 51px;
+  padding: 0 14px;
+
+  color: #718195;
+  background: #ffffff;
+  border: 1px solid #dce3eb;
+  border-radius: 10px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.admin-input-wrapper:focus-within {
+  background: #ffffff;
+  border-color: #2468c9;
+  box-shadow: 0 0 0 3px rgba(36, 104, 201, 0.1);
+}
+
+.admin-input-wrapper > svg {
+  flex-shrink: 0;
+}
+
+.admin-input-wrapper input {
+  width: 100%;
+  min-width: 0;
+  height: 48px;
+  padding: 0;
+
+  color: #102a43;
+  background: transparent;
+  border: none;
+  outline: none;
+
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.admin-input-wrapper input::placeholder {
+  color: #a0acb9;
+}
+
+.admin-input-wrapper input:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+/* Mostrar u ocultar contraseña */
+
+.admin-password-toggle {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+
+  width: 32px;
+  height: 36px;
+  padding: 0;
+
+  color: #718195;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+.admin-password-toggle:hover {
+  color: #102a43;
+  background: #f0f3f7;
+}
+
+.admin-password-toggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Mensaje de error */
+
+.admin-login-error {
+  padding: 12px 14px;
+
+  color: #a51e27;
+  background: #fff0f0;
+  border: 1px solid #f5c7ca;
+  border-radius: 9px;
+
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* Botón principal */
+
+.admin-login-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  width: 100%;
+  min-height: 52px;
+  margin-top: 2px;
+  padding: 13px 16px;
+
+  color: #ffffff;
+  background: #102a43;
+  border: 1px solid #102a43;
+  border-radius: 10px;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin-login-submit:hover:not(:disabled) {
+  background: #173f5f;
+  border-color: #173f5f;
+  box-shadow: 0 6px 16px rgba(16, 42, 67, 0.15);
+  transform: translateY(-1px);
+}
+
+.admin-login-submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.admin-spinner {
+  animation: admin-spin 1s linear infinite;
+}
+
+@keyframes admin-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Aviso de seguridad */
+
+.admin-login-security {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  margin-top: 23px;
+  padding-top: 18px;
+
+  color: #718195;
+  border-top: 1px solid #edf0f4;
+
+  font-size: 11px;
+  text-align: center;
+}
+
+.admin-login-security svg {
+  flex-shrink: 0;
+  color: #2f7d5b;
+}
+
+/* Pie de página */
+
+.admin-login-footer {
+  margin-top: 17px;
+
+  color: #9aa5b1;
+  font-size: 10px;
+  text-align: center;
+}
+
+/* Accesibilidad */
+
+.admin-login-submit:focus-visible,
+.admin-password-toggle:focus-visible,
+.admin-back-link:focus-visible {
+  outline: 3px solid rgba(36, 104, 201, 0.45);
+  outline-offset: 3px;
+}
+
+/* Pantallas pequeñas */
+
+@media (max-width: 520px) {
+  .admin-login-page {
+    padding: 20px 14px;
+  }
+
+  .admin-login-card {
+    max-width: 420px;
+    padding: 25px 21px 22px;
+    border-radius: 16px;
+  }
+
+  .admin-login-brand {
+    margin-top: 21px;
+  }
+
+  .admin-login-logo {
+    width: 165px;
+  }
+
+  .admin-login-heading h1 {
+    font-size: 24px;
+  }
+
+  .admin-login-heading p {
+    font-size: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-login-page *,
+  .admin-login-page *::before,
+  .admin-login-page *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

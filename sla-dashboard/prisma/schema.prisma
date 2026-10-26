@@ -40,11 +40,12 @@ model User {
   email         String?     @unique
   emailVerified DateTime?
   image         String?
+  role          Role        @default(USER)
+   passwordHash  String?
   accounts      Account[]
   sessions      Session[]
   solicitudes   Solicitud[]
 }
-
 model VerificationToken {
   identifier String
   token      String   @unique
@@ -98,3 +99,8 @@ model Solicitud {
 
   @@index([userId, fechaRecibido])
 }
+enum Role {
+  USER
+  ADMIN
+}
+

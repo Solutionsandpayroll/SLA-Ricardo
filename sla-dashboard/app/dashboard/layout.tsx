@@ -1,8 +1,10 @@
+
 import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { Sidebar } from "@/components/sidebar";
 import "./layout.css";
+
 export default async function DashboardLayout({
   children,
 }: {
@@ -25,7 +27,9 @@ export default async function DashboardLayout({
       />
 
       <main className="sla-layout-main">
-        <div className="sla-layout-content">{children}</div>
+        <div className="sla-layout-content">
+          {children}
+        </div>
       </main>
     </div>
   );
