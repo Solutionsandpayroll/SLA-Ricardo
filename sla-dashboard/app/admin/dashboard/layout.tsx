@@ -1,5 +1,5 @@
 import { requireAdminPage } from "@/lib/require-admin";
-import AdminSidebar from "./admin-sidebar";
+import AdminSidebar from "../dashboard/admin-sidebar";
 import "./admin.css";
 
 export default async function PanelLayout({

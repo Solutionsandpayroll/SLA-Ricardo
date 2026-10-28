@@ -1,5 +1,3 @@
-import { getServerSession } from "next-auth/next";
-import { redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -16,19 +14,10 @@ import {
   BadgeCheck,
 } from "lucide-react";
 
-import { authOptions } from "@/lib/auth";
 import MicrosoftLoginButton from "@/components/MicrosoftLoginButton";
 import "./login.css";
 
 export default async function Home() {
-  const session = await getServerSession(authOptions);
-
-  // Si ya inició sesión, enviar a cada usuario a su panel según el rol.
-  if (session?.user) {
-    const role = (session.user as { role?: string }).role;
-    redirect(role === "ADMIN" ? "/admin/solicitudes" : "/dashboard");
-  }
-
   return (
     <main className="sla-home">
       {/* ============ BARRA LATERAL ============ */}

@@ -18,6 +18,7 @@
 .admin-layout {
   --sla-azul: #102a43;
   --sla-azul-secundario: #173f5f;
+  --sla-azul-activo: #294661;
   --sla-rojo: #d62839;
   --sla-blanco: #ffffff;
   --sla-fondo: #f4f7fb;
@@ -112,12 +113,15 @@
 
 .admin-layout .admin-sidebar-link:hover {
   color: #ffffff;
-  background: var(--sla-azul-secundario);
+  background: var(--sla-azul-activo);
 }
 
-.admin-layout .admin-sidebar-link.active {
+/* Activo: azul claro con barra roja a la izquierda (igual que "Inicio") */
+.admin-layout .admin-sidebar-link.active,
+.admin-layout .admin-sidebar-link[aria-current="page"] {
   color: #ffffff;
-  background: var(--sla-rojo);
+  background: var(--sla-azul-activo);
+  box-shadow: inset 3px 0 0 var(--sla-rojo);
 }
 
 .admin-layout .admin-sidebar-bottom {
@@ -593,6 +597,12 @@
   .admin-layout .admin-sidebar-nav .admin-sidebar-link {
     flex: 1;
     min-width: 0;
+  }
+
+  /* En la barra inferior la marca roja va abajo, no a la izquierda */
+  .admin-layout .admin-sidebar-link.active,
+  .admin-layout .admin-sidebar-link[aria-current="page"] {
+    box-shadow: inset 0 -3px 0 var(--sla-rojo);
   }
 
   .admin-layout .admin-sidebar-bottom {

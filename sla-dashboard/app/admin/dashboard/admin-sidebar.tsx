@@ -1,10 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import {
-  LayoutDashboard,
   Users,
   Building2,
   Inbox,
@@ -12,10 +12,7 @@ import {
   LogOut,
 } from "lucide-react";
 
-const RUTA_PRINCIPAL = "/admin/dashboard";
-
 const enlaces = [
-  { href: RUTA_PRINCIPAL, texto: "Panel principal", icono: LayoutDashboard },
   { href: "/admin/dashboard/usuarios", texto: "Usuarios", icono: Users },
   { href: "/admin/dashboard/clientes", texto: "Clientes", icono: Building2 },
   { href: "/admin/dashboard/solicitudes", texto: "Solicitudes", icono: Inbox },
@@ -26,20 +23,20 @@ export default function AdminSidebar() {
   const pathname = usePathname();
 
   function estaActivo(href: string) {
-    // El panel principal solo se marca cuando estás exactamente en él,
-    // porque el resto de rutas también empiezan con "/admin/dashboard"
-    if (href === RUTA_PRINCIPAL) {
-      return pathname === RUTA_PRINCIPAL;
-    }
-
     return pathname === href || pathname.startsWith(`${href}/`);
   }
 
   return (
     <aside className="admin-sidebar">
       <div className="admin-sidebar-brand">
-        <LayoutDashboard size={27} />
-        <span>SLA Dashboard</span>
+        <Image
+          src="/imagen.png"
+          alt="Solutions & Payroll"
+          width={200}
+          height={86}
+          priority
+          style={{ width: "100%", maxWidth: 200, height: "auto" }}
+        />
       </div>
 
       <p className="admin-sidebar-label">ADMINISTRACIÓN</p>

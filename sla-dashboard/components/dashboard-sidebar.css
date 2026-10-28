@@ -1,0 +1,298 @@
+/* ========================================
+   SIDEBAR DEL DASHBOARD
+   Fondo claro, tarjeta de logo azul oscuro,
+   acentos en rojo
+======================================== */
+
+.dsb {
+  --dsb-azul: #102a43;
+  --dsb-rojo: #d62839;
+  --dsb-fondo: #ffffff;
+  --dsb-borde: #e3e8ef;
+  --dsb-texto: #243b53;
+  --dsb-texto-suave: #829ab1;
+  --dsb-chip: #eef2f7;
+
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: 280px;
+  height: 100vh;
+  color: var(--dsb-texto);
+  background: var(--dsb-fondo);
+  border-right: 1px solid var(--dsb-borde);
+  overflow-y: auto;
+}
+
+.dsb *,
+.dsb *::before,
+.dsb *::after {
+  box-sizing: border-box;
+}
+
+/* Logo en tarjeta azul oscuro */
+
+.dsb-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 16px 16px 0;
+  padding: 24px 16px;
+  border-radius: 16px;
+  background: var(--dsb-azul);
+}
+
+.dsb-brand img {
+  display: block;
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+}
+
+.dsb-section {
+  margin-top: 16px;
+  border-top: 1px solid var(--dsb-borde);
+}
+
+/* Etiquetas */
+
+.dsb-label {
+  margin: 0;
+  padding: 20px 20px 10px;
+  color: var(--dsb-texto-suave);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+}
+
+/* Navegación */
+
+.dsb-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 16px;
+}
+
+.dsb-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 12px;
+  color: var(--dsb-texto);
+  background: transparent;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.dsb-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  color: var(--dsb-texto-suave);
+  background: var(--dsb-chip);
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.dsb-link:hover {
+  background: var(--dsb-chip);
+}
+
+.dsb-link:hover .dsb-icon {
+  color: var(--dsb-azul);
+  background: #ffffff;
+}
+
+/* Ítem activo */
+
+.dsb-link.active {
+  color: #ffffff;
+  background: var(--dsb-azul);
+}
+
+.dsb-link.active::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 4px;
+  border-radius: 12px 0 0 12px;
+  background: var(--dsb-rojo);
+}
+
+.dsb-link.active .dsb-icon {
+  color: #ffffff;
+  background: rgb(255 255 255 / 14%);
+}
+
+.dsb-chevron {
+  margin-left: auto;
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+.dsb-link:focus-visible,
+.dsb-logout:focus-visible {
+  outline: 3px solid var(--dsb-rojo);
+  outline-offset: 2px;
+}
+
+/* Parte inferior: cuenta */
+
+.dsb-bottom {
+  margin-top: auto;
+  padding: 0 16px 16px;
+  border-top: 1px solid var(--dsb-borde);
+}
+
+.dsb-bottom .dsb-label {
+  padding: 18px 4px 10px;
+}
+
+.dsb-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--dsb-borde);
+  border-radius: 12px;
+  background: #f7f9fc;
+}
+
+.dsb-avatar {
+  display: block;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.dsb-avatar-inicial {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  background: var(--dsb-azul);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.dsb-user-info {
+  min-width: 0;
+}
+
+.dsb-user-name,
+.dsb-user-email {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dsb-user-name {
+  color: var(--dsb-azul);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.dsb-user-email {
+  margin-top: 2px;
+  color: var(--dsb-texto-suave);
+  font-size: 13px;
+}
+
+/* Botón cerrar sesión */
+
+.dsb-logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--dsb-borde);
+  border-radius: 12px;
+  color: var(--dsb-azul);
+  background: #ffffff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.dsb-logout:hover {
+  color: var(--dsb-rojo);
+  border-color: var(--dsb-rojo);
+  background: #fff5f6;
+}
+
+/* Tabletas y celulares: solo íconos */
+
+@media (max-width: 768px) {
+  .dsb {
+    width: 76px;
+  }
+
+  .dsb-brand {
+    margin: 12px 10px 0;
+    padding: 14px 6px;
+  }
+
+  .dsb-label,
+  .dsb-text,
+  .dsb-chevron,
+  .dsb-user-info {
+    display: none;
+  }
+
+  .dsb-nav,
+  .dsb-bottom {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .dsb-section {
+    padding-top: 12px;
+  }
+
+  .dsb-link {
+    justify-content: center;
+    padding: 8px;
+  }
+
+  .dsb-user {
+    justify-content: center;
+    padding: 8px;
+    margin-top: 12px;
+  }
+
+  .dsb-logout {
+    padding: 12px 0;
+  }
+}
