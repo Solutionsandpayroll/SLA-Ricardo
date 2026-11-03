@@ -1,16 +1,23 @@
-"use client";
 
+"use client";
+import "./sidebar.css";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar";
 import {
   FileText,
   BarChart3,
   Users,
   FileSpreadsheet,
   LogOut,
+  ChevronRight,
+  LayoutDashboard,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -23,6 +30,11 @@ interface SidebarProps {
 }
 
 const menuItems = [
+  {
+    title: "Resumen",
+    href: "/dashboard",
+    icon: LayoutDashboard,
+  },
   {
     title: "Solicitudes",
     href: "/dashboard/solicitudes",
@@ -54,64 +66,119 @@ export function Sidebar({ user }: SidebarProps) {
     "U";
 
   return (
-    <aside className="sticky top-0 flex h-dvh w-[72px] shrink-0 flex-col overflow-y-auto bg-[#102a43] px-2.5 py-4 text-white md:w-[260px] md:px-4 md:py-6">
-      {/* Logo */}
-      <Link
-        href="/dashboard"
-        aria-label="Ir al inicio"
-        className="mb-2 flex items-center justify-center border-b border-white/10 px-0 pb-4 outline-none focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-[#d62839] md:px-2 md:pb-6"
-      >
-        <Image
-          src="/imagen.png"
-          alt="Solutions & Payroll"
-          width={200}
-          height={86}
-          priority
-          className="h-auto w-full max-w-[200px]"
-        />
-      </Link>
+    <aside className="sticky top-0 z-40 flex h-screen h-dvh w-[76px] shrink-0 flex-col border-r border-white/[0.07] bg-[#10243e] text-white shadow-xl md:w-[270px]">
 
-      {/* Etiqueta */}
-      <p className="mx-3 mb-2.5 mt-5 hidden text-[11px] font-bold tracking-[1.2px] text-white/55 md:block">
-        MENÚ PRINCIPAL
-      </p>
+      {/* MARCA Y LOGO */}
+      <div className="flex h-[135px] shrink-0 items-center justify-center border-b border-white/[0.08] px-3 md:h-[150px] md:px-5">
+        <Link
+          href="/dashboard"
+          aria-label="Inicio del dashboard"
+          className="flex w-full items-center justify-center"
+        >
+          {/* Logo móvil */}
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#d62839] text-2xl font-black text-white shadow-lg md:hidden">
+            S
+          </div>
 
-      {/* Navegación */}
-      <nav
-        aria-label="Navegación principal"
-        className="mt-4 flex flex-col gap-1.5 md:mt-0"
-      >
-        {menuItems.map((item) => {
-          const Icon = item.icon;
-          const isActive =
-            pathname === item.href || pathname.startsWith(`${item.href}/`);
+          {/* Logo escritorio */}
+          <Image
+            src="/imagen.png"
+            alt="Solutions & Payroll"
+            width={240}
+            height={110}
+            priority
+            className="hidden h-auto max-h-[110px] w-full max-w-[225px] object-contain md:block"
+          />
+        </Link>
+      </div>
 
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              title={item.title}
-              aria-current={isActive ? "page" : undefined}
-              className={cn(
-                "flex w-full items-center justify-center gap-3 rounded-[10px] border border-transparent p-3 text-sm font-semibold text-white outline-none transition-colors duration-200 focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-[#d62839] md:justify-start md:px-3.5",
-                isActive
-                  ? "border-white/15 bg-white/[0.12] shadow-[inset_3px_0_0_#d62839]"
-                  : "hover:bg-white/[0.08]"
-              )}
-            >
-              <Icon className="h-5 w-5 shrink-0" />
-              <span className="hidden truncate md:inline">{item.title}</span>
-            </Link>
-          );
-        })}
-      </nav>
+      {/* NAVEGACIÓN */}
+      <div className="flex-1 overflow-y-auto overflow-x-hidden px-2 py-7 md:px-4">
 
-      {/* Parte inferior */}
-      <div className="mt-auto border-t border-white/10 pt-4">
-        <div className="mb-2 flex min-w-0 items-center justify-center gap-3 px-0 py-2 md:justify-start md:px-2">
-          <Avatar className="h-9 w-9 shrink-0 border-2 border-white/20">
-            <AvatarImage src={user.image || ""} alt={user.name || "Usuario"} />
-            <AvatarFallback className="bg-[#d62839] text-sm font-bold text-white">
+        <p className="mb-4 hidden px-3 text-[10px] font-bold uppercase tracking-[2px] text-slate-400 md:block">
+          Menú principal
+        </p>
+
+        <nav aria-label="Navegación principal" className="flex flex-col gap-2">
+
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+
+            const isActive =
+              item.href === "/dashboard"
+                ? pathname === "/dashboard"
+                : pathname === item.href ||
+                  pathname.startsWith(`${item.href}/`);
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                title={item.title}
+                aria-current={isActive ? "page" : undefined}
+                className={cn(
+                  "group relative flex min-h-[49px] items-center justify-center gap-3 rounded-xl px-3 text-sm font-medium transition-all duration-200 md:justify-start md:px-4",
+                  isActive
+                    ? "bg-white/[0.12] text-white shadow-sm"
+                    : "text-slate-300 hover:bg-white/[0.07] hover:text-white"
+                )}
+              >
+                {isActive && (
+                  <span className="absolute bottom-2 left-0 top-2 w-[3px] rounded-r-full bg-[#e4003a]" />
+                )}
+
+                <Icon
+                  className={cn(
+                    "h-[20px] w-[20px] shrink-0 transition-colors",
+                    isActive
+                      ? "text-[#ff536b]"
+                      : "text-slate-400 group-hover:text-white"
+                  )}
+                  strokeWidth={2}
+                />
+
+                <span className="hidden flex-1 truncate md:block">
+                  {item.title}
+                </span>
+
+                {isActive && (
+                  <ChevronRight className="hidden h-4 w-4 text-[#ff536b] md:block" />
+                )}
+              </Link>
+            );
+          })}
+
+        </nav>
+
+        {/* INFORMACIÓN DEL SISTEMA */}
+        <div className="mt-9 hidden rounded-xl border border-white/[0.08] bg-white/[0.04] p-4 md:block">
+
+          <div className="mb-3 flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]" />
+
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-300">
+              Sistema activo
+            </span>
+          </div>
+
+          <p className="text-xs leading-relaxed text-slate-400">
+            Plataforma de seguimiento y gestión de solicitudes SLA.
+          </p>
+        </div>
+      </div>
+
+      {/* PERFIL Y CIERRE DE SESIÓN */}
+      <div className="shrink-0 border-t border-white/[0.08] p-3 md:p-4">
+
+        <div className="mb-3 flex items-center justify-center gap-3 rounded-xl bg-white/[0.05] p-2 md:justify-start md:p-3">
+
+          <Avatar className="h-10 w-10 shrink-0 border border-white/20">
+            <AvatarImage
+              src={user.image || ""}
+              alt={user.name || "Usuario"}
+            />
+
+            <AvatarFallback className="bg-[#d62839] font-bold text-white">
               {userInitial}
             </AvatarFallback>
           </Avatar>
@@ -120,7 +187,8 @@ export function Sidebar({ user }: SidebarProps) {
             <p className="truncate text-sm font-semibold text-white">
               {user.name || "Usuario"}
             </p>
-            <p className="mt-0.5 truncate text-xs text-white/60">
+
+            <p className="mt-1 truncate text-[11px] text-slate-400">
               {user.email || "Correo no disponible"}
             </p>
           </div>
@@ -130,11 +198,15 @@ export function Sidebar({ user }: SidebarProps) {
           type="button"
           title="Cerrar sesión"
           onClick={() => signOut({ callbackUrl: "/" })}
-          className="flex w-full cursor-pointer items-center justify-center gap-3 rounded-[10px] border border-transparent bg-transparent p-3 text-sm font-semibold text-white outline-none transition-colors duration-200 hover:bg-white/[0.08] focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-[#d62839] md:justify-start md:px-3.5"
+          className="flex min-h-[45px] w-full items-center justify-center gap-3 rounded-xl px-3 text-sm font-medium text-slate-300 transition-all duration-200 hover:bg-red-500/10 hover:text-red-400 md:justify-start md:px-4"
         >
           <LogOut className="h-5 w-5 shrink-0" />
-          <span className="hidden md:inline">Cerrar sesión</span>
+          <span className="hidden md:block">Cerrar sesión</span>
         </button>
+
+        <p className="mt-3 hidden text-center text-[10px] text-slate-500 md:block">
+          SOLUTIONS & PAYROLL · SLA
+        </p>
       </div>
     </aside>
   );

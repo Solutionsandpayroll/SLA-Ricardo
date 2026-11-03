@@ -411,6 +411,7 @@ input {
 .sla-metric-card > p {
   min-height: 40px;
   margin: 0 0 8px;
+  padding-right: 56px; /* evita que el badge tape el texto */
   color: #5d7188;
   font-size: 14px;
   font-weight: 500;
@@ -567,7 +568,7 @@ input {
 
 .sla-feature-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 16px;
 }
 
@@ -585,6 +586,11 @@ input {
 
 .sla-feature:hover {
   box-shadow: 0 5px 18px rgba(16, 42, 67, 0.06);
+}
+
+.sla-feature:focus-visible {
+  outline: 3px solid #8db8e8;
+  outline-offset: 2px;
 }
 
 .sla-feature-icon {
@@ -634,8 +640,34 @@ input {
   font-size: 11px;
 }
 
+/* ---------- Accesibilidad ---------- */
+
+.sla-nav-link:focus-visible {
+  outline: 3px solid #8db8e8;
+  outline-offset: 2px;
+}
+
+/* Altura correcta en móviles con barra de navegador dinámica */
+@supports (height: 100dvh) {
+  .sla-home,
+  .sla-main,
+  .sla-sidebar {
+    min-height: 100dvh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  * {
+    transition: none !important;
+  }
+}
+
 /* =========================================================
-   TABLET
+   PORTÁTIL / TABLET HORIZONTAL
    ========================================================= */
 
 @media (max-width: 1250px) {
@@ -653,20 +685,16 @@ input {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .sla-feature-grid {
-    grid-template-columns: 1fr;
-  }
-
   .sla-metric-card {
     min-height: 205px;
   }
 }
 
 /* =========================================================
-   MÓVILES
+   TABLET VERTICAL Y MÓVILES (el menú pasa arriba)
    ========================================================= */
 
-@media (max-width: 700px) {
+@media (max-width: 900px) {
   .sla-home {
     display: block;
   }
@@ -815,7 +843,6 @@ input {
   }
 
   .sla-metrics {
-    grid-template-columns: 1fr;
     gap: 14px;
   }
 
@@ -855,17 +882,21 @@ input {
     align-items: flex-start;
   }
 
-  .sla-feature-grid {
-    grid-template-columns: 1fr;
-  }
-
   .sla-footer {
     flex-direction: column;
     font-size: 10px;
   }
 }
 
-/* Pantallas muy pequeñas */
+/* =========================================================
+   MÓVILES PEQUEÑOS
+   ========================================================= */
+
+@media (max-width: 600px) {
+  .sla-metrics {
+    grid-template-columns: 1fr;
+  }
+}
 
 @media (max-width: 360px) {
   .sla-brand {

@@ -1,0 +1,224 @@
+/* =========================================
+   ESTRUCTURA GENERAL
+========================================= */
+
+.sla-home {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sla-main {
+  flex: 1;
+  min-width: 0;
+  margin-left: 0;
+}
+
+/* =========================================
+   BARRA LATERAL
+========================================= */
+
+.sla-sidebar {
+  position: sticky;
+  top: 0;
+  width: 280px;
+  min-width: 280px;
+  flex-shrink: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #10243e;
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+/* =========================================
+   MARCA Y LOGO
+========================================= */
+
+.sla-sidebar .sla-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 28px 16px 22px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sla-sidebar .sla-brand a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.sla-sidebar .sla-brand-logo {
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: auto;
+  max-height: none;
+  margin: 0 auto;
+  object-fit: contain;
+  object-position: center;
+  /* Si aún lo quieres más grande, sube este valor (1.1, 1.2...) */
+  transform: scale(1);
+}
+
+.sla-sidebar .sla-brand-tagline,
+.sla-sidebar .sla-brand p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  text-align: center;
+  color: #9db2cd;
+}
+
+/* =========================================
+   NAVEGACIÓN
+========================================= */
+
+.sla-sidebar .sla-navigation {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px 14px;
+}
+
+.sla-sidebar .sla-nav-title {
+  padding: 0 12px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #7f95b2;
+}
+
+.sla-sidebar .sla-nav-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #c9d6e8;
+  text-decoration: none;
+  transition: background 0.18s, color 0.18s;
+}
+
+.sla-sidebar .sla-nav-link svg {
+  flex-shrink: 0;
+}
+
+.sla-sidebar .sla-nav-link:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+
+.sla-sidebar .sla-nav-link.active {
+  background: #2a4560;
+  color: #fff;
+  box-shadow: inset 3px 0 0 #e4003a;
+}
+
+.sla-sidebar .sla-nav-badge {
+  margin-left: auto;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #fff;
+  background: #e4003a;
+}
+
+/* =========================================
+   PARTE INFERIOR
+========================================= */
+
+.sla-sidebar .sla-sidebar-bottom {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sla-sidebar .sla-session-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 4px;
+  font-size: 12px;
+  color: #a9bdd6;
+}
+
+.sla-sidebar .sla-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
+
+.sla-sidebar .sla-admin-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: background 0.18s, border-color 0.18s;
+}
+
+.sla-sidebar .sla-admin-link:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.sla-sidebar .sla-admin-link-arrow {
+  margin-left: auto;
+}
+
+.sla-sidebar .sla-sidebar-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 4px;
+  font-size: 12px;
+  color: #7f95b2;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 767px) {
+  .sla-sidebar {
+    width: 76px;
+    min-width: 76px;
+  }
+
+  .sla-sidebar .sla-brand {
+    padding: 16px 8px;
+    gap: 0;
+  }
+
+  .sla-sidebar .sla-brand-logo {
+    max-width: 60px;
+  }
+
+  .sla-sidebar .sla-brand-tagline,
+  .sla-sidebar .sla-brand p {
+    display: none;
+  }
+}

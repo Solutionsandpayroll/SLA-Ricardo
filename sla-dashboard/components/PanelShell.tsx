@@ -1,7 +1,8 @@
 import { UserRound } from "lucide-react";
 import SlaSidebar from "@/components/SlaSidebar";
 import "@/app/login.css";
-
+import "@/app/login.css";
+import "@/app/sidebar.css";
 type Props = {
   title: string;
   children: React.ReactNode;
