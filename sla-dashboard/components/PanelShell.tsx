@@ -1,8 +1,9 @@
+
 import { UserRound } from "lucide-react";
 import SlaSidebar from "@/components/SlaSidebar";
 import "@/app/login.css";
-import "@/app/login.css";
 import "@/app/sidebar.css";
+
 type Props = {
   title: string;
   children: React.ReactNode;
@@ -36,7 +37,9 @@ export default function PanelShell({ title, children }: Props) {
 
           <footer className="sla-footer">
             <span>Seguimiento SLA</span>
-            <span>Solutions & Payroll · Gestión y control operativo</span>
+            <span>
+              Solutions & Payroll · Gestión y control operativo
+            </span>
           </footer>
         </div>
       </section>

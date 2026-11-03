@@ -5,40 +5,48 @@ import { getToken } from "next-auth/jwt";
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const token = await getToken({
-    req: request,
-    secret: process.env.NEXTAUTH_SECRET,
-  });
-
-  // La pantalla de login de admin es pública.
-  // Si ya es administrador, lo mandamos directo al panel.
+  // El inicio de sesión administrativo es público.
   if (pathname === "/admin/login") {
+    const token = await getToken({
+      req: request,
+      secret: process.env.NEXTAUTH_SECRET,
+    });
+
     if (token?.role === "ADMIN") {
-      return NextResponse.redirect(new URL("/admin", request.url));
+      return NextResponse.redirect(
+        new URL("/admin/dashboard", request.url)
+      );
     }
+
     return NextResponse.next();
   }
 
-  // Si no ha iniciado sesión, regresar al inicio.
-  if (!token) {
-    return NextResponse.redirect(new URL("/", request.url));
+  // Proteger únicamente las rutas administrativas.
+  if (pathname.startsWith("/admin/dashboard")) {
+    const token = await getToken({
+      req: request,
+      secret: process.env.NEXTAUTH_SECRET,
+    });
+
+    if (!token) {
+      return NextResponse.redirect(
+        new URL("/admin/login", request.url)
+      );
+    }
+
+    if (token.role !== "ADMIN") {
+      return NextResponse.redirect(
+        new URL("/dashboard", request.url)
+      );
+    }
   }
 
-  // Si no es administrador, impedir el acceso al panel admin.
-  if (pathname.startsWith("/admin") && token.role !== "ADMIN") {
-    return NextResponse.redirect(new URL("/solicitudes", request.url));
-  }
-
+  // Los empleados serán validados por DashboardLayout.
   return NextResponse.next();
 }
 
 export default proxy;
 
 export const config = {
-  matcher: [
-    "/dashboard/:path*",
-    "/solicitudes/:path*",
-    "/analisis/:path*",
-    "/admin/:path*",
-  ],
+  matcher: ["/admin/:path*"],
 };

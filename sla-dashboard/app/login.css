@@ -1,8 +1,12 @@
+
 /* =========================================================
    SEGUIMIENTO SLA - HOME
-   Solutions & Payroll
-   Colores: azul oscuro, blanco, gris y rojo
+   SOLUTIONS & PAYROLL
+   Diseño corporativo responsive
+   Tipografía: MONTSERRAT
    ========================================================= */
+
+/* VARIABLES */
 
 :root {
   --sla-navy: #102a43;
@@ -18,7 +22,11 @@
   --sla-sidebar-width: 285px;
 }
 
-* {
+/* CONFIGURACIÓN GENERAL */
+
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -31,7 +39,17 @@ body {
   margin: 0;
   background: var(--sla-background);
   color: var(--sla-text);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-montserrat), sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
 }
 
 a {
@@ -39,18 +57,16 @@ a {
   text-decoration: none;
 }
 
-button,
-input {
-  font: inherit;
-}
-
-/* ---------- Estructura general ---------- */
+/* =========================================================
+   ESTRUCTURA GENERAL
+   ========================================================= */
 
 .sla-home {
   min-height: 100vh;
   width: 100%;
   display: flex;
   background: var(--sla-background);
+  font-family: var(--font-montserrat), sans-serif;
 }
 
 .sla-sidebar {
@@ -68,7 +84,9 @@ input {
   border-right: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* ---------- Logo ---------- */
+/* =========================================================
+   LOGO
+   ========================================================= */
 
 .sla-brand {
   min-height: 205px;
@@ -97,7 +115,9 @@ input {
   line-height: 1.6;
 }
 
-/* ---------- Navegación ---------- */
+/* =========================================================
+   NAVEGACIÓN
+   ========================================================= */
 
 .sla-navigation {
   padding: 22px 18px;
@@ -156,7 +176,9 @@ input {
   font-weight: 700;
 }
 
-/* ---------- Parte inferior del menú ---------- */
+/* =========================================================
+   PARTE INFERIOR DEL MENÚ
+   ========================================================= */
 
 .sla-sidebar-bottom {
   margin-top: auto;
@@ -185,7 +207,7 @@ input {
   box-shadow: 0 0 0 4px rgba(244, 185, 66, 0.12);
 }
 
-/* Botón "Iniciar sesión admin" */
+/* ACCESO ADMINISTRADOR */
 
 .sla-admin-link {
   min-height: 48px;
@@ -229,7 +251,9 @@ input {
   font-size: 11px;
 }
 
-/* ---------- Contenido principal ---------- */
+/* =========================================================
+   CONTENIDO PRINCIPAL
+   ========================================================= */
 
 .sla-main {
   width: calc(100% - var(--sla-sidebar-width));
@@ -263,8 +287,10 @@ input {
   color: var(--sla-navy);
   font-size: clamp(23px, 2vw, 30px);
   font-weight: 800;
-  letter-spacing: -0.8px;
+  letter-spacing: -1px;
 }
+
+/* USUARIO */
 
 .sla-user {
   display: flex;
@@ -294,6 +320,7 @@ input {
 .sla-user strong {
   color: var(--sla-navy);
   font-size: 13px;
+  font-weight: 700;
 }
 
 .sla-user span {
@@ -301,7 +328,9 @@ input {
   font-size: 12px;
 }
 
-/* ---------- Área de trabajo ---------- */
+/* =========================================================
+   ÁREA DE TRABAJO
+   ========================================================= */
 
 .sla-content {
   width: 100%;
@@ -325,7 +354,7 @@ input {
   color: var(--sla-navy);
   font-size: clamp(23px, 2vw, 30px);
   font-weight: 800;
-  letter-spacing: -0.8px;
+  letter-spacing: -1px;
 }
 
 .sla-welcome p {
@@ -356,7 +385,9 @@ input {
   background: var(--sla-green);
 }
 
-/* ---------- Tarjetas de indicadores ---------- */
+/* =========================================================
+   TARJETAS DE INDICADORES
+   ========================================================= */
 
 .sla-metrics {
   display: grid;
@@ -411,7 +442,7 @@ input {
 .sla-metric-card > p {
   min-height: 40px;
   margin: 0 0 8px;
-  padding-right: 56px; /* evita que el badge tape el texto */
+  padding-right: 56px;
   color: #5d7188;
   font-size: 14px;
   font-weight: 500;
@@ -458,7 +489,9 @@ input {
   font-size: 11px;
 }
 
-/* ---------- Panel de acceso (solo empleados) ---------- */
+/* =========================================================
+   PANEL DE ACCESO
+   ========================================================= */
 
 .sla-access-panel {
   background: #fff;
@@ -545,7 +578,9 @@ input {
   color: var(--sla-muted);
 }
 
-/* ---------- Funcionalidades ---------- */
+/* =========================================================
+   FUNCIONALIDADES
+   ========================================================= */
 
 .sla-section-heading {
   margin-bottom: 18px;
@@ -614,6 +649,7 @@ input {
   color: var(--sla-navy);
   font-size: 13px;
   line-height: 1.4;
+  font-weight: 700;
 }
 
 .sla-feature p {
@@ -629,6 +665,10 @@ input {
   color: #9aabba;
 }
 
+/* =========================================================
+   PIE DE PÁGINA
+   ========================================================= */
+
 .sla-footer {
   padding: 20px 0 5px;
   display: flex;
@@ -640,14 +680,15 @@ input {
   font-size: 11px;
 }
 
-/* ---------- Accesibilidad ---------- */
+/* =========================================================
+   ACCESIBILIDAD
+   ========================================================= */
 
 .sla-nav-link:focus-visible {
   outline: 3px solid #8db8e8;
   outline-offset: 2px;
 }
 
-/* Altura correcta en móviles con barra de navegador dinámica */
 @supports (height: 100dvh) {
   .sla-home,
   .sla-main,
@@ -661,8 +702,11 @@ input {
     scroll-behavior: auto;
   }
 
-  * {
+  *,
+  *::before,
+  *::after {
     transition: none !important;
+    animation: none !important;
   }
 }
 
@@ -691,7 +735,7 @@ input {
 }
 
 /* =========================================================
-   TABLET VERTICAL Y MÓVILES (el menú pasa arriba)
+   TABLET VERTICAL Y MÓVILES
    ========================================================= */
 
 @media (max-width: 900px) {
@@ -898,6 +942,10 @@ input {
   }
 }
 
+/* =========================================================
+   MÓVILES MUY PEQUEÑOS
+   ========================================================= */
+
 @media (max-width: 360px) {
   .sla-brand {
     padding: 12px;
@@ -924,4 +972,16 @@ input {
     padding-right: 12px;
     padding-left: 12px;
   }
+}
+
+/* =========================================================
+   TIPOGRAFÍA GLOBAL DE SOLUTIONS & PAYROLL
+   ========================================================= */
+
+.sla-home,
+.sla-home button,
+.sla-home input,
+.sla-home textarea,
+.sla-home select {
+  font-family: var(--font-montserrat), sans-serif;
 }

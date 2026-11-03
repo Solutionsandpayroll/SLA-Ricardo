@@ -1,3 +1,4 @@
+
 import "./dashboard.css";
 
 import {
@@ -52,11 +53,9 @@ export default function DashboardPage() {
       <header className="dashboard-header">
         <div>
           <h1 className="dashboard-title">Dashboard</h1>
-
           <p className="dashboard-subtitle">
             Resumen general del sistema de seguimiento SLA
           </p>
-
           <div className="dashboard-accent" />
         </div>
       </header>
@@ -76,7 +75,7 @@ export default function DashboardPage() {
                 esRojo ? "stat-red" : ""
               }`}
             >
-              <CardHeader className="p-0">
+              <CardHeader className="dashboard-card-header">
                 <div className="dashboard-stat-header">
                   <CardTitle className="dashboard-stat-label">
                     {estadistica.titulo}
@@ -87,12 +86,12 @@ export default function DashboardPage() {
                       esRojo ? "icon-red" : ""
                     }`}
                   >
-                    <Icono size={21} />
+                    <Icono size={21} strokeWidth={2} />
                   </div>
                 </div>
               </CardHeader>
 
-              <CardContent className="p-0">
+              <CardContent className="dashboard-card-content">
                 <div className="dashboard-stat-value">
                   {estadistica.valor}
                 </div>
@@ -108,7 +107,7 @@ export default function DashboardPage() {
 
       <section aria-label="Información del sistema">
         <Card className="dashboard-welcome">
-          <CardHeader className="p-0">
+          <CardHeader className="dashboard-welcome-header">
             <CardTitle className="dashboard-welcome-title">
               Bienvenido al SLA Dashboard
             </CardTitle>
@@ -119,7 +118,7 @@ export default function DashboardPage() {
             </CardDescription>
           </CardHeader>
 
-          <CardContent className="p-0">
+          <CardContent className="dashboard-welcome-content">
             <div className="dashboard-divider" />
 
             <p className="dashboard-welcome-description">

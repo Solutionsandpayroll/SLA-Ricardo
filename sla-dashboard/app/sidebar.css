@@ -36,6 +36,7 @@
 ========================================= */
 
 .sla-sidebar .sla-brand {
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -62,8 +63,6 @@
   margin: 0 auto;
   object-fit: contain;
   object-position: center;
-  /* Si aún lo quieres más grande, sube este valor (1.1, 1.2...) */
-  transform: scale(1);
 }
 
 .sla-sidebar .sla-brand-tagline,
@@ -76,14 +75,41 @@
 }
 
 /* =========================================
-   NAVEGACIÓN
+   NAVEGACIÓN (único bloque con scroll)
 ========================================= */
 
 .sla-sidebar .sla-navigation {
+  flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 6px;
   padding: 18px 14px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+
+  /* Scroll delgado y discreto */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+
+.sla-sidebar .sla-navigation::-webkit-scrollbar {
+  width: 6px;
+  height: 0;
+}
+
+.sla-sidebar .sla-navigation::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sla-sidebar .sla-navigation::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+}
+
+.sla-sidebar .sla-navigation::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.32);
 }
 
 .sla-sidebar .sla-nav-title {
@@ -140,6 +166,7 @@
 ========================================= */
 
 .sla-sidebar .sla-sidebar-bottom {
+  flex-shrink: 0;
   margin-top: auto;
   display: flex;
   flex-direction: column;
@@ -158,6 +185,7 @@
 }
 
 .sla-sidebar .sla-status-dot {
+  flex-shrink: 0;
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -180,6 +208,10 @@
   transition: background 0.18s, border-color 0.18s;
 }
 
+.sla-sidebar .sla-admin-link svg {
+  flex-shrink: 0;
+}
+
 .sla-sidebar .sla-admin-link:hover {
   background: rgba(255, 255, 255, 0.14);
   border-color: rgba(255, 255, 255, 0.25);
@@ -199,7 +231,7 @@
 }
 
 /* =========================================
-   RESPONSIVE
+   RESPONSIVE: SOLO ÍCONOS (menos de 768px)
 ========================================= */
 
 @media (max-width: 767px) {
@@ -208,6 +240,7 @@
     min-width: 76px;
   }
 
+  /* Logo */
   .sla-sidebar .sla-brand {
     padding: 16px 8px;
     gap: 0;
@@ -219,6 +252,62 @@
 
   .sla-sidebar .sla-brand-tagline,
   .sla-sidebar .sla-brand p {
+    display: none;
+  }
+
+  /* Navegación */
+  .sla-sidebar .sla-navigation {
+    align-items: center;
+    padding: 14px 8px;
+    scrollbar-width: none;
+  }
+
+  .sla-sidebar .sla-navigation::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sla-sidebar .sla-nav-title {
+    display: none;
+  }
+
+  .sla-sidebar .sla-nav-link {
+    justify-content: center;
+    width: 100%;
+    padding: 12px 0;
+    gap: 0;
+    font-size: 0;
+  }
+
+  .sla-sidebar .sla-nav-badge {
+    display: none;
+  }
+
+  /* Parte inferior */
+  .sla-sidebar .sla-sidebar-bottom {
+    align-items: center;
+    padding: 12px 8px;
+  }
+
+  .sla-sidebar .sla-session-status {
+    justify-content: center;
+    padding: 0;
+    font-size: 0;
+    gap: 0;
+  }
+
+  .sla-sidebar .sla-admin-link {
+    justify-content: center;
+    width: 100%;
+    padding: 12px 0;
+    gap: 0;
+    font-size: 0;
+  }
+
+  .sla-sidebar .sla-admin-link-arrow {
+    display: none;
+  }
+
+  .sla-sidebar .sla-sidebar-note {
     display: none;
   }
 }
