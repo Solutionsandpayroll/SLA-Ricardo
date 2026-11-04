@@ -1,0 +1,1655 @@
+/* ========================================================
+   PANEL DE ADMINISTRACIÓN · SLA Dashboard
+   Archivo: app/admin/admin.css
+
+   Menú lateral fijo.
+   Contenido ajustado al ancho disponible.
+   Diseño responsive para escritorio, tabletas y celulares.
+
+   VERSIÓN CORREGIDA:
+   - El contenido ya no se desplaza hacia la derecha.
+   - La tabla de usuarios ya no se corta (el botón Guardar se ve).
+   - Se neutralizan márgenes/anchos máximos heredados (Tailwind u otros).
+======================================================== */
+
+/* ========================================================
+   1. BASE Y VARIABLES
+======================================================== */
+
+.admin-layout {
+  --sla-azul: #102a43;
+  --sla-azul-secundario: #173f5f;
+  --sla-azul-activo: #294661;
+  --sla-rojo: #d62839;
+  --sla-blanco: #ffffff;
+  --sla-fondo: #f4f7fb;
+  --sla-texto: #102a43;
+  --sla-texto-secundario: #64748b;
+  --sla-borde: #e1e8f0;
+
+  --admin-sidebar-w: 250px;
+
+  display: block;
+  position: relative;
+
+  width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  /* CORRECCIÓN: sin márgenes ni rellenos heredados */
+  margin: 0;
+  padding: 0;
+
+  overflow-x: hidden;
+  background: var(--sla-fondo);
+}
+
+.admin-layout *,
+.admin-layout *::before,
+.admin-layout *::after {
+  box-sizing: border-box;
+}
+
+/* ========================================================
+   2. MENÚ LATERAL
+======================================================== */
+
+.admin-layout .admin-sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+
+  display: flex;
+  flex-direction: column;
+
+  width: var(--admin-sidebar-w);
+  padding: 26px 16px;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  color: #ffffff;
+  background: var(--sla-azul);
+  border-right: 1px solid rgb(255 255 255 / 8%);
+}
+
+/* LOGO: tarjeta blanca para que se vea sobre el fondo azul */
+
+.admin-layout .admin-sidebar-brand {
+  display: block;
+
+  min-width: 0;
+  margin: 0 0 26px;
+}
+
+.admin-layout .admin-sidebar-brand a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  padding: 4px 8px;
+
+  /* sin tarjeta: el logo va directo sobre el fondo azul */
+  background: transparent;
+
+  text-decoration: none;
+}
+
+.admin-layout .admin-sidebar-brand img {
+  display: block;
+
+  /* !important para ganarle al style en línea de next/image */
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+
+  object-fit: contain;
+}
+
+.admin-layout .admin-sidebar-brand svg {
+  flex-shrink: 0;
+}
+
+/* TÍTULO DE SECCIÓN DEL MENÚ ("ADMINISTRACIÓN") */
+
+.admin-layout .admin-sidebar-heading {
+  margin: 0 0 12px;
+  padding: 14px 12px 0;
+
+  border-top: 1px solid rgb(255 255 255 / 12%);
+}
+
+.admin-layout .admin-sidebar-heading span {
+  display: block;
+
+  color: #8fa7bd;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.admin-layout .admin-sidebar-label {
+  margin: 0 0 13px;
+  padding: 0 10px;
+
+  color: #a9bdcf;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 1.2px;
+}
+
+.admin-layout .admin-sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.admin-layout .admin-sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 12px;
+
+  border: 0;
+  border-radius: 9px;
+
+  color: #dbe6ef;
+  background: transparent;
+
+  font-size: 13px;
+  font-weight: 550;
+  text-align: left;
+  text-decoration: none;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.admin-layout .admin-sidebar-link svg {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.admin-layout .admin-sidebar-link:hover {
+  color: #ffffff;
+  background: var(--sla-azul-activo);
+}
+
+.admin-layout .admin-sidebar-link.active,
+.admin-layout .admin-sidebar-link[aria-current="page"] {
+  color: #ffffff;
+  background: var(--sla-azul-activo);
+  box-shadow: inset 3px 0 0 var(--sla-rojo);
+}
+
+.admin-layout .admin-sidebar-bottom {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid rgb(255 255 255 / 15%);
+}
+
+.admin-layout .admin-sidebar-link:focus-visible,
+.admin-layout .admin-sidebar-brand a:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+}
+
+/* ========================================================
+   3. CONTENIDO PRINCIPAL
+   CORRECCIÓN DEL DESPLAZAMIENTO HACIA LA DERECHA
+
+   Se usa margin-left + width:auto (en vez de calc) para que
+   el bloque llene SIEMPRE el espacio restante, sin pasarse
+   del borde derecho de la pantalla.
+======================================================== */
+
+.admin-layout .sla-dashboard {
+  display: block;
+  position: relative;
+
+  /* anula cualquier desplazamiento heredado */
+  inset: auto;
+  float: none;
+  transform: none;
+  translate: none;
+
+  width: auto;
+  max-width: none;
+  min-width: 0;
+
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  margin: 0 0 0 var(--admin-sidebar-w);
+  padding: 28px 26px;
+
+  color: var(--sla-texto);
+  background: var(--sla-fondo);
+
+  overflow-x: hidden;
+  overflow-wrap: anywhere;
+}
+
+/* Hijos directos: ocupan todo el ancho y se alinean a la izquierda.
+   (.admin-home se excluye porque se centra con su propio max-width) */
+.admin-layout .sla-dashboard > * {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.admin-layout .sla-dashboard > *:not(.admin-home) {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* Defensa contra clases utilitarias (Tailwind) que centran o
+   limitan el ancho dentro del panel */
+.admin-layout .sla-dashboard [class*="mx-auto"] {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.admin-layout .sla-dashboard [class*="max-w-"],
+.admin-layout .sla-dashboard .container {
+  max-width: 100%;
+}
+
+.admin-layout .sla-dashboard img,
+.admin-layout .sla-dashboard svg {
+  max-width: 100%;
+}
+
+/* ========================================================
+   4. ENCABEZADO
+======================================================== */
+
+.admin-layout .dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  width: 100%;
+  min-width: 0;
+  margin-bottom: 28px;
+}
+
+.admin-layout .dashboard-header > * {
+  min-width: 0;
+}
+
+.admin-layout .dashboard-title {
+  margin: 0;
+
+  color: var(--sla-azul);
+  font-size: clamp(22px, 2.4vw, 29px);
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.6px;
+}
+
+.admin-layout .dashboard-subtitle {
+  margin: 8px 0 0;
+
+  color: var(--sla-texto-secundario);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.admin-layout .dashboard-accent {
+  width: 52px;
+  height: 4px;
+  margin-top: 13px;
+
+  border-radius: 10px;
+  background: var(--sla-rojo);
+}
+
+/* ========================================================
+   5. TARJETAS DE INDICADORES
+======================================================== */
+
+.admin-layout .dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 17px;
+
+  width: 100%;
+  min-width: 0;
+}
+
+.admin-layout .dashboard-stat-card {
+  position: relative;
+
+  min-width: 0;
+  padding: 20px;
+
+  overflow: hidden;
+
+  border: 1px solid var(--sla-borde);
+  border-radius: 13px;
+
+  background: var(--sla-blanco);
+  box-shadow: 0 4px 14px rgb(16 42 67 / 5%);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin-layout .dashboard-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgb(16 42 67 / 9%);
+}
+
+.admin-layout .dashboard-stat-card::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 4px;
+
+  background: var(--sla-azul);
+  content: "";
+}
+
+.admin-layout .dashboard-stat-card.stat-red::before {
+  background: var(--sla-rojo);
+}
+
+.admin-layout .dashboard-stat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  min-width: 0;
+}
+
+.admin-layout .dashboard-stat-label {
+  min-width: 0;
+  margin: 0;
+
+  color: var(--sla-texto-secundario);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.5;
+}
+
+.admin-layout .dashboard-stat-icon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+
+  width: 39px;
+  height: 39px;
+
+  border-radius: 10px;
+
+  color: var(--sla-blanco);
+  background: var(--sla-azul);
+}
+
+.admin-layout .dashboard-stat-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.admin-layout .dashboard-stat-icon.icon-red {
+  background: var(--sla-rojo);
+}
+
+.admin-layout .dashboard-stat-value {
+  margin: 18px 0 0;
+
+  color: var(--sla-azul);
+  font-size: clamp(24px, 2.2vw, 32px);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.admin-layout .dashboard-stat-description {
+  margin: 8px 0 0;
+
+  color: var(--sla-texto-secundario);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+/* ========================================================
+   6. PANEL DE GESTIÓN
+======================================================== */
+
+.admin-layout .dashboard-welcome {
+  position: relative;
+
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
+  margin-top: 24px;
+  padding: 25px;
+
+  overflow: hidden;
+
+  border: 1px solid var(--sla-borde);
+  border-radius: 14px;
+
+  background: var(--sla-blanco);
+  box-shadow: 0 4px 14px rgb(16 42 67 / 5%);
+}
+
+.admin-layout .dashboard-welcome::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  width: 5px;
+  height: 100%;
+
+  background: var(--sla-rojo);
+  content: "";
+}
+
+.admin-layout .dashboard-welcome-title {
+  margin: 0;
+  padding-right: 8px;
+
+  color: var(--sla-azul);
+  font-size: clamp(16px, 1.6vw, 19px);
+  font-weight: 750;
+  line-height: 1.4;
+}
+
+.admin-layout .dashboard-welcome-description {
+  max-width: 850px;
+  margin: 9px 0 0;
+
+  color: var(--sla-texto-secundario);
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.admin-layout .dashboard-divider {
+  width: 100%;
+  height: 1px;
+
+  margin: 20px 0;
+  border: 0;
+
+  background: var(--sla-borde);
+}
+
+/* ========================================================
+   7. ACCESOS RÁPIDOS
+======================================================== */
+
+.admin-layout .admin-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+
+  width: 100%;
+  min-width: 0;
+}
+
+.admin-layout .admin-link-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  min-width: 0;
+  padding: 16px;
+
+  border: 1px solid var(--sla-borde);
+  border-radius: 11px;
+
+  color: var(--sla-azul);
+  background: var(--sla-fondo);
+
+  text-decoration: none;
+
+  overflow-wrap: anywhere;
+
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-layout .admin-link-card:hover {
+  border-color: var(--sla-rojo);
+  transform: translateY(-2px);
+}
+
+.admin-layout .admin-link-card strong {
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.admin-layout .admin-link-card span {
+  color: var(--sla-texto-secundario);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* ========================================================
+   8. TABLA DE USUARIOS
+   CORRECCIÓN: la tabla ya no se corta. Si no cabe, el
+   contenedor muestra scroll horizontal interno.
+======================================================== */
+
+.admin-layout .usuarios-tabla-contenedor {
+  display: block;
+
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.admin-layout .usuarios-tabla {
+  width: 100%;
+  min-width: 640px; /* activa el scroll interno solo si hace falta */
+
+  border-collapse: collapse;
+
+  font-size: 13px;
+  text-align: left;
+}
+
+.admin-layout .usuarios-tabla th {
+  padding: 14px 12px;
+
+  color: var(--sla-texto-secundario);
+  background: var(--sla-fondo);
+
+  font-size: 11px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.admin-layout .usuarios-tabla td {
+  padding: 15px 12px;
+
+  border-bottom: 1px solid var(--sla-borde);
+
+  color: var(--sla-texto);
+  vertical-align: middle;
+}
+
+.admin-layout .usuarios-tabla td form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-layout .usuarios-tabla select {
+  min-width: 90px;
+  min-height: 36px;
+  padding: 8px;
+
+  border: 1px solid var(--sla-borde);
+  border-radius: 7px;
+
+  color: var(--sla-texto);
+  background: var(--sla-blanco);
+
+  font: inherit;
+}
+
+.admin-layout .usuario-rol {
+  display: inline-block;
+
+  padding: 5px 9px;
+
+  border-radius: 6px;
+
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.admin-layout .usuario-rol-admin {
+  color: #b42332;
+  background: #fde8eb;
+}
+
+.admin-layout .usuario-rol-user {
+  color: #175985;
+  background: #e6f2fa;
+}
+
+.admin-layout .usuario-rol-ok {
+  color: #146c43;
+  background: #e3f6ec;
+}
+
+.admin-layout .usuario-guardar {
+  flex-shrink: 0; /* el botón nunca se aplasta ni se corta */
+
+  min-height: 36px;
+  padding: 8px 14px;
+
+  border: 0;
+  border-radius: 7px;
+
+  color: #ffffff;
+  background: var(--sla-azul);
+
+  font: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  white-space: nowrap;
+
+  cursor: pointer;
+}
+
+.admin-layout .usuario-guardar:hover {
+  background: var(--sla-azul-secundario);
+}
+
+/* ========================================================
+   9. CLIENTES · SOLICITUDES · ANÁLISIS
+======================================================== */
+
+.admin-layout .admin-barra {
+  width: 100%;
+  min-width: 80px;
+  height: 8px;
+
+  margin-top: 6px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+  background: var(--sla-borde);
+}
+
+.admin-layout .admin-barra > span {
+  display: block;
+
+  height: 100%;
+
+  border-radius: 999px;
+  background: var(--sla-azul);
+}
+
+.admin-layout .admin-nota {
+  margin: 14px 0 0;
+
+  color: var(--sla-texto-secundario);
+  font-size: 12px;
+}
+
+.admin-layout .admin-secciones {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+
+  width: 100%;
+  min-width: 0;
+
+  margin-top: 24px;
+}
+
+.admin-layout .admin-secciones .dashboard-welcome {
+  margin-top: 0;
+}
+
+/* Panel informativo del dashboard principal.
+   Se diferencia de las barras de progreso. */
+
+.admin-layout .sla-dashboard > .admin-barra {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  width: 100%;
+  min-width: 0;
+  min-height: 90px;
+  height: auto;
+
+  margin-top: 24px;
+  padding: 20px 24px;
+
+  overflow: visible;
+
+  border: 1px solid var(--sla-borde);
+  border-left: 4px solid var(--sla-rojo);
+  border-radius: 12px;
+
+  background: var(--sla-blanco);
+  box-shadow: 0 4px 14px rgb(16 42 67 / 5%);
+}
+
+.admin-layout .sla-dashboard > .admin-barra > svg {
+  flex: 0 0 25px;
+  color: var(--sla-rojo);
+}
+
+.admin-layout .sla-dashboard > .admin-barra > div {
+  min-width: 0;
+}
+
+.admin-layout .sla-dashboard > .admin-barra strong {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: var(--sla-azul);
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.admin-layout .sla-dashboard > .admin-barra p {
+  margin: 0;
+
+  color: var(--sla-texto-secundario);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+/* ========================================================
+   10. ACCESIBILIDAD
+======================================================== */
+
+.admin-layout .sla-dashboard *:focus-visible,
+.admin-layout .usuarios-tabla button:focus-visible,
+.admin-layout .usuarios-tabla select:focus-visible,
+.admin-layout .admin-link-card:focus-visible {
+  outline: 3px solid var(--sla-rojo);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-layout *,
+  .admin-layout *::before,
+  .admin-layout *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ========================================================
+   11. TIPOGRAFÍA DEL PANEL ADMINISTRATIVO
+======================================================== */
+
+.admin-layout,
+.admin-layout *,
+.admin-layout *::before,
+.admin-layout *::after {
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-style: normal;
+  font-synthesis: none;
+}
+
+.admin-layout {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.admin-layout h1,
+.admin-layout h2,
+.admin-layout h3,
+.admin-layout h4 {
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: normal;
+}
+
+.admin-layout p,
+.admin-layout span,
+.admin-layout label,
+.admin-layout td,
+.admin-layout th,
+.admin-layout input,
+.admin-layout select,
+.admin-layout textarea,
+.admin-layout button,
+.admin-layout a {
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-style: normal;
+}
+
+.admin-layout input,
+.admin-layout select,
+.admin-layout textarea,
+.admin-layout button {
+  font-size: 14px;
+}
+
+.admin-layout input::placeholder,
+.admin-layout textarea::placeholder {
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-style: normal;
+  color: #94a3b8;
+}
+
+/* Mantener los iconos correctamente */
+.admin-layout svg {
+  font-family: initial !important;
+}
+
+/* ========================================================
+   12. NUEVO DISEÑO · PANEL PRINCIPAL ADMINISTRATIVO
+======================================================== */
+
+.admin-layout .admin-home {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+/* ENCABEZADO */
+
+.admin-layout .admin-home-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+
+  margin-bottom: 34px;
+  padding: 28px 30px;
+
+  border: 1px solid #e1e8f0;
+  border-radius: 16px;
+
+  background: #ffffff;
+  box-shadow: 0 5px 20px rgb(16 42 67 / 4%);
+}
+
+.admin-layout .admin-home-heading {
+  min-width: 0;
+}
+
+.admin-layout .admin-home-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-bottom: 12px;
+
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.admin-layout .admin-home-eyebrow-dot {
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+  background: #d62839;
+}
+
+.admin-layout .admin-home-header .dashboard-title {
+  font-size: clamp(24px, 2.5vw, 32px);
+  letter-spacing: -0.8px;
+}
+
+.admin-layout .admin-home-header .dashboard-subtitle {
+  max-width: 700px;
+  margin-top: 10px;
+
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.admin-layout .admin-home-header-icon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+
+  width: 58px;
+  height: 58px;
+
+  border: 1px solid #e1e8f0;
+  border-radius: 15px;
+
+  color: #102a43;
+  background: #f4f7fb;
+}
+
+/* SECCIONES */
+
+.admin-layout .admin-home-section {
+  margin-top: 30px;
+}
+
+.admin-layout .admin-home-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  margin-bottom: 18px;
+}
+
+.admin-layout .admin-home-section-kicker {
+  display: block;
+  margin-bottom: 6px;
+
+  color: #d62839;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.3px;
+}
+
+.admin-layout .admin-home-section-heading h2 {
+  margin: 0;
+
+  color: #102a43;
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.admin-layout .admin-home-section-heading p {
+  margin: 5px 0 0;
+
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* INDICADORES */
+
+.admin-layout .admin-home .dashboard-stats {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.admin-layout .admin-home .dashboard-stat-card {
+  padding: 21px;
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgb(16 42 67 / 4%);
+}
+
+.admin-layout .admin-home .dashboard-stat-card::before {
+  height: 3px;
+}
+
+.admin-layout .admin-home .dashboard-stat-card.stat-navy::before {
+  background: #102a43;
+}
+
+.admin-layout .admin-home .dashboard-stat-card.stat-red::before {
+  background: #d62839;
+}
+
+.admin-layout .admin-home .dashboard-stat-card.stat-green::before {
+  background: #16845b;
+}
+
+.admin-layout .admin-home .dashboard-stat-card.stat-red .dashboard-stat-icon {
+  background: #d62839;
+}
+
+.admin-layout .admin-home .dashboard-stat-card.stat-green .dashboard-stat-icon {
+  background: #16845b;
+}
+
+.admin-layout .admin-home .dashboard-stat-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+}
+
+.admin-layout .admin-home .dashboard-stat-value {
+  margin-top: 20px;
+  font-size: 31px;
+  letter-spacing: -1px;
+}
+
+.admin-layout .admin-home .dashboard-stat-description {
+  min-height: 34px;
+  margin-top: 7px;
+  font-size: 11px;
+}
+
+/* ACCESOS ADMINISTRATIVOS */
+
+.admin-layout .admin-home-management {
+  margin-top: 36px;
+}
+
+.admin-layout .admin-home .admin-links {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 17px;
+}
+
+.admin-layout .admin-home .admin-link-card {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  min-height: 225px;
+  padding: 20px;
+
+  border: 1px solid #e1e8f0;
+  border-radius: 14px;
+
+  background: #ffffff;
+  box-shadow: 0 4px 16px rgb(16 42 67 / 4%);
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin-layout .admin-home .admin-link-card:hover {
+  transform: translateY(-4px);
+  border-color: #d62839;
+  box-shadow: 0 10px 24px rgb(16 42 67 / 9%);
+}
+
+.admin-layout .admin-link-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+  margin-bottom: 17px;
+}
+
+.admin-layout .admin-link-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 45px;
+  height: 45px;
+
+  border-radius: 12px;
+
+  color: #ffffff;
+  background: #102a43;
+}
+
+.admin-layout .admin-link-arrow {
+  color: #94a3b8;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-layout .admin-link-card:hover .admin-link-arrow {
+  color: #d62839;
+  transform: translate(3px, -3px);
+}
+
+.admin-layout .admin-link-label {
+  margin-bottom: 7px;
+
+  color: #d62839 !important;
+  font-size: 9px !important;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.admin-layout .admin-home .admin-link-card strong {
+  color: #102a43;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.admin-layout .admin-home .admin-link-description {
+  display: block;
+
+  margin-top: 8px;
+
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.admin-layout .admin-link-action {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  margin-top: auto;
+  padding-top: 17px;
+
+  color: #102a43;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.admin-layout .admin-link-card:hover .admin-link-action {
+  color: #d62839;
+}
+
+/* AVISO INFORMATIVO */
+
+/* El aviso vive dentro de .admin-home, así que necesita su propio
+   estilo de panel (si no, hereda la barra de progreso de 8px). */
+
+.admin-layout .admin-home > .admin-barra {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  width: 100%;
+  min-width: 0;
+  min-height: 90px;
+  height: auto;
+
+  margin-top: 28px;
+  padding: 20px 24px;
+
+  overflow: visible;
+
+  border: 1px solid var(--sla-borde);
+  border-left: 4px solid var(--sla-rojo);
+  border-radius: 12px;
+
+  background: var(--sla-blanco);
+  box-shadow: 0 4px 14px rgb(16 42 67 / 5%);
+}
+
+.admin-layout .admin-home > .admin-barra > svg {
+  flex: 0 0 25px;
+  color: var(--sla-rojo);
+}
+
+.admin-layout .admin-home > .admin-barra > div {
+  min-width: 0;
+}
+
+.admin-layout .admin-home > .admin-barra strong {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: var(--sla-azul);
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.admin-layout .admin-home > .admin-barra p {
+  margin: 0;
+
+  color: var(--sla-texto-secundario);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+@media (max-width: 600px) {
+  .admin-layout .admin-home > .admin-barra {
+    align-items: flex-start;
+    min-height: 0;
+
+    margin-top: 16px;
+    padding: 16px;
+
+    gap: 12px;
+  }
+
+  .admin-layout .admin-home > .admin-barra strong {
+    font-size: 13px;
+  }
+
+  .admin-layout .admin-home > .admin-barra p {
+    font-size: 11px;
+  }
+}
+
+/* ========================================================
+   13. PANTALLAS GRANDES
+======================================================== */
+
+@media (min-width: 1400px) {
+  .admin-layout .sla-dashboard {
+    padding: 36px 34px;
+  }
+
+  .admin-layout .dashboard-stats {
+    gap: 20px;
+  }
+}
+
+/* ========================================================
+   14. PORTÁTILES
+======================================================== */
+
+@media (max-width: 1180px) {
+  .admin-layout .dashboard-stats,
+  .admin-layout .admin-home .dashboard-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-layout .admin-home .admin-links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ========================================================
+   15. TABLETAS GRANDES
+======================================================== */
+
+@media (max-width: 1024px) {
+  .admin-layout {
+    --admin-sidebar-w: 220px;
+  }
+
+  .admin-layout .sla-dashboard {
+    margin-left: var(--admin-sidebar-w);
+    padding: 24px 20px;
+  }
+
+  .admin-layout .admin-secciones {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ========================================================
+   16. TABLETAS: MENÚ SOLO CON ICONOS
+======================================================== */
+
+@media (max-width: 820px) {
+  .admin-layout {
+    --admin-sidebar-w: 72px;
+  }
+
+  .admin-layout .admin-sidebar {
+    padding: 20px 10px;
+  }
+
+  /* Menú de 72px: el logo se recorta a un cuadro compacto */
+  /* Menú de 72px: el logo completo no cabe, se oculta */
+  .admin-layout .admin-sidebar-brand {
+    display: none;
+  }
+
+  .admin-layout .admin-sidebar-brand span,
+  .admin-layout .admin-sidebar-label,
+  .admin-layout .admin-sidebar-heading,
+  .admin-layout .admin-sidebar-link span {
+    display: none;
+  }
+
+  .admin-layout .admin-sidebar-link {
+    justify-content: center;
+    padding: 12px 8px;
+  }
+
+  .admin-layout .sla-dashboard {
+    margin-left: var(--admin-sidebar-w);
+    padding: 20px 16px;
+  }
+
+  .admin-layout .dashboard-header {
+    align-items: flex-start;
+    margin-bottom: 22px;
+  }
+
+  .admin-layout .dashboard-welcome {
+    margin-top: 18px;
+    padding: 20px;
+  }
+
+  .admin-layout .admin-secciones {
+    gap: 18px;
+    margin-top: 18px;
+  }
+
+  .admin-layout .admin-home-header {
+    padding: 22px;
+  }
+
+  .admin-layout .admin-home-section {
+    margin-top: 25px;
+  }
+}
+
+/* ========================================================
+   17. CELULARES: MENÚ INFERIOR
+======================================================== */
+
+@media (max-width: 600px) {
+  .admin-layout {
+    --admin-sidebar-w: 0px;
+  }
+
+  .admin-layout .admin-sidebar {
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+
+    width: 100%;
+    height: auto;
+
+    padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));
+
+    overflow: visible;
+
+    border-top: 1px solid rgb(255 255 255 / 12%);
+    border-right: 0;
+  }
+
+  .admin-layout .admin-sidebar-brand,
+  .admin-layout .admin-sidebar-label,
+  .admin-layout .admin-sidebar-heading {
+    display: none;
+  }
+
+  .admin-layout .admin-sidebar-nav {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    gap: 2px;
+
+    min-width: 0;
+  }
+
+  .admin-layout .admin-sidebar-nav .admin-sidebar-link {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .admin-layout .admin-sidebar-link.active,
+  .admin-layout .admin-sidebar-link[aria-current="page"] {
+    box-shadow: inset 0 -3px 0 var(--sla-rojo);
+  }
+
+  .admin-layout .admin-sidebar-bottom {
+    display: flex;
+    align-items: center;
+
+    margin-top: 0;
+    padding-top: 0;
+
+    border-top: 0;
+  }
+
+  .admin-layout .admin-sidebar-bottom .admin-sidebar-link {
+    min-width: 44px;
+  }
+
+  /* CONTENIDO: OCUPA TODO EL ANCHO DISPONIBLE */
+
+  .admin-layout .sla-dashboard {
+    margin-left: 0;
+    padding: 16px 16px calc(84px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .admin-layout .dashboard-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+
+    margin-bottom: 20px;
+  }
+
+  .admin-layout .dashboard-subtitle {
+    margin-top: 6px;
+    font-size: 12px;
+  }
+
+  .admin-layout .dashboard-accent {
+    width: 45px;
+    margin-top: 11px;
+  }
+
+  .admin-layout .dashboard-stats,
+  .admin-layout .admin-home .dashboard-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .admin-layout .dashboard-stat-card {
+    padding: 14px 12px;
+    border-radius: 10px;
+  }
+
+  .admin-layout .dashboard-stat-header {
+    align-items: flex-start;
+    gap: 7px;
+  }
+
+  .admin-layout .dashboard-stat-label {
+    font-size: 11px;
+  }
+
+  .admin-layout .dashboard-stat-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+  }
+
+  .admin-layout .dashboard-stat-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .admin-layout .dashboard-stat-value {
+    margin-top: 13px;
+    font-size: 23px;
+  }
+
+  .admin-layout .dashboard-stat-description {
+    margin-top: 6px;
+    font-size: 10px;
+  }
+
+  .admin-layout .dashboard-welcome {
+    margin-top: 16px;
+    padding: 18px 16px;
+    border-radius: 11px;
+  }
+
+  .admin-layout .dashboard-welcome-description {
+    font-size: 12px;
+    line-height: 1.7;
+  }
+
+  .admin-layout .dashboard-divider {
+    margin: 16px 0;
+  }
+
+  .admin-layout .admin-links,
+  .admin-layout .admin-home .admin-links {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-layout .admin-home .admin-links {
+    gap: 12px;
+  }
+
+  .admin-layout .admin-secciones {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  .admin-layout .sla-dashboard > .admin-barra {
+    align-items: flex-start;
+    min-height: 0;
+
+    margin-top: 16px;
+    padding: 16px;
+
+    gap: 12px;
+  }
+
+  .admin-layout .sla-dashboard > .admin-barra strong {
+    font-size: 13px;
+  }
+
+  .admin-layout .sla-dashboard > .admin-barra p {
+    font-size: 11px;
+  }
+
+  /* Panel principal nuevo */
+
+  .admin-layout .admin-home-header {
+    padding: 19px 16px;
+    border-radius: 12px;
+  }
+
+  .admin-layout .admin-home-header-icon {
+    width: 43px;
+    height: 43px;
+  }
+
+  .admin-layout .admin-home .dashboard-stat-card {
+    padding: 14px 11px;
+  }
+
+  .admin-layout .admin-home .dashboard-stat-value {
+    font-size: 25px;
+  }
+
+  .admin-layout .admin-home .admin-link-card {
+    min-height: 195px;
+  }
+
+  .admin-layout .admin-home-section-heading h2 {
+    font-size: 17px;
+  }
+
+  /* TABLA RESPONSIVE (tarjetas apiladas) */
+
+  .admin-layout .usuarios-tabla,
+  .admin-layout .usuarios-tabla tbody,
+  .admin-layout .usuarios-tabla tr,
+  .admin-layout .usuarios-tabla td {
+    display: block;
+    width: 100%;
+  }
+
+  .admin-layout .usuarios-tabla {
+    min-width: 0; /* anula el min-width de escritorio */
+  }
+
+  .admin-layout .usuarios-tabla thead {
+    position: absolute;
+
+    width: 1px;
+    height: 1px;
+
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .admin-layout .usuarios-tabla tr {
+    margin-bottom: 12px;
+    padding: 8px 14px;
+
+    border: 1px solid var(--sla-borde);
+    border-radius: 10px;
+
+    background: var(--sla-blanco);
+  }
+
+  .admin-layout .usuarios-tabla td {
+    padding: 9px 0;
+    border-bottom: 0;
+  }
+
+  .admin-layout .usuarios-tabla td::before {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: var(--sla-texto-secundario);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+
+  .admin-layout .usuarios-tabla td:nth-child(1)::before {
+    content: "Usuario";
+  }
+
+  .admin-layout .usuarios-tabla td:nth-child(2)::before {
+    content: "Correo electrónico";
+  }
+
+  .admin-layout .usuarios-tabla td:nth-child(3)::before {
+    content: "Rol actual";
+  }
+
+  .admin-layout .usuarios-tabla td:nth-child(4)::before {
+    content: "Acción";
+  }
+
+  .admin-layout .usuarios-tabla td[colspan]::before {
+    content: none;
+  }
+
+  .admin-layout .usuarios-tabla td[data-label]::before {
+    content: attr(data-label);
+  }
+
+  .admin-layout .usuarios-tabla td form {
+    flex-wrap: nowrap;
+  }
+
+  .admin-layout .usuarios-tabla td form select {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+/* ========================================================
+   18. CELULARES PEQUEÑOS
+======================================================== */
+
+@media (max-width: 360px) {
+  .admin-layout .sla-dashboard {
+    padding: 12px 12px calc(84px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .admin-layout .dashboard-stats,
+  .admin-layout .admin-home .dashboard-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-layout .dashboard-welcome {
+    padding: 15px 13px;
+  }
+
+  .admin-layout .admin-home-header-icon {
+    display: none;
+  }
+}

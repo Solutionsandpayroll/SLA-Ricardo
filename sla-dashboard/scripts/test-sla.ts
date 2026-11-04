@@ -1,4 +1,4 @@
-import { calcularSLA } from "../lib/sla-calculator";
+import { calcularSLA } from "../lib/sla/sla-calculator";
 
 const fechaPrueba = new Date("2026-09-01T10:00:00Z");
 console.log("Fecha de recepción:", fechaPrueba.toISOString());

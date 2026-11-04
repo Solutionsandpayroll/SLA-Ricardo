@@ -5,13 +5,13 @@ import { getToken } from "next-auth/jwt";
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // El inicio de sesión administrativo es público.
-  if (pathname === "/admin/login") {
-    const token = await getToken({
-      req: request,
-      secret: process.env.NEXTAUTH_SECRET,
-    });
+  const token = await getToken({
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
 
+  // Login administrativo
+  if (pathname === "/admin/login") {
     if (token?.role === "ADMIN") {
       return NextResponse.redirect(
         new URL("/admin/dashboard", request.url)
@@ -21,16 +21,12 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Proteger únicamente las rutas administrativas.
+  // Proteger el panel administrativo
   if (pathname.startsWith("/admin/dashboard")) {
-    const token = await getToken({
-      req: request,
-      secret: process.env.NEXTAUTH_SECRET,
-    });
-
     if (!token) {
       return NextResponse.redirect(
-        new URL("/admin/login", request.url)
+        new URL("/admin/login",
+          request.url)
       );
     }
 
@@ -41,7 +37,6 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  // Los empleados serán validados por DashboardLayout.
   return NextResponse.next();
 }
 

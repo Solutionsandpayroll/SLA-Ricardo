@@ -1,6 +1,5 @@
 
 import type { NextAuthOptions } from "next-auth";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import AzureADProvider from "next-auth/providers/azure-ad";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
@@ -8,34 +7,33 @@ import type { Role } from "@prisma/client";
 import { prisma } from "./prisma";
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
-
   providers: [
-    // Acceso de empleados mediante Microsoft.
+    // ==========================================
+    // EMPLEADOS: MICROSOFT
+    // ==========================================
     AzureADProvider({
       clientId: process.env.AZURE_AD_CLIENT_ID!,
       clientSecret: process.env.AZURE_AD_CLIENT_SECRET!,
       tenantId: process.env.AZURE_AD_TENANT_ID!,
+
       authorization: {
         params: {
           scope: "openid profile email User.Read Mail.Read offline_access",
+          prompt: "login",
         },
       },
     }),
 
-    // Acceso exclusivo de administradores mediante credenciales propias.
+    // ==========================================
+    // ADMINISTRADORES: CORREO Y CONTRASEÑA
+    // ==========================================
     CredentialsProvider({
       id: "admin-credentials",
       name: "Acceso de administrador",
+
       credentials: {
-        email: {
-          label: "Correo electrónico",
-          type: "email",
-        },
-        password: {
-          label: "Contraseña",
-          type: "password",
-        },
+        email: { label: "Correo electrónico", type: "email" },
+        password: { label: "Contraseña", type: "password" },
       },
 
       async authorize(credentials) {
@@ -46,8 +44,10 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const user = await prisma.user.findUnique({
-          where: { email },
+        const user = await prisma.user.findFirst({
+          where: {
+            email: { equals: email, mode: "insensitive" },
+          },
           select: {
             id: true,
             name: true,
@@ -58,7 +58,6 @@ export const authOptions: NextAuthOptions = {
           },
         });
 
-        // No crear administradores automáticamente.
         if (
           !user ||
           user.role !== "ADMIN" ||
@@ -72,9 +71,7 @@ export const authOptions: NextAuthOptions = {
           user.passwordHash
         );
 
-        if (!passwordValida) {
-          return null;
-        }
+        if (!passwordValida) return null;
 
         return {
           id: user.id,
@@ -86,40 +83,109 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
 
+  // ==========================================
+  // VALIDAR QUIÉN PUEDE ENTRAR
+  // ==========================================
   callbacks: {
-    // Impide que una cuenta ADMIN utilice el acceso de empleados.
     async signIn({ user, account }) {
       if (account?.provider === "azure-ad") {
-        if (!user.id) return false;
+        const email = user.email?.trim();
 
-        const dbUser = await prisma.user.findUnique({
-          where: { id: user.id },
-          select: { role: true },
+        if (!email) return false;
+
+        const dbUser = await prisma.user.findFirst({
+          where: {
+            email: {
+              equals: email,
+              mode: "insensitive",
+            },
+          },
+          select: {
+            id: true,
+            role: true,
+          },
         });
 
-        return dbUser?.role !== "ADMIN";
+        // Solo empleados registrados pueden entrar con Microsoft.
+        return dbUser?.role === "USER";
       }
 
-      return true;
+      if (account?.provider === "admin-credentials") {
+        return true;
+      }
+
+      return false;
     },
 
-    async jwt({ token, user }) {
+    // ==========================================
+    // JWT
+    // ==========================================
+    async jwt({ token, user, account }) {
+      // Primer inicio de sesión.
       if (user) {
-        token.id = user.id;
-      }
+        let dbUser;
 
-      if (token.id) {
+        if (account?.provider === "admin-credentials") {
+          dbUser = await prisma.user.findUnique({
+            where: { id: user.id },
+            select: {
+              id: true,
+              email: true,
+              role: true,
+            },
+          });
+        } else {
+          const email = user.email?.trim();
+
+          if (!email) return token;
+
+          dbUser = await prisma.user.findFirst({
+            where: {
+              email: {
+                equals: email,
+                mode: "insensitive",
+              },
+            },
+            select: {
+              id: true,
+              email: true,
+              role: true,
+            },
+          });
+        }
+
+        if (dbUser) {
+          token.id = dbUser.id;
+          token.email = dbUser.email;
+          token.role = dbUser.role;
+        }
+      } else if (token.id) {
+        // Comprobar que el usuario siga existiendo.
         const dbUser = await prisma.user.findUnique({
           where: { id: token.id as string },
-          select: { role: true },
+          select: {
+            id: true,
+            email: true,
+            role: true,
+          },
         });
 
-        token.role = dbUser?.role ?? "USER";
+        if (dbUser) {
+          token.id = dbUser.id;
+          token.email = dbUser.email;
+          token.role = dbUser.role;
+        } else {
+          token.id = undefined;
+          token.role = undefined;
+        }
       }
 
       return token;
     },
 
+    // ==========================================
+    // SESSION
+    // ==========================================
     async session({ session, token }) {
       if (session.user && token.id) {
         const sessionUser = session.user as typeof session.user & {
@@ -128,14 +194,13 @@ export const authOptions: NextAuthOptions = {
         };
 
         sessionUser.id = token.id as string;
-        sessionUser.role = (token.role as Role) ?? "USER";
+        sessionUser.role = token.role as Role;
       }
 
       return session;
     },
   },
 
-  // No asignamos roles automáticamente durante el inicio de sesión.
   pages: {
     signIn: "/",
   },

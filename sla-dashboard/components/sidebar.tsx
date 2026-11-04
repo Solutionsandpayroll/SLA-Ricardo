@@ -1,15 +1,18 @@
 
 "use client";
+
 import "../app/sidebar.css";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
+
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from "@/components/ui/avatar";
+
 import {
   FileText,
   BarChart3,
@@ -19,6 +22,7 @@ import {
   ChevronRight,
   LayoutDashboard,
 } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 
 interface SidebarProps {
@@ -69,25 +73,20 @@ export function Sidebar({ user }: SidebarProps) {
     <aside className="sticky top-0 z-40 flex h-screen h-dvh w-[76px] shrink-0 flex-col border-r border-white/[0.07] bg-[#10243e] text-white shadow-xl md:w-[270px]">
 
       {/* MARCA Y LOGO */}
-      <div className="flex h-[135px] shrink-0 items-center justify-center border-b border-white/[0.08] px-3 md:h-[150px] md:px-5">
+      <div className="flex h-[135px] shrink-0 items-center justify-center border-b border-white/[0.08] px-2 md:h-[150px] md:px-5">
         <Link
           href="/dashboard"
           aria-label="Inicio del dashboard"
-          className="flex w-full items-center justify-center"
+          className="flex h-full w-full items-center justify-center"
         >
-          {/* Logo móvil */}
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#d62839] text-2xl font-black text-white shadow-lg md:hidden">
-            S
-          </div>
-
-          {/* Logo escritorio */}
           <Image
             src="/imagen.png"
             alt="Solutions & Payroll"
             width={240}
             height={110}
             priority
-            className="hidden h-auto max-h-[110px] w-full max-w-[225px] object-contain md:block"
+            className="h-auto max-h-[95px] w-full max-w-[225px] object-contain"
+            sizes="(max-width: 767px) 60px, 225px"
           />
         </Link>
       </div>
@@ -99,8 +98,10 @@ export function Sidebar({ user }: SidebarProps) {
           Menú principal
         </p>
 
-        <nav aria-label="Navegación principal" className="flex flex-col gap-2">
-
+        <nav
+          aria-label="Navegación principal"
+          className="flex flex-col gap-2"
+        >
           {menuItems.map((item) => {
             const Icon = item.icon;
 
@@ -147,12 +148,10 @@ export function Sidebar({ user }: SidebarProps) {
               </Link>
             );
           })}
-
         </nav>
 
         {/* INFORMACIÓN DEL SISTEMA */}
         <div className="mt-9 hidden rounded-xl border border-white/[0.08] bg-white/[0.04] p-4 md:block">
-
           <div className="mb-3 flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]" />
 
@@ -171,7 +170,6 @@ export function Sidebar({ user }: SidebarProps) {
       <div className="shrink-0 border-t border-white/[0.08] p-3 md:p-4">
 
         <div className="mb-3 flex items-center justify-center gap-3 rounded-xl bg-white/[0.05] p-2 md:justify-start md:p-3">
-
           <Avatar className="h-10 w-10 shrink-0 border border-white/20">
             <AvatarImage
               src={user.image || ""}

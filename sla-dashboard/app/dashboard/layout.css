@@ -1,19 +1,21 @@
 
-/* ==========================================
-   LAYOUT GENERAL DEL SISTEMA SLA
-   Diseño corporativo y responsive
-   Azul oscuro, blanco, gris y rojo
-========================================== */
+/* =========================================================
+   SLA DASHBOARD
+   LAYOUT GENERAL · SCROLL RESPONSIVE
+========================================================= */
 
 .sla-layout {
   --sla-azul: #102a43;
-  --sla-azul-secundario: #243f59;
+  --sla-azul-secundario: #173f5f;
   --sla-rojo: #d62839;
   --sla-blanco: #ffffff;
-  --sla-fondo: #f5f6f8;
-  --sla-borde: #e2e8f0;
+  --sla-fondo: #f5f7fa;
+  --sla-texto: #243b53;
+  --sla-texto-secundario: #718096;
+  --sla-borde: #e5eaf0;
 
   display: flex;
+  flex-direction: row;
   align-items: stretch;
 
   width: 100%;
@@ -22,20 +24,38 @@
 
   min-width: 0;
   min-height: 0;
-
   overflow: hidden;
+
+  color: var(--sla-texto);
   background: var(--sla-fondo);
+
+  font-family: Inter, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  box-sizing: border-box;
 }
 
-/* ==========================================
-   ÁREA PRINCIPAL
-========================================== */
+.sla-layout *,
+.sla-layout *::before,
+.sla-layout *::after {
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   CONTENEDOR PRINCIPAL
+========================================================= */
 
 .sla-layout-main {
-  flex: 1 1 auto;
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
 
   width: 0;
   min-width: 0;
+  min-height: 0;
   height: 100%;
 
   overflow-x: hidden;
@@ -43,107 +63,243 @@
 
   background: var(--sla-fondo);
 
-  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: #aab9c8 transparent;
+
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* ==========================================
-   CONTENIDO DE LAS PÁGINAS
-========================================== */
+/* =========================================================
+   CONTENIDO
+========================================================= */
 
 .sla-layout-content {
+  display: block;
   width: 100%;
   min-width: 0;
   min-height: 100%;
 
-  margin: 0;
-  padding: 28px;
+  flex: 1 0 auto;
 
-  color: var(--sla-azul);
+  margin: 0;
+  padding: 30px;
+
+  color: var(--sla-texto);
   background: var(--sla-fondo);
 }
-
-/* Evita que los elementos internos ensanchen el layout */
 
 .sla-layout-content > * {
   min-width: 0;
   max-width: 100%;
 }
 
-/* ==========================================
-   SELECCIÓN DE TEXTO
-========================================== */
-
-.sla-layout ::selection {
-  color: var(--sla-blanco);
-  background: var(--sla-rojo);
-}
-
-/* ==========================================
-   BARRAS DE DESPLAZAMIENTO
-========================================== */
-
-.sla-layout-main {
-  scrollbar-width: thin;
-  scrollbar-color: #b8c6d6 var(--sla-fondo);
-}
+/* =========================================================
+   SCROLL VERTICAL PERSONALIZADO
+========================================================= */
 
 .sla-layout-main::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+  width: 8px;
 }
 
 .sla-layout-main::-webkit-scrollbar-track {
-  background: var(--sla-fondo);
+  margin: 5px 0;
+  border-radius: 20px;
+  background: transparent;
 }
 
 .sla-layout-main::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  background: #b8c6d6;
+  min-height: 40px;
+  border: 2px solid transparent;
+  border-radius: 20px;
+  background-color: #aab9c8;
+  background-clip: padding-box;
+  transition: background-color 0.25s ease;
 }
 
 .sla-layout-main::-webkit-scrollbar-thumb:hover {
-  background: var(--sla-azul-secundario);
+  background-color: var(--sla-rojo);
+  background-clip: padding-box;
 }
 
-/* ==========================================
-   PORTÁTILES
-========================================== */
+.sla-layout-main::-webkit-scrollbar-button,
+.sla-layout-main::-webkit-scrollbar-corner {
+  display: none;
+  width: 0;
+  height: 0;
+}
 
-@media (max-width: 1200px) {
+/* =========================================================
+   SCROLL DEL MENÚ LATERAL
+========================================================= */
+
+.sla-layout aside {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.sla-layout aside > div:nth-child(2) {
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  scrollbar-width: thin;
+  scrollbar-color: #52677c transparent;
+}
+
+.sla-layout aside > div:nth-child(2)::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sla-layout aside > div:nth-child(2)::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sla-layout aside > div:nth-child(2)::-webkit-scrollbar-thumb {
+  border-radius: 20px;
+  background: #52677c;
+}
+
+.sla-layout aside > div:nth-child(2)::-webkit-scrollbar-thumb:hover {
+  background: var(--sla-rojo);
+}
+
+/* =========================================================
+   ELEMENTOS RESPONSIVE
+========================================================= */
+
+.sla-layout-content img,
+.sla-layout-content video,
+.sla-layout-content canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+.sla-layout-content table {
+  width: 100%;
+  max-width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.sla-layout-content th,
+.sla-layout-content td {
+  overflow-wrap: anywhere;
+}
+
+.sla-layout button,
+.sla-layout input,
+.sla-layout select,
+.sla-layout textarea {
+  font: inherit;
+}
+
+.sla-layout button {
+  cursor: pointer;
+}
+
+.sla-layout input,
+.sla-layout select,
+.sla-layout textarea {
+  max-width: 100%;
+}
+
+/* =========================================================
+   SELECCIÓN DE TEXTO
+========================================================= */
+
+.sla-layout ::selection {
+  color: white;
+  background: var(--sla-rojo);
+}
+
+/* =========================================================
+   PANTALLAS GRANDES
+========================================================= */
+
+@media (min-width: 1600px) {
   .sla-layout-content {
-    padding: 24px;
+    padding: 36px 40px;
   }
 }
 
-/* ==========================================
+/* =========================================================
+   PORTÁTILES
+========================================================= */
+
+@media (max-width: 1200px) {
+  .sla-layout-content {
+    padding: 25px;
+  }
+}
+
+/* =========================================================
    TABLETAS
-========================================== */
+========================================================= */
 
 @media (max-width: 768px) {
   .sla-layout-content {
     padding: 20px;
   }
+
+  .sla-layout-main::-webkit-scrollbar {
+    width: 6px;
+  }
 }
 
-/* ==========================================
+/* =========================================================
    CELULARES
-========================================== */
+========================================================= */
 
 @media (max-width: 480px) {
   .sla-layout-content {
     padding: 15px;
   }
+
+  .sla-layout-content table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .sla-layout-main::-webkit-scrollbar {
+    width: 4px;
+  }
 }
 
-/* ==========================================
+/* =========================================================
+   CELULARES PEQUEÑOS
+========================================================= */
+
+@media (max-width: 360px) {
+  .sla-layout-content {
+    padding: 11px;
+  }
+}
+
+/* =========================================================
    ACCESIBILIDAD
-========================================== */
+========================================================= */
+
+.sla-layout :focus-visible {
+  outline: 3px solid var(--sla-rojo);
+  outline-offset: 3px;
+}
+
+/* =========================================================
+   REDUCCIÓN DE MOVIMIENTO
+========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
+  .sla-layout-main {
+    scroll-behavior: auto;
+  }
+
   .sla-layout *,
   .sla-layout *::before,
   .sla-layout *::after {
-    scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;

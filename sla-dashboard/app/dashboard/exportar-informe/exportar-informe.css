@@ -1,0 +1,282 @@
+
+/* =========================================
+   SLA DASHBOARD - EXPORTAR INFORME
+   Diseño corporativo
+========================================= */
+
+.sla-exportar {
+  --exp-azul: #102a43;
+  --exp-azul-secundario: #173f5f;
+  --exp-rojo: #d62839;
+  --exp-blanco: #ffffff;
+  --exp-fondo: #f4f7fb;
+  --exp-borde: #e1e8f0;
+  --exp-texto: #334155;
+  --exp-gris: #64748b;
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  min-width: 0;
+  color: var(--exp-azul);
+}
+
+/* ENCABEZADO */
+
+.sla-exportar .dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.sla-exportar .dashboard-title {
+  margin: 0;
+  color: var(--exp-azul);
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.7px;
+  line-height: 1.2;
+}
+
+.sla-exportar .dashboard-subtitle {
+  max-width: 750px;
+  margin: 8px 0 0;
+  color: var(--exp-gris);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.sla-exportar .dashboard-accent {
+  width: 52px;
+  height: 4px;
+  margin-top: 14px;
+  border-radius: 8px;
+  background: var(--exp-rojo);
+}
+
+/* SECCIONES */
+
+.sla-exportar section {
+  width: 100%;
+  min-width: 0;
+}
+
+/* TARJETAS */
+
+.sla-exportar .dashboard-welcome {
+  overflow: hidden;
+  padding: 24px;
+  border: 1px solid var(--exp-borde);
+  border-radius: 14px;
+  background: var(--exp-blanco);
+  color: var(--exp-azul);
+  box-shadow: 0 4px 16px rgb(16 42 67 / 5%);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.sla-exportar .dashboard-welcome:hover {
+  border-color: #d3deea;
+  box-shadow: 0 7px 22px rgb(16 42 67 / 7%);
+}
+
+/* TÍTULOS */
+
+.sla-exportar .dashboard-welcome-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--exp-azul);
+  font-size: 17px;
+  font-weight: 750;
+  line-height: 1.4;
+}
+
+.sla-exportar .dashboard-welcome-title svg {
+  flex-shrink: 0;
+  color: var(--exp-rojo);
+}
+
+.sla-exportar .dashboard-welcome-description {
+  margin-top: 6px;
+  color: var(--exp-gris);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+/* SEPARADOR */
+
+.sla-exportar .dashboard-divider {
+  width: 100%;
+  height: 1px;
+  margin: 18px 0 22px;
+  background: #edf1f5;
+}
+
+/* FILTROS */
+
+.sla-exportar label {
+  display: grid;
+  gap: 7px;
+  min-width: 170px;
+  color: var(--exp-azul);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.sla-exportar select,
+.sla-exportar input[type="date"] {
+  width: 100%;
+  min-width: 170px;
+  min-height: 42px;
+  padding: 10px 13px;
+  border: 1px solid var(--exp-borde);
+  border-radius: 9px;
+  outline: none;
+  background: var(--exp-blanco);
+  color: var(--exp-azul);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sla-exportar select {
+  cursor: pointer;
+}
+
+.sla-exportar select:hover,
+.sla-exportar input[type="date"]:hover {
+  border-color: #b8c8d8;
+}
+
+.sla-exportar select:focus,
+.sla-exportar input[type="date"]:focus {
+  border-color: var(--exp-azul-secundario);
+  box-shadow: 0 0 0 3px rgb(23 63 95 / 10%);
+}
+
+/* BOTÓN DESCARGAR */
+
+.sla-exportar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 43px;
+  padding: 11px 18px;
+  border: 1px solid var(--exp-rojo);
+  border-radius: 9px;
+  background: var(--exp-rojo);
+  color: var(--exp-blanco);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.sla-exportar button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: #b91f30;
+  background: #b91f30;
+  box-shadow: 0 4px 12px rgb(214 40 57 / 18%);
+}
+
+.sla-exportar button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.sla-exportar button svg {
+  flex-shrink: 0;
+}
+
+/* CARGA */
+
+.sla-exportar .animate-spin {
+  animation: exportar-giro 1s linear infinite;
+}
+
+@keyframes exportar-giro {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* TABLETAS */
+
+@media (max-width: 1024px) {
+  .sla-exportar .dashboard-title {
+    font-size: 28px;
+  }
+
+  .sla-exportar .dashboard-welcome {
+    padding: 22px;
+  }
+}
+
+/* CELULARES */
+
+@media (max-width: 768px) {
+  .sla-exportar {
+    gap: 18px;
+  }
+
+  .sla-exportar .dashboard-title {
+    font-size: 26px;
+  }
+
+  .sla-exportar .dashboard-subtitle {
+    font-size: 13px;
+  }
+
+  .sla-exportar .dashboard-welcome {
+    padding: 18px;
+  }
+
+  .sla-exportar label {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+
+  .sla-exportar select,
+  .sla-exportar input[type="date"] {
+    min-width: 0;
+  }
+}
+
+/* CELULARES PEQUEÑOS */
+
+@media (max-width: 480px) {
+  .sla-exportar .dashboard-title {
+    font-size: 23px;
+  }
+
+  .sla-exportar .dashboard-welcome {
+    padding: 15px;
+    border-radius: 12px;
+  }
+
+  .sla-exportar .dashboard-welcome-title {
+    font-size: 16px;
+  }
+
+  .sla-exportar button {
+    width: 100%;
+  }
+}
+
+/* ACCESIBILIDAD */
+
+@media (prefers-reduced-motion: reduce) {
+  .sla-exportar *,
+  .sla-exportar *::before,
+  .sla-exportar *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

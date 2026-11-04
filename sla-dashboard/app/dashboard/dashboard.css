@@ -1,27 +1,45 @@
 
-/* ========================================
-   DASHBOARD SLA - DISEÑO RESPONSIVE
-   Colores: azul oscuro, blanco y rojo
-======================================== */
+/* =========================================================
+   SLA DASHBOARD · PANEL PRINCIPAL
+   Diseño corporativo unificado con SOLICITUDES
+   Azul marino · Blanco · Rojo · Responsive
+========================================================= */
 
 .sla-dashboard {
   --sla-azul: #102a43;
   --sla-azul-secundario: #173f5f;
+  --sla-azul-claro: #edf3f8;
   --sla-rojo: #d62839;
+  --sla-rojo-hover: #b91f30;
+  --sla-rojo-claro: #fff0f1;
   --sla-blanco: #ffffff;
   --sla-fondo: #f4f7fb;
-  --sla-texto: #102a43;
+  --sla-texto: #334155;
   --sla-texto-secundario: #64748b;
   --sla-borde: #e1e8f0;
+  --sla-sombra: 0 4px 16px rgb(16 42 67 / 5%);
+  --sla-sombra-hover: 0 8px 22px rgb(16 42 67 / 9%);
 
-  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
   width: 100%;
   min-width: 0;
   min-height: 100%;
-  padding: 28px;
+  padding: 30px;
+
   color: var(--sla-texto);
   background: var(--sla-fondo);
-  overflow-wrap: anywhere;
+
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-wrap: break-word;
+  box-sizing: border-box;
 }
 
 .sla-dashboard *,
@@ -35,15 +53,20 @@
   max-width: 100%;
 }
 
-/* Encabezado */
+/* =========================================================
+   ENCABEZADO
+========================================================= */
 
 .sla-dashboard .dashboard-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 20px;
+
+  width: 100%;
   min-width: 0;
-  margin-bottom: 28px;
+  margin: 0;
 }
 
 .sla-dashboard .dashboard-header > * {
@@ -53,67 +76,86 @@
 .sla-dashboard .dashboard-title {
   margin: 0;
   color: var(--sla-azul);
-  font-size: 29px;
+
+  font-size: 30px;
   font-weight: 800;
   line-height: 1.25;
   letter-spacing: -0.7px;
-  overflow-wrap: anywhere;
 }
 
 .sla-dashboard .dashboard-subtitle {
   margin: 8px 0 0;
   color: var(--sla-texto-secundario);
-  font-size: 13px;
-  line-height: 1.65;
-}
 
-/* Línea decorativa */
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.6;
+}
 
 .sla-dashboard .dashboard-accent {
   width: 52px;
   height: 4px;
-  margin-top: 13px;
-  border-radius: 10px;
+  margin-top: 14px;
+
+  border-radius: 8px;
   background: var(--sla-rojo);
 }
 
-/* Cuadrícula de indicadores */
+/* =========================================================
+   INDICADORES PRINCIPALES
+========================================================= */
 
 .sla-dashboard .dashboard-stats {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 17px;
+  gap: 14px;
+
   width: 100%;
   min-width: 0;
 }
 
-/* Tarjetas */
+/* =========================================================
+   TARJETAS DE INDICADORES
+========================================================= */
 
 .sla-dashboard .dashboard-stat-card {
   position: relative;
+
+  display: flex;
+  flex-direction: column;
+
   min-width: 0;
+  min-height: 150px;
+  padding: 20px 18px;
+
   overflow: hidden;
-  padding: 20px;
+
   border: 1px solid var(--sla-borde);
-  border-radius: 13px;
+  border-radius: 14px;
+
   background: var(--sla-blanco);
-  box-shadow: 0 4px 14px rgb(16 42 67 / 5%);
+  box-shadow: var(--sla-sombra);
+
   transition:
     transform 0.2s ease,
-    box-shadow 0.2s ease;
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .sla-dashboard .dashboard-stat-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgb(16 42 67 / 9%);
+  border-color: #cbd8e5;
+  box-shadow: var(--sla-sombra-hover);
 }
 
 .sla-dashboard .dashboard-stat-card::before {
   position: absolute;
   top: 0;
   left: 0;
+
   width: 100%;
   height: 4px;
+
   background: var(--sla-azul);
   content: "";
 }
@@ -122,116 +164,335 @@
   background: var(--sla-rojo);
 }
 
+/* Encabezado de indicadores */
+
 .sla-dashboard .dashboard-stat-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 12px;
+
+  width: 100%;
   min-width: 0;
 }
 
 .sla-dashboard .dashboard-stat-label {
   min-width: 0;
   margin: 0;
+
   color: var(--sla-texto-secundario);
+
   font-size: 12px;
   font-weight: 650;
   line-height: 1.5;
-  overflow-wrap: anywhere;
 }
+
+/* Iconos */
 
 .sla-dashboard .dashboard-stat-icon {
   display: flex;
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 39px;
-  height: 39px;
+
+  width: 40px;
+  height: 40px;
+
   border-radius: 10px;
+
   color: var(--sla-blanco);
   background: var(--sla-azul);
 }
 
 .sla-dashboard .dashboard-stat-icon svg {
-  width: 20px;
-  height: 20px;
+  width: 19px;
+  height: 19px;
+  stroke-width: 2;
 }
 
 .sla-dashboard .dashboard-stat-icon.icon-red {
   background: var(--sla-rojo);
 }
 
+/* Valores */
+
 .sla-dashboard .dashboard-stat-value {
-  margin: 18px 0 0;
+  margin: 17px 0 0;
+
   color: var(--sla-azul);
-  font-size: clamp(24px, 2.2vw, 32px);
+
+  font-size: clamp(25px, 2.1vw, 32px);
   font-weight: 800;
   line-height: 1.2;
-  overflow-wrap: anywhere;
+  letter-spacing: -0.5px;
+
+  font-variant-numeric: tabular-nums;
 }
 
 .sla-dashboard .dashboard-stat-description {
   margin: 8px 0 0;
+
   color: var(--sla-texto-secundario);
+
   font-size: 11px;
+  font-weight: 400;
   line-height: 1.6;
-  overflow-wrap: anywhere;
 }
 
-/* Panel de bienvenida */
+/* =========================================================
+   PANEL DE BIENVENIDA
+========================================================= */
 
 .sla-dashboard .dashboard-welcome {
   position: relative;
+
+  width: 100%;
   min-width: 0;
+  margin: 0;
+  padding: 24px;
+
   overflow: hidden;
-  margin-top: 24px;
-  padding: 25px;
+
   border: 1px solid var(--sla-borde);
   border-radius: 14px;
+
   background: var(--sla-blanco);
-  box-shadow: 0 4px 14px rgb(16 42 67 / 5%);
+  box-shadow: var(--sla-sombra);
 }
 
 .sla-dashboard .dashboard-welcome::after {
   position: absolute;
   top: 0;
   right: 0;
+
   width: 5px;
   height: 100%;
+
   background: var(--sla-rojo);
   content: "";
 }
 
 .sla-dashboard .dashboard-welcome-title {
   margin: 0;
-  padding-right: 8px;
+  padding-right: 10px;
+
   color: var(--sla-azul);
-  font-size: 19px;
+
+  font-size: 17px;
   font-weight: 750;
   line-height: 1.4;
-  overflow-wrap: anywhere;
 }
 
 .sla-dashboard .dashboard-welcome-description {
   max-width: 850px;
-  margin: 9px 0 0;
+  margin: 8px 0 0;
+
   color: var(--sla-texto-secundario);
+
   font-size: 13px;
-  line-height: 1.8;
-  overflow-wrap: anywhere;
+  font-weight: 400;
+  line-height: 1.7;
 }
 
-/* Separador */
+/* =========================================================
+   SEPARADORES
+========================================================= */
 
 .sla-dashboard .dashboard-divider {
   width: 100%;
   height: 1px;
-  margin: 20px 0;
+  margin: 0;
+
   border: 0;
   background: var(--sla-borde);
 }
 
-/* Evitar que elementos internos ensanchen el dashboard */
+/* =========================================================
+   TARJETAS SHADCN
+========================================================= */
+
+.sla-dashboard [data-slot="card"] {
+  min-width: 0;
+  border-color: var(--sla-borde);
+  border-radius: 14px;
+  background: var(--sla-blanco);
+  box-shadow: var(--sla-sombra);
+}
+
+.sla-dashboard [data-slot="card-title"] {
+  color: var(--sla-azul);
+  font-weight: 750;
+}
+
+.sla-dashboard [data-slot="card-description"] {
+  color: var(--sla-texto-secundario);
+}
+
+/* =========================================================
+   BOTONES
+========================================================= */
+
+.sla-dashboard button {
+  max-width: 100%;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.sla-dashboard button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Botones principales */
+
+.sla-dashboard button.bg-primary,
+.sla-dashboard button[class*="bg-primary"] {
+  border-color: var(--sla-rojo);
+  background: var(--sla-rojo);
+  color: var(--sla-blanco);
+}
+
+.sla-dashboard button.bg-primary:hover,
+.sla-dashboard button[class*="bg-primary"]:hover {
+  border-color: var(--sla-rojo-hover);
+  background: var(--sla-rojo-hover);
+}
+
+/* Botones secundarios */
+
+.sla-dashboard button[class*="variant-outline"],
+.sla-dashboard button[class*="outline"] {
+  border-color: var(--sla-borde);
+  background: var(--sla-blanco);
+  color: var(--sla-azul);
+}
+
+.sla-dashboard button[class*="variant-outline"]:hover,
+.sla-dashboard button[class*="outline"]:hover {
+  border-color: var(--sla-azul);
+  background: var(--sla-azul-claro);
+}
+
+/* =========================================================
+   CAMPOS Y SELECTORES
+========================================================= */
+
+.sla-dashboard input,
+.sla-dashboard select,
+.sla-dashboard textarea {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  padding: 9px 12px;
+
+  border: 1px solid var(--sla-borde);
+  border-radius: 9px;
+
+  background: var(--sla-blanco);
+  color: var(--sla-azul);
+
+  font-family: inherit;
+  font-size: 13px;
+
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sla-dashboard input::placeholder,
+.sla-dashboard textarea::placeholder {
+  color: #94a3b8;
+}
+
+.sla-dashboard input:focus,
+.sla-dashboard select:focus,
+.sla-dashboard textarea:focus {
+  border-color: var(--sla-azul-secundario);
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(23 63 95 / 10%);
+}
+
+.sla-dashboard label {
+  color: var(--sla-azul);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* =========================================================
+   TABLAS
+========================================================= */
+
+.sla-dashboard .overflow-x-auto {
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--sla-borde);
+  border-radius: 10px;
+}
+
+.sla-dashboard table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: left;
+}
+
+.sla-dashboard thead {
+  background: var(--sla-azul);
+}
+
+.sla-dashboard thead th {
+  padding: 14px;
+  border-bottom: 3px solid var(--sla-rojo);
+
+  color: var(--sla-blanco);
+  font-size: 12px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.sla-dashboard tbody td {
+  padding: 13px 14px;
+  border-bottom: 1px solid #edf1f5;
+
+  color: var(--sla-texto);
+  font-size: 12px;
+  vertical-align: middle;
+}
+
+.sla-dashboard tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.sla-dashboard tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+.sla-dashboard tbody tr:hover {
+  background: #edf3f8;
+}
+
+/* =========================================================
+   BADGES Y ESTADOS
+========================================================= */
+
+.sla-dashboard [class*="badge"] {
+  font-weight: 700;
+}
+
+/* =========================================================
+   ACCESIBILIDAD
+========================================================= */
+
+.sla-dashboard *:focus-visible {
+  outline: 3px solid var(--sla-rojo);
+  outline-offset: 3px;
+}
 
 .sla-dashboard > *,
 .sla-dashboard .dashboard-header,
@@ -241,109 +502,75 @@
   min-width: 0;
 }
 
-/* Botones y controles */
-
-.sla-dashboard button,
-.sla-dashboard input,
-.sla-dashboard select,
-.sla-dashboard textarea {
-  max-width: 100%;
-  font: inherit;
-}
-
-.sla-dashboard button {
-  overflow-wrap: anywhere;
-}
-
-.sla-dashboard input,
-.sla-dashboard select,
-.sla-dashboard textarea {
-  min-width: 0;
-}
-
-/* Accesibilidad */
-
-.sla-dashboard *:focus-visible {
-  outline: 3px solid var(--sla-rojo);
-  outline-offset: 3px;
-}
-
-/* Pantallas grandes y portátiles */
+/* =========================================================
+   PANTALLAS GRANDES
+========================================================= */
 
 @media (min-width: 1400px) {
   .sla-dashboard {
-    padding: 32px;
+    padding: 34px;
   }
 
   .sla-dashboard .dashboard-stats {
-    gap: 20px;
+    gap: 18px;
   }
 
   .sla-dashboard .dashboard-stat-card {
-    padding: 22px;
+    min-height: 160px;
+    padding: 23px;
   }
 }
 
-/* Portátiles y tabletas horizontales */
+/* =========================================================
+   PORTÁTILES
+========================================================= */
 
 @media (max-width: 1100px) {
   .sla-dashboard {
-    padding: 24px;
+    padding: 25px;
   }
 
   .sla-dashboard .dashboard-stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 15px;
+    gap: 14px;
   }
 
   .sla-dashboard .dashboard-title {
     font-size: 27px;
   }
-
-  .sla-dashboard .dashboard-stat-value {
-    font-size: 28px;
-  }
 }
 
-/* Tabletas verticales */
+/* =========================================================
+   TABLETAS
+========================================================= */
 
 @media (max-width: 768px) {
   .sla-dashboard {
-    padding: 20px;
+    gap: 19px;
+    padding: 21px;
   }
 
   .sla-dashboard .dashboard-header {
     align-items: flex-start;
     gap: 14px;
-    margin-bottom: 22px;
   }
 
   .sla-dashboard .dashboard-title {
-    font-size: 25px;
-    letter-spacing: -0.5px;
+    font-size: 26px;
   }
 
   .sla-dashboard .dashboard-subtitle {
-    font-size: 12px;
-  }
-
-  .sla-dashboard .dashboard-stats {
-    gap: 12px;
+    font-size: 13px;
   }
 
   .sla-dashboard .dashboard-stat-card {
+    min-height: 140px;
     padding: 17px;
-    border-radius: 11px;
   }
 
   .sla-dashboard .dashboard-stat-icon {
-    width: 35px;
-    height: 35px;
-  }
-
-  .sla-dashboard .dashboard-stat-icon svg {
-    width: 18px;
-    height: 18px;
+    width: 36px;
+    height: 36px;
   }
 
   .sla-dashboard .dashboard-stat-value {
@@ -352,23 +579,17 @@
   }
 
   .sla-dashboard .dashboard-welcome {
-    margin-top: 18px;
     padding: 20px;
-  }
-
-  .sla-dashboard .dashboard-welcome-title {
-    font-size: 17px;
-  }
-
-  .sla-dashboard .dashboard-welcome-description {
-    font-size: 12px;
   }
 }
 
-/* Celulares */
+/* =========================================================
+   CELULARES
+========================================================= */
 
 @media (max-width: 600px) {
   .sla-dashboard {
+    gap: 16px;
     padding: 16px;
   }
 
@@ -376,11 +597,6 @@
     flex-direction: column;
     align-items: stretch;
     gap: 12px;
-    margin-bottom: 20px;
-  }
-
-  .sla-dashboard .dashboard-header > * {
-    width: 100%;
   }
 
   .sla-dashboard .dashboard-title {
@@ -393,7 +609,7 @@
   }
 
   .sla-dashboard .dashboard-accent {
-    width: 45px;
+    width: 43px;
     margin-top: 11px;
   }
 
@@ -403,8 +619,9 @@
   }
 
   .sla-dashboard .dashboard-stat-card {
+    min-height: 135px;
     padding: 14px 12px;
-    border-radius: 10px;
+    border-radius: 12px;
   }
 
   .sla-dashboard .dashboard-stat-header {
@@ -417,8 +634,8 @@
   }
 
   .sla-dashboard .dashboard-stat-icon {
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     border-radius: 8px;
   }
 
@@ -430,7 +647,6 @@
   .sla-dashboard .dashboard-stat-value {
     margin-top: 13px;
     font-size: 23px;
-    line-height: 1.25;
   }
 
   .sla-dashboard .dashboard-stat-description {
@@ -439,9 +655,8 @@
   }
 
   .sla-dashboard .dashboard-welcome {
-    margin-top: 16px;
-    padding: 18px 16px;
-    border-radius: 11px;
+    padding: 17px 15px;
+    border-radius: 12px;
   }
 
   .sla-dashboard .dashboard-welcome-title {
@@ -449,17 +664,17 @@
   }
 
   .sla-dashboard .dashboard-welcome-description {
-    margin-top: 7px;
     font-size: 12px;
-    line-height: 1.7;
   }
 
   .sla-dashboard .dashboard-divider {
-    margin: 16px 0;
+    margin: 0;
   }
 }
 
-/* Celulares pequeños */
+/* =========================================================
+   CELULARES PEQUEÑOS
+========================================================= */
 
 @media (max-width: 360px) {
   .sla-dashboard {
@@ -475,6 +690,7 @@
   }
 
   .sla-dashboard .dashboard-stat-card {
+    min-height: 125px;
     padding: 12px 9px;
   }
 
@@ -493,7 +709,9 @@
   }
 }
 
-/* Reducir animaciones si el usuario lo prefiere */
+/* =========================================================
+   REDUCCIÓN DE MOVIMIENTO
+========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
   .sla-dashboard *,
@@ -503,5 +721,353 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* =========================================================
+   SLA DASHBOARD · ANÁLISIS
+   Diseño unificado con Solicitudes
+========================================================= */
+
+.sla-analisis {
+  --ana-azul: #102a43;
+  --ana-azul-secundario: #173f5f;
+  --ana-rojo: #d62839;
+  --ana-blanco: #ffffff;
+  --ana-fondo: #f4f7fb;
+  --ana-borde: #e1e8f0;
+  --ana-texto: #334155;
+  --ana-gris: #64748b;
+  --ana-sombra: 0 4px 16px rgb(16 42 67 / 5%);
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+  padding: 30px;
+  color: var(--ana-texto);
+  background: var(--ana-fondo);
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+}
+
+.sla-analisis *,
+.sla-analisis *::before,
+.sla-analisis *::after {
+  box-sizing: border-box;
+}
+
+/* Encabezado */
+
+.sla-analisis .analisis-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.sla-analisis .analisis-titulo {
+  margin: 0;
+  color: var(--ana-azul);
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.7px;
+  line-height: 1.25;
+}
+
+.sla-analisis .analisis-subtitulo {
+  margin: 8px 0 0;
+  color: var(--ana-gris);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.sla-analisis .analisis-acento {
+  width: 52px;
+  height: 4px;
+  margin-top: 14px;
+  border-radius: 8px;
+  background: var(--ana-rojo);
+}
+
+/* Indicadores */
+
+.sla-analisis .analisis-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.sla-analisis .analisis-kpi {
+  min-width: 0;
+  padding: 20px 18px;
+  border: 1px solid var(--ana-borde);
+  border-radius: 14px;
+  background: var(--ana-blanco);
+  box-shadow: var(--ana-sombra);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sla-analisis .analisis-kpi:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgb(16 42 67 / 9%);
+}
+
+.sla-analisis .analisis-kpi-icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  margin-bottom: 13px;
+  border-radius: 10px;
+  background: var(--ana-azul);
+  color: white;
+}
+
+.sla-analisis .analisis-kpi-icono.rojo {
+  background: var(--ana-rojo);
+}
+
+.sla-analisis .analisis-kpi-icono svg {
+  width: 19px;
+  height: 19px;
+}
+
+.sla-analisis .analisis-kpi-label {
+  margin: 0;
+  color: var(--ana-gris);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.5;
+}
+
+.sla-analisis .analisis-kpi-valor {
+  margin: 10px 0 0;
+  color: var(--ana-azul);
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.sla-analisis .analisis-kpi-descripcion {
+  margin: 7px 0 0;
+  color: var(--ana-gris);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* Cuadrícula de gráficos */
+
+.sla-analisis .analisis-graficos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  width: 100%;
+  min-width: 0;
+}
+
+/* Tarjetas */
+
+.sla-analisis .analisis-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--ana-borde);
+  border-radius: 14px;
+  background: var(--ana-blanco);
+  box-shadow: var(--ana-sombra);
+}
+
+.sla-analisis .analisis-card-header {
+  padding: 22px 24px 16px;
+  border-bottom: 1px solid #edf1f5;
+}
+
+.sla-analisis .analisis-card-title {
+  margin: 0;
+  color: var(--ana-azul);
+  font-size: 17px;
+  font-weight: 750;
+}
+
+.sla-analisis .analisis-card-description {
+  margin-top: 6px;
+  color: var(--ana-gris);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.sla-analisis .analisis-card-content {
+  padding: 20px 18px;
+}
+
+.sla-analisis .analisis-grafico {
+  width: 100%;
+  height: 270px;
+  min-width: 0;
+}
+
+/* Estado vacío */
+
+.sla-analisis .analisis-vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  text-align: center;
+}
+
+.sla-analisis .analisis-vacio-icono {
+  width: 45px;
+  height: 45px;
+  color: #b8c6d6;
+}
+
+.sla-analisis .analisis-vacio-titulo {
+  margin: 0;
+  color: var(--ana-azul);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.sla-analisis .analisis-vacio-texto {
+  max-width: 320px;
+  margin: 0;
+  color: var(--ana-gris);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* Responsive */
+
+@media (max-width: 1200px) {
+  .sla-analisis {
+    padding: 25px;
+  }
+
+  .sla-analisis .analisis-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .sla-analisis {
+    gap: 18px;
+    padding: 20px;
+  }
+
+  .sla-analisis .analisis-titulo {
+    font-size: 26px;
+  }
+
+  .sla-analisis .analisis-graficos {
+    gap: 14px;
+  }
+
+  .sla-analisis .analisis-card-header {
+    padding: 18px;
+  }
+
+  .sla-analisis .analisis-card-content {
+    padding: 16px 12px;
+  }
+
+  .sla-analisis .analisis-grafico {
+    height: 250px;
+  }
+}
+
+@media (max-width: 600px) {
+  .sla-analisis {
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .sla-analisis .analisis-titulo {
+    font-size: 23px;
+  }
+
+  .sla-analisis .analisis-subtitulo {
+    font-size: 12px;
+  }
+
+  .sla-analisis .analisis-acento {
+    width: 43px;
+    margin-top: 11px;
+  }
+
+  .sla-analisis .analisis-kpis {
+    gap: 10px;
+  }
+
+  .sla-analisis .analisis-kpi {
+    padding: 15px 12px;
+    border-radius: 12px;
+  }
+
+  .sla-analisis .analisis-kpi-valor {
+    font-size: 24px;
+  }
+
+  .sla-analisis .analisis-kpi-label {
+    font-size: 11px;
+  }
+
+  .sla-analisis .analisis-graficos {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .sla-analisis .analisis-card-header {
+    padding: 16px;
+  }
+
+  .sla-analisis .analisis-card-content {
+    padding: 14px 10px;
+  }
+
+  .sla-analisis .analisis-grafico {
+    height: 250px;
+  }
+}
+
+@media (max-width: 360px) {
+  .sla-analisis {
+    padding: 12px;
+  }
+
+  .sla-analisis .analisis-kpis {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sla-analisis .analisis-kpi {
+    padding: 14px;
+  }
+
+  .sla-analisis .analisis-grafico {
+    height: 230px;
+  }
+}
+
+/* Accesibilidad */
+
+@media (prefers-reduced-motion: reduce) {
+  .sla-analisis *,
+  .sla-analisis *::before,
+  .sla-analisis *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
   }
 }

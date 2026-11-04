@@ -1,60 +1,103 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
+
 import {
-  LayoutDashboard,
-  UserCog,
+  Users,
   Building2,
   Inbox,
   BarChart3,
-  ArrowLeft,
+  LogOut,
+  LayoutDashboard,
 } from "lucide-react";
 
-const items = [
-  { label: "Panel principal", href: "/admin", icon: LayoutDashboard, exact: true },
-  { label: "Usuarios", href: "/admin/usuarios", icon: UserCog },
-  { label: "Clientes", href: "/dashboard/clientes", icon: Building2 },
-  { label: "Solicitudes", href: "/dashboard/solicitudes", icon: Inbox },
-  { label: "Análisis", href: "/dashboard/analisis", icon: BarChart3 },
+const enlaces = [
+  {
+    href: "/admin/dashboard",
+    texto: "Panel principal",
+    icono: LayoutDashboard,
+  },
+  {
+    href: "/admin/dashboard/usuarios",
+    texto: "Usuarios",
+    icono: Users,
+  },
+  {
+    href: "/admin/dashboard/clientes",
+    texto: "Clientes",
+    icono: Building2,
+  },
+  {
+    href: "/admin/dashboard/solicitudes",
+    texto: "Solicitudes",
+    icono: Inbox,
+  },
+  {
+    href: "/admin/dashboard/analisis",
+    texto: "Análisis",
+    icono: BarChart3,
+  },
 ];
 
 export default function AdminSidebar() {
   const pathname = usePathname();
 
+  function estaActivo(href: string) {
+    if (href === "/admin/dashboard") {
+      return pathname === href;
+    }
+
+    return pathname === href || pathname.startsWith(`${href}/`);
+  }
+
   return (
     <aside className="admin-sidebar">
-      <Link href="/admin" className="admin-sidebar-brand">
-        <LayoutDashboard size={27} />
-        <span>SLA Dashboard</span>
-      </Link>
+      <div className="admin-sidebar-brand">
+        <Link href="/admin/dashboard">
+          <Image
+            src="/imagen.png"
+            alt="Solutions & Payroll"
+            width={200}
+            height={86}
+            priority
+          />
+        </Link>
+      </div>
 
-      <p className="admin-sidebar-label">MENÚ PRINCIPAL</p>
+      <div className="admin-sidebar-heading">
+        <span>ADMINISTRACIÓN</span>
+      </div>
 
       <nav className="admin-sidebar-nav">
-        {items.map(({ label, href, icon: Icon, exact }) => {
-          const active = exact
-            ? pathname === href
-            : pathname === href || pathname.startsWith(href + "/");
+        {enlaces.map(({ href, texto, icono: Icono }) => {
+          const activo = estaActivo(href);
 
           return (
             <Link
               key={href}
               href={href}
-              className={`admin-sidebar-link${active ? " active" : ""}`}
+              className={`admin-sidebar-link${activo ? " active" : ""}`}
+              aria-current={activo ? "page" : undefined}
             >
-              <Icon size={20} />
-              <span>{label}</span>
+              <Icono size={20} strokeWidth={2} />
+              <span>{texto}</span>
             </Link>
           );
         })}
       </nav>
 
       <div className="admin-sidebar-bottom">
-        <Link href="/dashboard" className="admin-sidebar-link">
-          <ArrowLeft size={20} />
-          <span>Volver al dashboard</span>
-        </Link>
+        <button
+          type="button"
+          className="admin-sidebar-link admin-logout"
+          onClick={() => signOut({ callbackUrl: "/admin/login" })}
+        >
+          <LogOut size={20} />
+          <span>Cerrar sesión</span>
+        </button>
       </div>
     </aside>
   );
