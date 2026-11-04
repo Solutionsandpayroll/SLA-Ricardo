@@ -1,6 +1,6 @@
 
 import { NextResponse } from "next/server";
-import { authenticateWithDeviceCode } from "@/lib/integraciones/graph-device-auth";
+   import { authenticateWithDeviceCode } from "@/lib/graph-device-auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
