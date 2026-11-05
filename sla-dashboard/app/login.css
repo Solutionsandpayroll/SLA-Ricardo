@@ -1172,3 +1172,7 @@ input {
     font-size: 21px;
   }
 }
+.sla-access-button button,
+.sla-access-button a {
+  cursor: pointer;
+}
