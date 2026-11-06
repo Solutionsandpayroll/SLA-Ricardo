@@ -1,19 +1,22 @@
+import { config } from "./config";
+
 // ======================================================
 // CONFIGURACIÓN DEL SLA - COLOMBIA
 // ======================================================
 
-const SLA_HORAS = 2;
+const SLA_HORAS = config.sla.horasPorDefecto;
+const MINUTOS_ALERTA_PROXIMO = config.sla.minutosAlertaProximo;
 
-const MINUTOS_MANANA_INICIO = 8 * 60;       // 08:00
-const MINUTOS_MANANA_FIN = 12 * 60 + 30;    // 12:30
-const MINUTOS_TARDE_INICIO = 13 * 60 + 30;  // 13:30
-const MINUTOS_TARDE_FIN = 17 * 60;          // 17:00
+const MINUTOS_MANANA_INICIO = 8 * 60;
+const MINUTOS_MANANA_FIN = 12 * 60 + 30;
+const MINUTOS_TARDE_INICIO = 13 * 60 + 30;
+const MINUTOS_TARDE_FIN = 17 * 60;
 
 const MINUTOS_POR_HORA = 60;
 const MILISEGUNDOS_POR_MINUTO = 60_000;
+const OFFSET_COLOMBIA = 5 * 60 * 60 * 1000;
 
-// Festivos oficiales de Colombia para 2026 y 2027.
-// Se incluyen las fechas trasladadas al lunes cuando corresponde.
+// Festivos oficiales de Colombia: 2026, 2027 y 2028.
 
 const FESTIVOS_COLOMBIA = new Set([
   // 2026
@@ -55,10 +58,30 @@ const FESTIVOS_COLOMBIA = new Set([
   "2027-11-15",
   "2027-12-08",
   "2027-12-25",
+
+  // 2028
+  "2028-01-01",
+  "2028-01-10",
+  "2028-03-20",
+  "2028-04-13",
+  "2028-04-14",
+  "2028-05-01",
+  "2028-05-29",
+  "2028-06-19",
+  "2028-06-26",
+  "2028-07-03",
+  "2028-07-20",
+  "2028-08-07",
+  "2028-08-21",
+  "2028-10-16",
+  "2028-11-06",
+  "2028-11-13",
+  "2028-12-08",
+  "2028-12-25",
 ]);
 
 // ======================================================
-// UTILIDADES DE FECHA Y HORA
+// INTERFACES
 // ======================================================
 
 interface FechaColombia {
@@ -72,12 +95,33 @@ interface FechaColombia {
   minutosDelDia: number;
 }
 
+// ======================================================
+// VALIDACIÓN DE FECHAS
+// ======================================================
+
+function validarFecha(fecha: Date): void {
+  if (
+    !(fecha instanceof Date) ||
+    !Number.isFinite(fecha.getTime())
+  ) {
+    throw new Error("La fecha proporcionada no es válida.");
+  }
+}
+
+// ======================================================
+// UTILIDADES DE FECHA Y HORA
+// ======================================================
+
 /**
- * Obtiene los componentes de una fecha en hora de Colombia.
+ * Convierte una fecha UTC a componentes de hora colombiana.
  * Colombia utiliza UTC-5 durante todo el año.
  */
 function obtenerFechaColombia(fecha: Date): FechaColombia {
-  const fechaUTC = new Date(fecha.getTime() - 5 * 60 * 60 * 1000);
+  validarFecha(fecha);
+
+  const fechaUTC = new Date(
+    fecha.getTime() - OFFSET_COLOMBIA
+  );
 
   const anio = fechaUTC.getUTCFullYear();
   const mes = fechaUTC.getUTCMonth();
@@ -102,8 +146,8 @@ function obtenerFechaColombia(fecha: Date): FechaColombia {
 }
 
 /**
- * Construye una fecha UTC a partir de una fecha y hora colombianas.
- * Los meses utilizan el formato de JavaScript: enero = 0.
+ * Construye una fecha UTC desde componentes de hora colombiana.
+ * Mes: enero = 0.
  */
 function crearFechaColombia(
   anio: number,
@@ -118,64 +162,51 @@ function crearFechaColombia(
 }
 
 /**
- * Avanza un día calendario, conservando la hora colombiana.
- */
-function avanzarDiaColombia(fecha: Date): Date {
-  const partes = obtenerFechaColombia(fecha);
-
-  return crearFechaColombia(
-    partes.anio,
-    partes.mes,
-    partes.dia + 1,
-    partes.horas,
-    partes.minutos
-  );
-}
-
-/**
- * Comprueba si una fecha corresponde a un día laboral.
+ * Comprueba si es un día laboral.
  */
 function esDiaLaboral(fecha: Date): boolean {
   const partes = obtenerFechaColombia(fecha);
 
-  // Domingo = 0 y sábado = 6.
-  if (partes.diaSemana === 0 || partes.diaSemana === 6) {
-    return false;
-  }
+  const esFinDeSemana =
+    partes.diaSemana === 0 ||
+    partes.diaSemana === 6;
 
-  if (FESTIVOS_COLOMBIA.has(partes.fechaStr)) {
-    return false;
-  }
-
-  return true;
+  return (
+    !esFinDeSemana &&
+    !FESTIVOS_COLOMBIA.has(partes.fechaStr)
+  );
 }
 
 /**
- * Comprueba si la hora está dentro de los bloques laborales.
- *
- * Mañana: 08:00 a 12:30.
- * Tarde: 13:30 a 17:00.
+ * Comprueba si la fecha está dentro del horario laboral.
  */
 function esHorarioHabil(fecha: Date): boolean {
   const partes = obtenerFechaColombia(fecha);
   const minuto = partes.minutosDelDia;
 
-  if (!esDiaLaboral(fecha)) {
-    return false;
-  }
-
   return (
-    (minuto >= MINUTOS_MANANA_INICIO &&
-      minuto < MINUTOS_MANANA_FIN) ||
-    (minuto >= MINUTOS_TARDE_INICIO &&
-      minuto < MINUTOS_TARDE_FIN)
+    esDiaLaboral(fecha) &&
+    (
+      (
+        minuto >= MINUTOS_MANANA_INICIO &&
+        minuto < MINUTOS_MANANA_FIN
+      ) ||
+      (
+        minuto >= MINUTOS_TARDE_INICIO &&
+        minuto < MINUTOS_TARDE_FIN
+      )
+    )
   );
 }
 
 /**
- * Devuelve el siguiente momento hábil a partir de una fecha.
+ * Obtiene el siguiente momento hábil.
  */
-function obtenerSiguienteMomentoHabil(fecha: Date): Date {
+function obtenerSiguienteMomentoHabil(
+  fecha: Date
+): Date {
+  validarFecha(fecha);
+
   let actual = new Date(fecha.getTime());
 
   for (let intentos = 0; intentos < 4000; intentos++) {
@@ -186,9 +217,9 @@ function obtenerSiguienteMomentoHabil(fecha: Date): Date {
         partes.anio,
         partes.mes,
         partes.dia + 1,
-        8,
-        0
+        8
       );
+
       continue;
     }
 
@@ -200,12 +231,11 @@ function obtenerSiguienteMomentoHabil(fecha: Date): Date {
         partes.anio,
         partes.mes,
         partes.dia,
-        8,
-        0
+        8
       );
     }
 
-    // Entre las 12:30 y las 13:30.
+    // Pausa de almuerzo.
     if (
       minuto >= MINUTOS_MANANA_FIN &&
       minuto < MINUTOS_TARDE_INICIO
@@ -219,19 +249,18 @@ function obtenerSiguienteMomentoHabil(fecha: Date): Date {
       );
     }
 
-    // A partir de las 17:00.
+    // Después de las 17:00.
     if (minuto >= MINUTOS_TARDE_FIN) {
       actual = crearFechaColombia(
         partes.anio,
         partes.mes,
         partes.dia + 1,
-        8,
-        0
+        8
       );
+
       continue;
     }
 
-    // Ya se encuentra en horario hábil.
     return actual;
   }
 
@@ -260,8 +289,7 @@ function obtenerFinBloqueHabil(fecha: Date): Date {
     partes.anio,
     partes.mes,
     partes.dia,
-    17,
-    0
+    17
   );
 }
 
@@ -275,9 +303,7 @@ function obtenerFinBloqueHabil(fecha: Date): Date {
 export function calcularInicioConteoSLA(
   fechaRecepcion: Date
 ): Date {
-  if (Number.isNaN(fechaRecepcion.getTime())) {
-    throw new Error("La fecha de recepción no es válida.");
-  }
+  validarFecha(fechaRecepcion);
 
   if (esHorarioHabil(fechaRecepcion)) {
     return new Date(fechaRecepcion.getTime());
@@ -291,27 +317,25 @@ export function calcularInicioConteoSLA(
 // ======================================================
 
 /**
- * Agrega una cantidad de minutos hábiles a una fecha.
- * No cuenta almuerzos, fines de semana ni festivos.
+ * Agrega minutos hábiles a una fecha.
+ * Excluye almuerzos, fines de semana y festivos.
  */
 function agregarMinutosHabiles(
   fechaInicio: Date,
   minutos: number
 ): Date {
-  if (Number.isNaN(fechaInicio.getTime())) {
-    throw new Error("La fecha inicial no es válida.");
-  }
+  validarFecha(fechaInicio);
 
   if (!Number.isFinite(minutos) || minutos < 0) {
-    throw new Error("La cantidad de minutos no es válida.");
+    throw new Error(
+      "La cantidad de minutos no es válida."
+    );
   }
 
   let actual = obtenerSiguienteMomentoHabil(fechaInicio);
   let restantes = minutos;
 
   while (restantes > 0) {
-    actual = obtenerSiguienteMomentoHabil(actual);
-
     const finBloque = obtenerFinBloqueHabil(actual);
 
     const minutosDisponibles =
@@ -319,36 +343,29 @@ function agregarMinutosHabiles(
       MILISEGUNDOS_POR_MINUTO;
 
     if (restantes <= minutosDisponibles) {
-      actual = new Date(
+      return new Date(
         actual.getTime() +
-          restantes * MILISEGUNDOS_POR_MINUTO
+        restantes * MILISEGUNDOS_POR_MINUTO
       );
-
-      restantes = 0;
-    } else {
-      restantes -= minutosDisponibles;
-
-      // Al terminar un bloque, se buscará el siguiente momento hábil.
-      actual = finBloque;
     }
+
+    restantes -= minutosDisponibles;
+
+    actual = obtenerSiguienteMomentoHabil(finBloque);
   }
 
   return actual;
 }
 
 /**
- * Calcula los minutos hábiles transcurridos entre dos fechas.
+ * Calcula los minutos hábiles entre dos fechas.
  */
 function calcularMinutosHabilesTranscurridos(
   fechaInicio: Date,
   fechaFin: Date
 ): number {
-  if (
-    Number.isNaN(fechaInicio.getTime()) ||
-    Number.isNaN(fechaFin.getTime())
-  ) {
-    throw new Error("Una de las fechas proporcionadas no es válida.");
-  }
+  validarFecha(fechaInicio);
+  validarFecha(fechaFin);
 
   if (fechaFin <= fechaInicio) {
     return 0;
@@ -365,12 +382,15 @@ function calcularMinutosHabilesTranscurridos(
     }
 
     const finBloque = obtenerFinBloqueHabil(actual);
-    const finIntervalo =
-      finBloque < fechaFin ? finBloque : fechaFin;
 
-    total +=
-      (finIntervalo.getTime() - actual.getTime()) /
-      MILISEGUNDOS_POR_MINUTO;
+    const finIntervalo =
+      finBloque < fechaFin
+        ? finBloque
+        : fechaFin;
+
+    total += (
+      finIntervalo.getTime() - actual.getTime()
+    ) / MILISEGUNDOS_POR_MINUTO;
 
     actual = finIntervalo;
   }
@@ -384,14 +404,21 @@ function calcularMinutosHabilesTranscurridos(
 
 /**
  * Calcula la fecha límite de respuesta.
- * Por defecto, el plazo es de dos horas hábiles.
+ * Si no se indica el plazo, usa el configurado por defecto (config.sla.horasPorDefecto).
  */
 export function calcularVencimientoSLA(
   inicioConteo: Date,
   horasSLA: number = SLA_HORAS
 ): Date {
-  if (!Number.isFinite(horasSLA) || horasSLA < 0) {
-    throw new Error("La cantidad de horas SLA no es válida.");
+  validarFecha(inicioConteo);
+
+  if (
+    !Number.isFinite(horasSLA) ||
+    horasSLA < 0
+  ) {
+    throw new Error(
+      "La cantidad de horas SLA no es válida."
+    );
   }
 
   return agregarMinutosHabiles(
@@ -405,7 +432,7 @@ export function calcularVencimientoSLA(
 // ======================================================
 
 /**
- * Devuelve el tiempo hábil en formato "X h YY min".
+ * Devuelve el tiempo hábil en formato X h YY min.
  */
 export function calcularTiempoHabil(
   fechaInicio: Date,
@@ -418,7 +445,10 @@ export function calcularTiempoHabil(
     )
   );
 
-  const horas = Math.floor(minutosTotales / 60);
+  const horas = Math.floor(
+    minutosTotales / 60
+  );
+
   const minutos = minutosTotales % 60;
 
   return `${horas} h ${String(minutos).padStart(2, "0")} min`;
@@ -435,16 +465,7 @@ export type EstadoSLA =
   | "no_verificable";
 
 /**
- * Clasifica el SLA según el vencimiento real.
- *
- * Para solicitudes sin respuesta:
- * - Vencido: se alcanzó o superó la fecha límite.
- * - Próximo a vencer: quedan 30 minutos hábiles o menos.
- * - Dentro del SLA: todavía tiene más de 30 minutos hábiles.
- *
- * Para solicitudes respondidas:
- * - Dentro del SLA: respuesta a tiempo.
- * - Vencido: respuesta posterior al vencimiento.
+ * Clasifica el estado de una solicitud.
  */
 export function clasificarSLA(
   inicioConteo: Date,
@@ -452,15 +473,20 @@ export function clasificarSLA(
   fechaRespuesta?: Date
 ): EstadoSLA {
   if (
-    Number.isNaN(inicioConteo.getTime()) ||
-    Number.isNaN(vencimiento.getTime())
+    !(inicioConteo instanceof Date) ||
+    !(vencimiento instanceof Date) ||
+    !Number.isFinite(inicioConteo.getTime()) ||
+    !Number.isFinite(vencimiento.getTime())
   ) {
     return "no_verificable";
   }
 
   if (
     fechaRespuesta &&
-    Number.isNaN(fechaRespuesta.getTime())
+    (
+      !(fechaRespuesta instanceof Date) ||
+      !Number.isFinite(fechaRespuesta.getTime())
+    )
   ) {
     return "no_verificable";
   }
@@ -478,13 +504,14 @@ export function clasificarSLA(
   }
 
   const minutosRestantes =
-    calcularMinutosHabilesTranscurridos(ahora, vencimiento);
+    calcularMinutosHabilesTranscurridos(
+      ahora,
+      vencimiento
+    );
 
-  if (minutosRestantes <= 30) {
-    return "proximo_vencer";
-  }
-
-  return "dentro_sla";
+  return minutosRestantes <= MINUTOS_ALERTA_PROXIMO
+    ? "proximo_vencer"
+    : "dentro_sla";
 }
 
 // ======================================================
@@ -492,18 +519,31 @@ export function clasificarSLA(
 // ======================================================
 
 /**
- * Calcula todos los campos utilizados por la API:
- * inicio, vencimiento, tiempo hábil y estado.
+ * Calcula todos los campos utilizados por la API.
+ * horasSLA es opcional: usar el slaHoras de la solicitud.
+ * Si viene vacío (null/undefined), se usa el plazo por defecto.
  */
 export function calcularSLA(
   fechaRecepcion: Date,
-  fechaRespuesta?: Date
+  fechaRespuesta?: Date,
+  horasSLA?: number | null
 ) {
   const inicioConteoSLA =
     calcularInicioConteoSLA(fechaRecepcion);
 
-  const vencimientoSLA =
-    calcularVencimientoSLA(inicioConteoSLA);
+  const vencimientoSLA = calcularVencimientoSLA(
+    inicioConteoSLA,
+    horasSLA ?? SLA_HORAS
+  );
+
+  if (
+    fechaRespuesta &&
+    !Number.isFinite(fechaRespuesta.getTime())
+  ) {
+    throw new Error(
+      "La fecha de respuesta no es válida."
+    );
+  }
 
   const fechaFin = fechaRespuesta || new Date();
 

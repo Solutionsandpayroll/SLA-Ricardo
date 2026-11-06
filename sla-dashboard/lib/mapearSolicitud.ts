@@ -5,7 +5,7 @@ import type { EstadoSLA, SolicitudSLA } from "./exportarInformeSLA";
 export interface SolicitudApi {
   id: string;
   asunto: string;
-  cuerpo: string;
+   cuerpo?: string;
   remitente: string;
   encargado: string | null;
   fechaRecibido: string;
@@ -19,6 +19,7 @@ export interface SolicitudApi {
   tipoProceso: string | null;
   paisCliente: string | null;
   evidenciaRespuesta: string | null;
+  resumen: string | null;
   observaciones: string | null;
   clasificacionIA: string | null;
   cliente: { nombre: string; pais: string | null } | null;
@@ -38,6 +39,7 @@ const MAPA_ESTADOS: Record<string, EstadoSLA> = {
   "pendiente de respuesta": "Pendiente de respuesta",
   pendiente: "Pendiente de respuesta",
   "proxima a vencer": "Próxima a vencer",
+  "proximo vencer": "Próxima a vencer", // valor que guarda clasificarSLA
   "sla vencido": "SLA vencido",
   vencido: "SLA vencido",
   "en gestion": "En gestión",
@@ -63,6 +65,7 @@ const resumirTexto = (t: string, max = 300) => {
 
 export function mapearSolicitud(s: SolicitudApi): SolicitudSLA {
   const recibido = new Date(s.fechaRecibido);
+
   return {
     cliente: s.nombreCliente ?? s.cliente?.nombre ?? "",
     remitente: s.remitente,
@@ -70,12 +73,13 @@ export function mapearSolicitud(s: SolicitudApi): SolicitudSLA {
     servicio: s.clasificacionIA ?? "",
     proceso: s.tipoProceso ?? "",
     asunto: s.asunto,
-    resumen: resumirTexto(s.cuerpo),
+    resumen: s.resumen?.trim() || resumirTexto(s.cuerpo ?? ""),
     fechaRecepcion: recibido,
     inicioConteoSLA: s.inicioConteoSLA ? new Date(s.inicioConteoSLA) : recibido,
     responsable: s.encargado ?? "",
     estado: convertirEstado(s.estado, s.estadoSLA),
     vencimientoSLA: s.vencimientoSLA ? new Date(s.vencimientoSLA) : recibido,
+    fechaRespuesta: s.fechaRespuesta ? new Date(s.fechaRespuesta) : null,
     tiempoHabil: s.tiempoHabil ?? "",
     evidenciaRespuesta: s.evidenciaRespuesta ?? "",
     observaciones: s.observaciones ?? "",

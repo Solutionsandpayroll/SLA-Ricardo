@@ -32,6 +32,7 @@ export interface SolicitudSLA {
   responsable: string;
   estado: EstadoSLA;
   vencimientoSLA: Date;
+  fechaRespuesta?: Date | null; // fecha de la primera respuesta válida (vacía si no hay)
   tiempoHabil: string; // ej. "4 h 31 min"
   evidenciaRespuesta: string;
   accionPrioritaria?: string;
@@ -55,6 +56,7 @@ export interface OpcionesInforme {
   nota?: string; // texto de la fila "Nota" del resumen
   accionesPrioritarias?: string[]; // lista numerada del resumen
   festivos?: string; // texto de la fila "Festivos" de Criterios
+  slaHoras?: number; // plazo de primera respuesta en horas hábiles (por defecto 2)
 }
 
 /* ───────────── Estilos (copiados del archivo original) ───────────── */
@@ -104,7 +106,12 @@ export async function generarInformeSLA(opts: OpcionesInforme): Promise<Blob> {
     nota = "",
     accionesPrioritarias = [],
     festivos = "",
+    slaHoras = 2,
   } = opts;
+
+  const textoPlazo = `${slaHoras} ${slaHoras === 1 ? "hora hábil" : "horas hábiles"}`;
+  const textoHorario =
+    "Lunes a viernes, 08:00-17:00, excluyendo el almuerzo de 12:30 a 13:30 (esa hora no cuenta como tiempo hábil)";
 
   const wb = new ExcelJS.Workbook();
   wb.creator = "SLA Dashboard";
@@ -115,11 +122,12 @@ export async function generarInformeSLA(opts: OpcionesInforme): Promise<Blob> {
     views: [{ state: "frozen", ySplit: 1 }],
   });
 
+  // Importante: la columna "Estado" debe seguir siendo la J, porque los KPI del
+  // resumen la usan en sus fórmulas. Las columnas nuevas van después de ella.
   ws1.columns = [
     { header: "Cliente", key: "cliente", width: 22 },
     { header: "Remitente", key: "remitente", width: 36 },
     { header: "País", key: "pais", width: 18 },
-    { header: "Servicio", key: "servicio", width: 24 },
     { header: "Proceso", key: "proceso", width: 32 },
     { header: "Asunto", key: "asunto", width: 48 },
     { header: "Resumen", key: "resumen", width: 68 },
@@ -128,6 +136,7 @@ export async function generarInformeSLA(opts: OpcionesInforme): Promise<Blob> {
     { header: "Responsable", key: "responsable", width: 35 },
     { header: "Estado", key: "estado", width: 18 },
     { header: "Vencimiento SLA", key: "vencimientoSLA", width: 22 },
+    { header: "Fecha de respuesta", key: "fechaRespuesta", width: 22 },
     { header: "Tiempo hábil", key: "tiempoHabil", width: 16 },
     { header: "Evidencia de respuesta", key: "evidenciaRespuesta", width: 70 },
     { header: "Acción prioritaria", key: "accionPrioritaria", width: 55 },
@@ -139,6 +148,7 @@ export async function generarInformeSLA(opts: OpcionesInforme): Promise<Blob> {
   solicitudes.forEach((s) => {
     const fila = ws1.addRow({
       ...s,
+      fechaRespuesta: s.fechaRespuesta ?? null,
       accionPrioritaria: s.accionPrioritaria ?? "",
       observaciones: s.observaciones ?? "",
       fuenteOutlook: s.fuenteOutlook ?? "",
@@ -150,7 +160,7 @@ export async function generarInformeSLA(opts: OpcionesInforme): Promise<Blob> {
       c.alignment = alineacionCuerpo;
       if (argb) c.fill = relleno(argb);
     });
-    ["fechaRecepcion", "inicioConteoSLA", "vencimientoSLA"].forEach((k) => {
+    ["fechaRecepcion", "inicioConteoSLA", "vencimientoSLA", "fechaRespuesta"].forEach((k) => {
       fila.getCell(k).numFmt = FMT_FECHA;
     });
   });
@@ -167,7 +177,7 @@ export async function generarInformeSLA(opts: OpcionesInforme): Promise<Blob> {
   ws2.getCell("B2").value = corte;
   ws2.getCell("B2").numFmt = FMT_FECHA;
   ws2.getCell("A3").value = "Regla SLA primera respuesta";
-  ws2.getCell("B3").value = "2 horas hábiles, lunes a viernes, 08:00-17:00, America/Bogota";
+  ws2.getCell("B3").value = `${textoPlazo}, lunes a viernes, 08:00-17:00 (sin contar el almuerzo de 12:30 a 13:30), America/Bogota`;
   ws2.getCell("A4").value = "Nota";
   ws2.getCell("B4").value = nota;
   [2, 3, 4].forEach((r) =>
@@ -183,11 +193,11 @@ export async function generarInformeSLA(opts: OpcionesInforme): Promise<Blob> {
 
   const kpis: [string, string, number, string?][] = [
     ["Total solicitudes registradas", "COUNTA('Seguimiento SLA'!A2:A1048576)", total],
-    ["SLA vencido", `COUNTIF('Seguimiento SLA'!K:K,"SLA vencido")`, vencidas],
-    ["En gestión", `COUNTIF('Seguimiento SLA'!K:K,"En gestión")`, cuenta("En gestión")],
-    ["Cerradas", `COUNTIF('Seguimiento SLA'!K:K,"Cerrada")`, cuenta("Cerrada")],
-    ["Respondidas", `COUNTIF('Seguimiento SLA'!K:K,"Respondida")`, cuenta("Respondida")],
-    ["Próximas a vencer", `COUNTIF('Seguimiento SLA'!K:K,"Próxima a vencer")`, cuenta("Próxima a vencer")],
+    ["SLA vencido", `COUNTIF('Seguimiento SLA'!J:J,"SLA vencido")`, vencidas],
+    ["En gestión", `COUNTIF('Seguimiento SLA'!J:J,"En gestión")`, cuenta("En gestión")],
+    ["Cerradas", `COUNTIF('Seguimiento SLA'!J:J,"Cerrada")`, cuenta("Cerrada")],
+    ["Respondidas", `COUNTIF('Seguimiento SLA'!J:J,"Respondida")`, cuenta("Respondida")],
+    ["Próximas a vencer", `COUNTIF('Seguimiento SLA'!J:J,"Próxima a vencer")`, cuenta("Próxima a vencer")],
     ["% dentro del SLA / sin vencimiento", "IF(B7=0,0,(B7-B8)/B7)", total === 0 ? 0 : (total - vencidas) / total, "0.0%"],
   ];
   kpis.forEach(([etiqueta, formula, resultado, fmt], i) => {
@@ -218,8 +228,9 @@ export async function generarInformeSLA(opts: OpcionesInforme): Promise<Blob> {
   estiloEncabezado(ws3.getRow(1), false);
   const criterios: [string, string][] = [
     ["Zona horaria", "America/Bogota"],
-    ["Horario hábil", "Lunes a viernes, 08:00-17:00"],
-    ["SLA primera respuesta", "2 horas hábiles"],
+    ["Horario hábil", textoHorario],
+    ["Almuerzo", "12:30 a 13:30. No cuenta para el cálculo del SLA."],
+    ["SLA primera respuesta", textoPlazo],
     [
       "Estados permitidos",
       "Nueva, Asignada, Pendiente de respuesta, Próxima a vencer, SLA vencido, En gestión, Respondida, Cerrada, Requiere validación, No verificable",
@@ -230,7 +241,7 @@ export async function generarInformeSLA(opts: OpcionesInforme): Promise<Blob> {
     ],
     [
       "No sustancial",
-      "Recibido, gracias, lo estamos revisando, pronto responderemos, respuestas automáticas o solo confirmaciones internas.",
+      "Recibido, gracias, lo estamos revisando, pronto responderemos, respuestas automáticas, reenvíos internos o solo confirmaciones internas.",
     ],
     ["Festivos", festivos],
   ];
