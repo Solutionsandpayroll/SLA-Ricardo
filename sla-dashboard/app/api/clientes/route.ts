@@ -1,94 +1,148 @@
-import { NextResponse } from "next/server"
-import { getServerSession } from "next-auth/next"
+import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth/next";
 
-import { authOptions } from "@/lib/auth"
-import { prisma } from "@/lib/prisma"
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
-export const runtime = "nodejs"
+async function validarAdmin() {
+  const session = await getServerSession(authOptions);
 
-function limpiarDominio(valor: string) {
-  return valor
-    .trim()
-    .toLowerCase()
-    .replace(/^https?:\/\//, "")
-    .replace(/^www\./, "")
-    .replace(/^@/, "")
-    .split("/")[0]
-}
-
-async function autorizado() {
-  const session = await getServerSession(authOptions)
-  return Boolean(session?.user?.id)
-}
-
-export async function GET() {
-  if (!(await autorizado())) {
-    return NextResponse.json({ success: false, error: "No autorizado" }, { status: 401 })
+  if (!session?.user?.id) {
+    return {
+      error: NextResponse.json(
+        { success: false, error: "No autorizado" },
+        { status: 401 }
+      ),
+    };
   }
 
-  const clientes = await prisma.cliente.findMany({
-    orderBy: { nombre: "asc" },
-    include: { _count: { select: { solicitudes: true } } },
-  })
+  const usuario = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { role: true },
+  });
 
-  return NextResponse.json({ success: true, clientes })
+  if (usuario?.role !== "ADMIN") {
+    return {
+      error: NextResponse.json(
+        { success: false, error: "Sin permisos" },
+        { status: 403 }
+      ),
+    };
+  }
+
+  return { error: null };
 }
+
+// ======================================================
+// CREAR CLIENTE
+// ======================================================
 
 export async function POST(request: Request) {
-  if (!(await autorizado())) {
-    return NextResponse.json({ success: false, error: "No autorizado" }, { status: 401 })
-  }
-
   try {
-    const body = await request.json()
+    const { error } = await validarAdmin();
+    if (error) return error;
 
-    const nombre = String(body.nombre || "").trim()
-    const dominio = limpiarDominio(String(body.dominio || ""))
-    const pais = String(body.pais || "").trim() || null
+    const body = await request.json();
 
-    if (!nombre) {
-      return NextResponse.json({ success: false, error: "El nombre es obligatorio." }, { status: 400 })
-    }
+    const nombre = String(body.nombre ?? "").trim();
+    const dominio = String(body.dominio ?? "")
+      .trim()
+      .toLowerCase()
+      .replace(/^@/, "");
+    const pais = String(body.pais ?? "").trim();
 
-    if (!/^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(dominio)) {
+    if (!nombre || !dominio) {
       return NextResponse.json(
-        { success: false, error: "El dominio no es válido (ejemplo: empresa.com)." },
+        { success: false, error: "El nombre y el dominio son obligatorios." },
         { status: 400 }
-      )
+      );
     }
 
-    const cliente = await prisma.cliente.create({ data: { nombre, dominio, pais } })
+    const existe = await prisma.cliente.findFirst({ where: { dominio } });
 
-    return NextResponse.json({ success: true, cliente })
-  } catch (error) {
-    if ((error as { code?: string }).code === "P2002") {
+    if (existe) {
       return NextResponse.json(
         { success: false, error: "Ya existe un cliente con ese dominio." },
         { status: 409 }
-      )
+      );
     }
 
-    console.error("Error creando cliente:", error)
-    return NextResponse.json({ success: false, error: "No se pudo crear el cliente." }, { status: 500 })
+    const cliente = await prisma.cliente.create({
+      data: { nombre, dominio, pais: pais || null },
+    });
+
+    return NextResponse.json({ success: true, cliente });
+  } catch (error) {
+    console.error("Error creando cliente:", error);
+    return NextResponse.json(
+      { success: false, error: "No se pudo crear el cliente." },
+      { status: 500 }
+    );
   }
 }
 
+// ======================================================
+// ELIMINAR CLIENTE
+// ======================================================
+
 export async function DELETE(request: Request) {
-  if (!(await autorizado())) {
-    return NextResponse.json({ success: false, error: "No autorizado" }, { status: 401 })
-  }
-
-  const id = new URL(request.url).searchParams.get("id")
-
-  if (!id) {
-    return NextResponse.json({ success: false, error: "Falta el id." }, { status: 400 })
-  }
-
   try {
-    await prisma.cliente.delete({ where: { id } })
-    return NextResponse.json({ success: true })
+    const { error } = await validarAdmin();
+    if (error) return error;
+
+    const { searchParams } = new URL(request.url);
+    const nombre = (
+      searchParams.get("nombre") ?? searchParams.get("id")
+    )?.trim();
+
+    if (!nombre) {
+      return NextResponse.json(
+        { success: false, error: "Falta el nombre del cliente." },
+        { status: 400 }
+      );
+    }
+
+    const clave = nombre.toLocaleLowerCase("es");
+
+    // Nombres tal como están guardados (misma regla de agrupación)
+    const filas = await prisma.solicitud.findMany({
+      where: { nombreCliente: { not: "" } },
+      select: { nombreCliente: true },
+      distinct: ["nombreCliente"],
+    });
+
+    const nombresExactos = filas
+      .map((f) => f.nombreCliente)
+      .filter(
+        (n): n is string => !!n && n.trim().toLocaleLowerCase("es") === clave
+      );
+
+    if (nombresExactos.length === 0) {
+      return NextResponse.json(
+        { success: false, error: "Cliente no encontrado." },
+        { status: 404 }
+      );
+    }
+
+    const [solicitudes, clientes] = await prisma.$transaction([
+      prisma.solicitud.deleteMany({
+        where: { nombreCliente: { in: nombresExactos } },
+      }),
+      prisma.cliente.deleteMany({
+        where: { nombre: { in: nombresExactos } },
+      }),
+    ]);
+
+    return NextResponse.json({
+      success: true,
+      solicitudesEliminadas: solicitudes.count,
+      clientesEliminados: clientes.count,
+    });
   } catch (error) {
-    console.error("Error eliminando cliente:", error)
-    return NextResponse.json({ success: false, error: "No se pudo eliminar el cliente." }, { status: 500 })
+    console.error("Error eliminando cliente:", error);
+    return NextResponse.json(
+      { success: false, error: "No se pudo eliminar el cliente." },
+      { status: 500 }
+    );
   }
 }

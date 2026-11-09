@@ -33,6 +33,49 @@ const MAX_CARACTERES_ACUSE = 200;
 
 const PATRON_ACUSE =
   /\b(recibido|acuso recibo|lo (estamos )?revis(amos|ando)|lo revisaremos|estamos revisando|en revisi[oó]n|gracias por (escribir|tu|su) (correo|mensaje))\b/i;
+
+// ======================================================
+// CLIENTES AUTOMÁTICOS
+// ======================================================
+
+const DOMINIOS_GENERICOS = [
+  "gmail.com",
+  "hotmail.com",
+  "outlook.com",
+  "yahoo.com",
+  "live.com",
+  "icloud.com",
+];
+
+/**
+ * Crea el cliente (por dominio) si todavía no existe.
+ * Ignora correos personales como gmail o hotmail.
+ */
+async function asegurarCliente(
+  remitente: string,
+  nombre?: string | null,
+  pais?: string | null
+) {
+  const dominio =
+    remitente.trim().toLowerCase().split("@").pop() || "";
+
+  if (!dominio || DOMINIOS_GENERICOS.includes(dominio)) return;
+
+  const existe = await prisma.cliente.findFirst({
+    where: { dominio },
+  });
+
+  if (existe) return;
+
+  await prisma.cliente.create({
+    data: {
+      nombre: nombre?.trim() || dominio,
+      dominio,
+      pais: pais || null,
+    },
+  });
+}
+
 // ======================================================
 // FECHAS
 // ======================================================
@@ -573,6 +616,12 @@ export async function POST() {
           : null;
 
         if (existente) {
+          // Asegura el cliente de solicitudes ya guardadas.
+          await asegurarCliente(
+            existente.remitente,
+            existente.nombreCliente,
+            existente.paisCliente
+          );
           console.log(
             "Correo ya registrado:",
             asunto
@@ -639,6 +688,16 @@ export async function POST() {
 
         const asignado = await asignarResponsable(
           clasificacion.tipoProceso,
+          clasificacion.pais
+        );
+
+        // ==================================================
+        // PASO 4C: CREAR CLIENTE SI NO EXISTE
+        // ==================================================
+
+        await asegurarCliente(
+          remitente,
+          clasificacion.cliente,
           clasificacion.pais
         );
 

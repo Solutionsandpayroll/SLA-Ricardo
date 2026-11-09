@@ -21,8 +21,7 @@ model Account {
   id_token          String?
   session_state     String?
   ext_expires_in    Int?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -32,22 +31,20 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String      @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?     @unique
   emailVerified DateTime?
   image         String?
-  role          Role      @default(USER)
+  role          Role        @default(USER)
   passwordHash  String?
-
-  accounts    Account[]
-  sessions    Session[]
-  solicitudes Solicitud[]
+  accounts      Account[]
+  sessions      Session[]
+  solicitudes   Solicitud[]
 }
 
 model VerificationToken {
@@ -59,18 +56,15 @@ model VerificationToken {
 }
 
 model Cliente {
-  id        String   @id @default(cuid())
-  nombre    String
-  dominio   String   @unique
-  pais      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  id          String      @id @default(cuid())
+  nombre      String
+  dominio     String      @unique
+  pais        String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
   solicitudes Solicitud[]
 }
 
-// Responsable de atender cada tipo de proceso, según el país del cliente.
-// paisCliente = "*" aplica a cualquier país (se usa si no hay coincidencia exacta).
 model ResponsableProceso {
   id                String   @id @default(cuid())
   tipoProceso       String
@@ -85,42 +79,37 @@ model ResponsableProceso {
 }
 
 model Solicitud {
-  id                String    @id @default(cuid())
-  asunto            String
-  cuerpo            String
-  remitente         String
-  encargado         String? // Responsable asignado según tipoProceso y paisCliente
-  correoResponsable String?
-  fechaRecibido     DateTime
-  inicioConteoSLA   DateTime?
-  vencimientoSLA    DateTime?
-  fechaRespuesta    DateTime?
-  tiempoHabil       String?
-  estadoSLA         String?
-  estado            String    @default("en_gestion")
-  slaHoras          Float     @default(2)
-
-  conversationId String?
-  clienteId      String?
-  nombreCliente  String?
-  tipoProceso    String?
-  paisCliente    String?
-  correoCliente  String?
-
+  id                 String    @id @default(cuid())
+  asunto             String
+  cuerpo             String
+  remitente          String
+  encargado          String?
+  fechaRecibido      DateTime
+  inicioConteoSLA    DateTime?
+  vencimientoSLA     DateTime?
+  fechaRespuesta     DateTime?
+  tiempoHabil        String?
+  estadoSLA          String?
+  estado             String    @default("en_gestion")
+  slaHoras           Float     @default(2)
+  conversationId     String?
+  clienteId          String?
+  nombreCliente      String?
+  tipoProceso        String?
+  paisCliente        String?
+  correoCliente      String?
   evidenciaRespuesta String?
-  resumen            String?
   observaciones      String?
   clasificacionIA    String?
   confianzaIA        Float?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  messageId String?  @unique
-
-  cliente Cliente? @relation(fields: [clienteId], references: [id])
-
-  userId String?
-  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  messageId          String?   @unique
+  userId             String?
+  correoResponsable  String?
+  resumen            String?
+  cliente            Cliente?  @relation(fields: [clienteId], references: [id])
+  user               User?     @relation(fields: [userId], references: [id])
 
   @@index([userId, fechaRecibido])
 }

@@ -1,25 +1,17 @@
-import { Building2, Globe2, Inbox, UserX } from "lucide-react";
+import { AtSign, Building2, Globe2, Inbox } from "lucide-react";
 
-import { prisma } from "@/lib/prisma";
+import { obtenerClientesAgrupados } from "@/lib/clientes-agrupados";
 import { requireAdminPage } from "@/lib/require-admin";
+
+export const dynamic = "force-dynamic";
 
 export default async function ClientesAdminPage() {
   await requireAdminPage();
 
-  const clientes = await prisma.cliente.findMany({
-    orderBy: { nombre: "asc" },
-    select: {
-      id: true,
-      nombre: true,
-      dominio: true,
-      pais: true,
-      createdAt: true,
-      _count: { select: { solicitudes: true } },
-    },
-  });
+  const clientes = await obtenerClientesAgrupados();
 
   const totalSolicitudes = clientes.reduce(
-    (acumulado, cliente) => acumulado + cliente._count.solicitudes,
+    (acumulado, cliente) => acumulado + cliente.solicitudes,
     0
   );
 
@@ -27,9 +19,9 @@ export default async function ClientesAdminPage() {
     clientes.map((cliente) => cliente.pais).filter(Boolean)
   ).size;
 
-  const sinSolicitudes = clientes.filter(
-    (cliente) => cliente._count.solicitudes === 0
-  ).length;
+  const dominios = new Set(
+    clientes.map((cliente) => cliente.dominio).filter(Boolean)
+  ).size;
 
   return (
     <main className="sla-dashboard">
@@ -99,18 +91,18 @@ export default async function ClientesAdminPage() {
 
         <article className="dashboard-stat-card stat-red">
           <div className="dashboard-stat-header">
-            <p className="dashboard-stat-label">Sin solicitudes</p>
+            <p className="dashboard-stat-label">Dominios</p>
             <div className="dashboard-stat-icon icon-red">
-              <UserX />
+              <AtSign />
             </div>
           </div>
 
           <p className="dashboard-stat-value">
-            {sinSolicitudes.toLocaleString("es-CO")}
+            {dominios.toLocaleString("es-CO")}
           </p>
 
           <p className="dashboard-stat-description">
-            Clientes que aún no han escrito
+            Dominios de correo distintos
           </p>
         </article>
       </section>
@@ -133,7 +125,7 @@ export default async function ClientesAdminPage() {
                 <th>Dominio</th>
                 <th>País</th>
                 <th>Solicitudes</th>
-                <th>Registrado</th>
+                <th>Última solicitud</th>
               </tr>
             </thead>
 
@@ -144,26 +136,24 @@ export default async function ClientesAdminPage() {
                     <strong>{cliente.nombre}</strong>
                   </td>
 
-                  <td data-label="Dominio">{cliente.dominio}</td>
+                  <td data-label="Dominio">
+                    {cliente.dominio || cliente.correo || "—"}
+                  </td>
 
                   <td data-label="País">{cliente.pais || "Sin país"}</td>
 
                   <td data-label="Solicitudes">
-                    <span
-                      className={`usuario-rol ${
-                        cliente._count.solicitudes > 0
-                          ? "usuario-rol-user"
-                          : "usuario-rol-admin"
-                      }`}
-                    >
-                      {cliente._count.solicitudes.toLocaleString("es-CO")}
+                    <span className="usuario-rol usuario-rol-user">
+                      {cliente.solicitudes.toLocaleString("es-CO")}
                     </span>
                   </td>
 
-                  <td data-label="Registrado">
-                    {cliente.createdAt.toLocaleDateString("es-CO", {
-                      timeZone: "America/Bogota",
-                    })}
+                  <td data-label="Última solicitud">
+                    {cliente.ultimaSolicitud
+                      ? cliente.ultimaSolicitud.toLocaleDateString("es-CO", {
+                          timeZone: "America/Bogota",
+                        })
+                      : "—"}
                   </td>
                 </tr>
               ))}

@@ -1,21 +1,13 @@
 import { Users } from "lucide-react";
 import PanelShell from "@/components/PanelShell";
 import { prisma } from "@/lib/prisma";
+import { obtenerClientesAgrupados } from "@/lib/clientes-agrupados";
 
 export const dynamic = "force-dynamic";
 
 export default async function ClientesPage() {
   const [clientes, totalResponsables] = await Promise.all([
-    prisma.cliente.findMany({
-      orderBy: { nombre: "asc" },
-      select: {
-        id: true,
-        nombre: true,
-        dominio: true,
-        pais: true,
-        _count: { select: { solicitudes: true } },
-      },
-    }),
+    obtenerClientesAgrupados(),
     prisma.responsableProceso.count({ where: { activo: true } }),
   ]);
 
@@ -81,17 +73,11 @@ export default async function ClientesPage() {
                   <td data-label="Cliente">
                     <strong>{c.nombre}</strong>
                   </td>
-                  <td data-label="Dominio">{c.dominio}</td>
+                  <td data-label="Dominio">{c.dominio || c.correo || "—"}</td>
                   <td data-label="País">{c.pais || "Sin país"}</td>
                   <td data-label="Solicitudes">
-                    <span
-                      className={`sla-badge ${
-                        c._count.solicitudes > 0
-                          ? "sla-badge-azul"
-                          : "sla-badge-rojo"
-                      }`}
-                    >
-                      {c._count.solicitudes.toLocaleString("es-CO")}
+                    <span className="sla-badge sla-badge-azul">
+                      {c.solicitudes.toLocaleString("es-CO")}
                     </span>
                   </td>
                 </tr>

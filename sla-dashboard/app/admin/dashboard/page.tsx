@@ -1,4 +1,3 @@
-
 import Link from "next/link";
 import {
   Ticket,
@@ -12,36 +11,11 @@ import {
   Settings2,
 } from "lucide-react";
 
-const indicadores = [
-  {
-    titulo: "Total de solicitudes",
-    valor: "—",
-    descripcion: "Casos registrados en la plataforma",
-    icono: Ticket,
-    color: "navy",
-  },
-  {
-    titulo: "Solicitudes pendientes",
-    valor: "—",
-    descripcion: "Requieren atención",
-    icono: Clock3,
-    color: "red",
-  },
-  {
-    titulo: "Clientes registrados",
-    valor: "—",
-    descripcion: "Clientes en la plataforma",
-    icono: Building2,
-    color: "navy",
-  },
-  {
-    titulo: "Cumplimiento del SLA",
-    valor: "—%",
-    descripcion: "Dentro del tiempo establecido",
-    icono: ShieldCheck,
-    color: "green",
-  },
-];
+import { obtenerClientesAgrupados } from "@/lib/clientes-agrupados";
+import { getStats } from "@/lib/stats";
+
+// Evita que Next.js prerenderice la página en el build y congele las cifras
+export const dynamic = "force-dynamic";
 
 const accesos = [
   {
@@ -74,7 +48,46 @@ const accesos = [
   },
 ];
 
-export default function AdminDashboardPage() {
+export default async function AdminDashboardPage() {
+  const [stats, clientes] = await Promise.all([
+    getStats(),
+    obtenerClientesAgrupados(),
+  ]);
+
+  const totalClientes = clientes.length;
+
+  const indicadores = [
+    {
+      titulo: "Total de solicitudes",
+      valor: stats.total.toLocaleString("es-CO"),
+      descripcion: "Casos registrados en la plataforma",
+      icono: Ticket,
+      color: "navy",
+    },
+    {
+      titulo: "Solicitudes pendientes",
+      valor: stats.pendientes.toLocaleString("es-CO"),
+      descripcion: "Requieren atención",
+      icono: Clock3,
+      color: "red",
+    },
+    {
+      titulo: "Clientes registrados",
+      valor: totalClientes.toLocaleString("es-CO"),
+      descripcion: "Clientes en la plataforma",
+      icono: Building2,
+      color: "navy",
+    },
+    {
+      titulo: "Cumplimiento del SLA",
+      valor:
+        stats.cumplimiento !== null ? `${stats.cumplimiento}%` : "—%",
+      descripcion: "Dentro del tiempo establecido",
+      icono: ShieldCheck,
+      color: "green",
+    },
+  ];
+
   return (
     <div className="admin-home">
       <header className="admin-home-header">

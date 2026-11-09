@@ -8,11 +8,58 @@ import {
   ShieldCheck,
   ArrowRight,
 } from "lucide-react";
+import { getServerSession } from "next-auth";
 
 import PanelShell from "@/components/PanelShell";
 import MicrosoftLoginButton from "@/components/MicrosoftLoginButton";
+import { authOptions } from "@/lib/auth";
+import { getStats, type SlaStats } from "@/lib/stats";
+
+// Evita que Next.js prerenderice la página en el build y congele las cifras
+export const dynamic = "force-dynamic";
+
+// true  = las cifras se ven aunque no haya sesión iniciada
+// false = solo se ven cuando el usuario inició sesión
+const MOSTRAR_SIN_SESION = true;
+
+function formatDuracion(ms: number | null) {
+  if (ms === null) return "—";
+
+  const min = Math.round(ms / 60000);
+  if (min < 60) return `${min} min`;
+
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  if (h < 24) return m ? `${h} h ${m} min` : `${h} h`;
+
+  const d = Math.floor(h / 24);
+  const hr = h % 24;
+  return hr ? `${d} d ${hr} h` : `${d} d`;
+}
 
 export default async function Home() {
+  const session = await getServerSession(authOptions);
+
+  let stats: SlaStats | null = null;
+
+  if (session || MOSTRAR_SIN_SESION) {
+    try {
+      stats = await getStats();
+    } catch (error) {
+      console.error("Error cargando los indicadores:", error);
+      stats = null;
+    }
+  }
+
+  const total = stats ? stats.total.toLocaleString("es-CO") : "—";
+  const pendientes = stats ? stats.pendientes.toLocaleString("es-CO") : "—";
+  const promedio = stats ? formatDuracion(stats.tiempoPromedioMs) : "—";
+  const cumplimiento =
+    stats && stats.cumplimiento !== null ? `${stats.cumplimiento}%` : "—%";
+  const incumplidasTexto = stats
+    ? `${stats.incumplidas.toLocaleString("es-CO")} fuera del plazo`
+    : "Indicador de cumplimiento";
+
   return (
     <PanelShell title="Panel de Control">
       {/* Resumen */}
@@ -39,7 +86,7 @@ export default async function Home() {
           </div>
           <p>Total de solicitudes</p>
           <div className="sla-metric-value">
-            <strong>—</strong>
+            <strong>{total}</strong>
             <span>casos registrados</span>
           </div>
           <div className="sla-metric-footer">
@@ -54,7 +101,7 @@ export default async function Home() {
           </div>
           <p>Solicitudes pendientes</p>
           <div className="sla-metric-value">
-            <strong>—</strong>
+            <strong>{pendientes}</strong>
             <span>requieren atención</span>
           </div>
           <div className="sla-metric-footer">
@@ -68,7 +115,7 @@ export default async function Home() {
           </div>
           <p>Tiempo promedio de respuesta</p>
           <div className="sla-metric-value">
-            <strong>—</strong>
+            <strong>{promedio}</strong>
             <span>tiempo promedio</span>
           </div>
           <div className="sla-metric-footer">
@@ -82,11 +129,11 @@ export default async function Home() {
           </div>
           <p>Cumplimiento del SLA</p>
           <div className="sla-metric-value">
-            <strong>—%</strong>
+            <strong>{cumplimiento}</strong>
             <span>dentro del plazo</span>
           </div>
           <div className="sla-metric-footer">
-            <span>Indicador de cumplimiento</span>
+            <span>{incumplidasTexto}</span>
           </div>
         </article>
       </section>
