@@ -2,6 +2,8 @@ import { Clock3 } from "lucide-react";
 import PanelShell from "@/components/PanelShell";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 const LIMITE_FILAS = 200;
 
 function etiqueta(valor: string | null | undefined, vacio: string) {
@@ -26,6 +28,15 @@ function formatearDuracion(ms: number | null) {
   if (horas < 24) return `${horas} h ${minutos % 60} min`;
   const dias = Math.floor(horas / 24);
   return `${dias} d ${horas % 24} h`;
+}
+
+function claseSLA(estado: string | null) {
+  const e = (estado ?? "").toLowerCase();
+  if (e.includes("incumpl") || e.includes("vencid") || e.includes("fuera"))
+    return "sla-badge-rojo";
+  if (e.includes("cumpl") || e.includes("tiempo") || e.includes("dentro"))
+    return "sla-badge-verde";
+  return "sla-badge-azul";
 }
 
 export default async function TiemposPage() {
@@ -117,11 +128,13 @@ export default async function TiemposPage() {
       <section className="sla-features">
         <div className="sla-section-heading">
           <h3>Detalle de tiempos</h3>
-          <p>Tiempo entre el inicio del conteo y la respuesta de cada solicitud.</p>
+          <p>
+            Tiempo entre el inicio del conteo y la respuesta de cada solicitud.
+          </p>
         </div>
 
-        <div className="usuarios-tabla-contenedor">
-          <table className="usuarios-tabla">
+        <div className="sla-tabla-wrap">
+          <table className="sla-tabla">
             <thead>
               <tr>
                 <th>Asunto</th>
@@ -150,7 +163,7 @@ export default async function TiemposPage() {
                     {s.tiempoHabil || formatearDuracion(s.ms)}
                   </td>
                   <td data-label="SLA">
-                    <span className="usuario-rol usuario-rol-user">
+                    <span className={`sla-badge ${claseSLA(s.estadoSLA)}`}>
                       {etiqueta(s.estadoSLA, "Sin definir")}
                     </span>
                   </td>

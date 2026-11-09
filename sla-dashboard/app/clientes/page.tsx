@@ -2,6 +2,8 @@ import { Users } from "lucide-react";
 import PanelShell from "@/components/PanelShell";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export default async function ClientesPage() {
   const [clientes, totalResponsables] = await Promise.all([
     prisma.cliente.findMany({
@@ -62,8 +64,8 @@ export default async function ClientesPage() {
           <p>Clientes registrados con su dominio, país y solicitudes.</p>
         </div>
 
-        <div className="usuarios-tabla-contenedor">
-          <table className="usuarios-tabla">
+        <div className="sla-tabla-wrap">
+          <table className="sla-tabla">
             <thead>
               <tr>
                 <th>Cliente</th>
@@ -83,10 +85,10 @@ export default async function ClientesPage() {
                   <td data-label="País">{c.pais || "Sin país"}</td>
                   <td data-label="Solicitudes">
                     <span
-                      className={`usuario-rol ${
+                      className={`sla-badge ${
                         c._count.solicitudes > 0
-                          ? "usuario-rol-user"
-                          : "usuario-rol-admin"
+                          ? "sla-badge-azul"
+                          : "sla-badge-rojo"
                       }`}
                     >
                       {c._count.solicitudes.toLocaleString("es-CO")}

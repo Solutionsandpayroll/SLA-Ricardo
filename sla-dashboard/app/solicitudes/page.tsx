@@ -2,6 +2,8 @@ import { Ticket } from "lucide-react";
 import PanelShell from "@/components/PanelShell";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 const LIMITE_FILAS = 200;
 
 function etiqueta(valor: string | null | undefined, vacio: string) {
@@ -96,13 +98,13 @@ export default async function SolicitudesPage() {
         <div className="sla-section-heading">
           <h3>Listado de solicitudes</h3>
           <p>
-            Se muestran las {LIMITE_FILAS.toLocaleString("es-CO")} más recientes,
-            ordenadas por fecha de recibido.
+            Se muestran las {LIMITE_FILAS.toLocaleString("es-CO")} más
+            recientes, ordenadas por fecha de recibido.
           </p>
         </div>
 
-        <div className="usuarios-tabla-contenedor">
-          <table className="usuarios-tabla">
+        <div className="sla-tabla-wrap">
+          <table className="sla-tabla">
             <thead>
               <tr>
                 <th>Asunto</th>
@@ -125,10 +127,10 @@ export default async function SolicitudesPage() {
                   s.vencimientoSLA < ahora;
 
                 const claseSLA = vencida
-                  ? "usuario-rol-admin"
+                  ? "sla-badge-rojo"
                   : respondida
-                    ? "usuario-rol-ok"
-                    : "usuario-rol-user";
+                    ? "sla-badge-verde"
+                    : "sla-badge-azul";
 
                 return (
                   <tr key={s.id}>
@@ -149,12 +151,12 @@ export default async function SolicitudesPage() {
                       {formatearFecha(s.vencimientoSLA)}
                     </td>
                     <td data-label="Estado">
-                      <span className="usuario-rol usuario-rol-user">
+                      <span className="sla-badge sla-badge-azul">
                         {etiqueta(s.estado, "Sin estado")}
                       </span>
                     </td>
                     <td data-label="SLA">
-                      <span className={`usuario-rol ${claseSLA}`}>
+                      <span className={`sla-badge ${claseSLA}`}>
                         {etiqueta(s.estadoSLA, "Sin definir")}
                       </span>
                     </td>
