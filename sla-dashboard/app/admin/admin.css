@@ -1653,3 +1653,22 @@
     display: none;
   }
 }
+/* ========================================================
+   19. TABLA DE SOLICITUDES (9 columnas)
+======================================================== */
+
+/* Solo computador y tableta: en celular se mantienen las tarjetas */
+@media (min-width: 601px) {
+  .admin-layout .usuarios-tabla-ancha {
+    min-width: 1100px;
+  }
+
+  .admin-layout .usuarios-tabla-ancha td {
+    overflow-wrap: break-word;
+  }
+}
+
+/* Texto del botón Eliminar en 12px */
+.admin-layout .usuarios-tabla button {
+  font-size: 12px;
+}

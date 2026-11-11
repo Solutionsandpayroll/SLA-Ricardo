@@ -1,7 +1,10 @@
 import { AlertTriangle, Clock, Inbox, MailQuestion } from "lucide-react";
 
+import BotonEliminarSolicitudFila from "@/components/boton-eliminar-solicitud-fila";
 import { prisma } from "@/lib/prisma";
 import { requireAdminPage } from "@/lib/require-admin";
+
+export const dynamic = "force-dynamic";
 
 const LIMITE_FILAS = 200;
 
@@ -150,7 +153,7 @@ export default async function SolicitudesAdminPage() {
         <hr className="dashboard-divider" />
 
         <div className="usuarios-tabla-contenedor">
-          <table className="usuarios-tabla">
+          <table className="usuarios-tabla usuarios-tabla-ancha">
             <thead>
               <tr>
                 <th>Asunto</th>
@@ -161,6 +164,7 @@ export default async function SolicitudesAdminPage() {
                 <th>Vence</th>
                 <th>Estado</th>
                 <th>SLA</th>
+                <th>Acciones</th>
               </tr>
             </thead>
 
@@ -215,13 +219,20 @@ export default async function SolicitudesAdminPage() {
                         {etiqueta(solicitud.estadoSLA, "Sin definir")}
                       </span>
                     </td>
+
+                    <td data-label="Acciones">
+                      <BotonEliminarSolicitudFila
+                        id={solicitud.id}
+                        asunto={solicitud.asunto}
+                      />
+                    </td>
                   </tr>
                 );
               })}
 
               {solicitudes.length === 0 && (
                 <tr>
-                  <td colSpan={8}>No hay solicitudes registradas.</td>
+                  <td colSpan={9}>No hay solicitudes registradas.</td>
                 </tr>
               )}
             </tbody>

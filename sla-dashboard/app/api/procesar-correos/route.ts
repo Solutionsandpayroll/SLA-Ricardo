@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
-
 import { authOptions } from "@/lib/auth";
 import { config } from "@/lib/config";
 import { prisma } from "@/lib/prisma";
@@ -994,6 +993,85 @@ export async function GET(request: Request) {
           error instanceof Error
             ? error.message
             : "No fue posible consultar las solicitudes.",
+      },
+      { status: 500 }
+    );
+  }
+}
+
+// ======================================================
+// ELIMINAR SOLICITUD
+// ======================================================
+
+export async function DELETE(request: Request) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "No autorizado",
+        },
+        { status: 401 }
+      );
+    }
+
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Falta el id de la solicitud.",
+        },
+        { status: 400 }
+      );
+    }
+
+    const solicitud = await prisma.solicitud.findUnique({
+      where: { id },
+      select: { id: true, userId: true },
+    });
+
+    if (!solicitud) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "La solicitud no existe.",
+        },
+        { status: 404 }
+      );
+    }
+
+    const rol = (session.user as { role?: string }).role;
+    const esAdmin = rol === "ADMIN";
+
+    if (!esAdmin && solicitud.userId !== session.user.id) {
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            "No puedes eliminar solicitudes de otro usuario.",
+        },
+        { status: 403 }
+      );
+    }
+
+    await prisma.solicitud.delete({ where: { id } });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Error eliminando solicitud:", error);
+
+    return NextResponse.json(
+      {
+        success: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : "No fue posible eliminar la solicitud.",
       },
       { status: 500 }
     );

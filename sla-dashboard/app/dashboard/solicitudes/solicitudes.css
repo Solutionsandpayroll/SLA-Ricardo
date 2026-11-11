@@ -630,3 +630,16 @@
     transition: none;
   }
 }
+.sol-btn-eliminar {
+  color: #dc2626;
+  border-color: #fecaca;
+}
+.sol-btn-eliminar:hover:not(:disabled) {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+.sol-col-acciones {
+  width: 1%;
+  white-space: nowrap;
+  text-align: right;
+}

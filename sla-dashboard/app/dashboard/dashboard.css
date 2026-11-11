@@ -1071,3 +1071,303 @@
     animation-duration: 0.01ms !important;
   }
 }
+
+/* DASHBOARD - DISEÑO NEUTRO Y CORPORATIVO */
+
+.sla-dashboard {
+  background: #f3f4f6;
+  color: #263548;
+}
+
+/* ENCABEZADO */
+.sla-welcome {
+  margin-bottom: 28px;
+}
+
+.sla-welcome h2 {
+  color: #1e3045;
+  font-size: 27px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.sla-welcome p {
+  color: #788493;
+  font-size: 15px;
+}
+
+.sla-live-indicator {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.sla-live-indicator span {
+  background: #94a3b8;
+}
+
+/* TARJETAS */
+.sla-metrics {
+  gap: 20px;
+}
+
+.sla-metric-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.035);
+  padding: 25px;
+  transition: transform 0.2s ease,
+              box-shadow 0.2s ease;
+}
+
+.sla-metric-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 7px 18px rgba(15, 23, 42, 0.07);
+}
+
+.sla-metric-icon {
+  background: #f1f3f5 !important;
+  color: #526579 !important;
+  border-radius: 11px;
+}
+
+.sla-metric-card p {
+  color: #697789;
+}
+
+.sla-metric-value strong {
+  color: #1e293b;
+  font-size: 29px;
+  font-weight: 700;
+}
+
+.sla-metric-value span {
+  color: #94a3b8;
+}
+
+.sla-metric-footer {
+  border-top: 1px solid #f0f1f3;
+  color: #84909d;
+  padding-top: 13px;
+}
+
+.sla-card-badge {
+  background: #f1f3f5;
+  color: #64748b;
+}
+
+/* PANEL DE ACCESO */
+.sla-access-panel {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.035);
+}
+
+.sla-access-icon {
+  background: #f1f3f5;
+  color: #526579;
+}
+
+.sla-access-header h3 {
+  color: #263548;
+}
+
+.sla-access-header p,
+.sla-access-hint {
+  color: #84909d;
+}
+
+.sla-access-security {
+  color: #64748b;
+}
+
+/* FUNCIONALIDADES */
+.sla-section-heading h3 {
+  color: #263548;
+}
+
+.sla-section-heading p {
+  color: #84909d;
+}
+
+.sla-feature {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 2px 7px rgba(15, 23, 42, 0.025);
+  transition: transform 0.2s ease,
+              box-shadow 0.2s ease;
+}
+
+.sla-feature:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 14px rgba(15, 23, 42, 0.06);
+}
+
+.sla-feature-icon {
+  background: #f1f3f5;
+  color: #526579;
+}
+
+.sla-feature h4 {
+  color: #334155;
+}
+
+.sla-feature p {
+  color: #84909d;
+}
+
+.sla-feature-arrow {
+  color: #94a3b8;
+}
+
+/* DASHBOARD - DISEÑO NEUTRO Y CORPORATIVO */
+
+.sla-dashboard {
+  background: #f3f4f6;
+  color: #263548;
+}
+
+/* ENCABEZADO */
+.sla-welcome {
+  margin-bottom: 28px;
+}
+
+.sla-welcome h2 {
+  color: #1e3045;
+  font-size: 27px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.sla-welcome p {
+  color: #788493;
+  font-size: 15px;
+}
+
+.sla-live-indicator {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.sla-live-indicator span {
+  background: #94a3b8;
+}
+
+/* TARJETAS */
+.sla-metrics {
+  gap: 20px;
+}
+
+.sla-metric-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.035);
+  padding: 25px;
+  transition: transform 0.2s ease,
+              box-shadow 0.2s ease;
+}
+
+.sla-metric-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 7px 18px rgba(15, 23, 42, 0.07);
+}
+
+.sla-metric-icon {
+  background: #f1f3f5 !important;
+  color: #526579 !important;
+  border-radius: 11px;
+}
+
+.sla-metric-card p {
+  color: #697789;
+}
+
+.sla-metric-value strong {
+  color: #1e293b;
+  font-size: 29px;
+  font-weight: 700;
+}
+
+.sla-metric-value span {
+  color: #94a3b8;
+}
+
+.sla-metric-footer {
+  border-top: 1px solid #f0f1f3;
+  color: #84909d;
+  padding-top: 13px;
+}
+
+.sla-card-badge {
+  background: #f1f3f5;
+  color: #64748b;
+}
+
+/* PANEL DE ACCESO */
+.sla-access-panel {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.035);
+}
+
+.sla-access-icon {
+  background: #f1f3f5;
+  color: #526579;
+}
+
+.sla-access-header h3 {
+  color: #263548;
+}
+
+.sla-access-header p,
+.sla-access-hint {
+  color: #84909d;
+}
+
+.sla-access-security {
+  color: #64748b;
+}
+
+/* FUNCIONALIDADES */
+.sla-section-heading h3 {
+  color: #263548;
+}
+
+.sla-section-heading p {
+  color: #84909d;
+}
+
+.sla-feature {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 2px 7px rgba(15, 23, 42, 0.025);
+  transition: transform 0.2s ease,
+              box-shadow 0.2s ease;
+}
+
+.sla-feature:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 14px rgba(15, 23, 42, 0.06);
+}
+
+.sla-feature-icon {
+  background: #f1f3f5;
+  color: #526579;
+}
+
+.sla-feature h4 {
+  color: #334155;
+}
+
+.sla-feature p {
+  color: #84909d;
+}
+
+.sla-feature-arrow {
+  color: #94a3b8;
+}
