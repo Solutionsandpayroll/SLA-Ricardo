@@ -1,13 +1,9 @@
-
 import {
   Ticket,
-  Users,
   Clock3,
   ChartNoAxesCombined,
-  Wallet,
   LockKeyhole,
   ShieldCheck,
-  ArrowRight,
 } from "lucide-react";
 
 import PanelShell from "@/components/PanelShell";
@@ -137,64 +133,6 @@ export default function Home() {
           </span>
         </div>
 
-      </section>
-
-      {/* FUNCIONALIDADES */}
-      <section className="sla-features">
-
-        <div className="sla-section-heading">
-          <h3>Seguimiento centralizado</h3>
-          <p>Todo el proceso en un solo lugar.</p>
-        </div>
-
-        <div className="sla-feature-grid">
-
-          <article className="sla-feature">
-            <div className="sla-feature-icon">
-              <Ticket size={21} />
-            </div>
-
-            <div>
-              <h4>Control de solicitudes</h4>
-              <p>
-                Consulta el estado y la trazabilidad de cada caso.
-              </p>
-            </div>
-
-            <ArrowRight size={18} className="sla-feature-arrow" />
-          </article>
-
-          <article className="sla-feature">
-            <div className="sla-feature-icon">
-              <Users size={21} />
-            </div>
-
-            <div>
-              <h4>Responsables y clientes</h4>
-              <p>
-                Identifica quién gestiona cada solicitud.
-              </p>
-            </div>
-
-            <ArrowRight size={18} className="sla-feature-arrow" />
-          </article>
-
-          <article className="sla-feature">
-            <div className="sla-feature-icon">
-              <Wallet size={21} />
-            </div>
-
-            <div>
-              <h4>Indicadores de gestión</h4>
-              <p>
-                Evalúa los tiempos y el cumplimiento de los acuerdos.
-              </p>
-            </div>
-
-            <ArrowRight size={18} className="sla-feature-arrow" />
-          </article>
-
-        </div>
       </section>
 
     </PanelShell>

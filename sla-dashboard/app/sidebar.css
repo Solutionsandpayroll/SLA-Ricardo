@@ -1,4 +1,15 @@
 /* =========================================
+   VARIABLES DE ANCHO (cambia solo estos)
+========================================= */
+
+.sla-home {
+  --sla-sidebar-width: 240px;
+  --sla-sidebar-width-mini: 76px;
+  --sla-content-max: 1200px;
+  --sla-access-max: 900px;
+}
+
+/* =========================================
    ESTRUCTURA GENERAL
 ========================================= */
 
@@ -11,6 +22,7 @@
   flex: 1;
   min-width: 0;
   margin-left: 0;
+  padding: 24px 32px;
 }
 
 /* =========================================
@@ -20,8 +32,8 @@
 .sla-sidebar {
   position: sticky;
   top: 0;
-  width: 280px;
-  min-width: 280px;
+  width: var(--sla-sidebar-width);
+  min-width: var(--sla-sidebar-width);
   flex-shrink: 0;
   height: 100vh;
   display: flex;
@@ -41,8 +53,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  padding: 28px 16px 22px;
+  gap: 10px;
+  padding: 24px 16px 18px;
   text-align: center;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
@@ -68,7 +80,7 @@
 .sla-sidebar .sla-brand-tagline,
 .sla-sidebar .sla-brand p {
   margin: 0;
-  font-size: 13px;
+  font-size: 12.5px;
   line-height: 1.4;
   text-align: center;
   color: #9db2cd;
@@ -84,12 +96,10 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 18px 14px;
+  padding: 16px 12px;
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
-
-  /* Scroll delgado y discreto */
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
 }
@@ -135,6 +145,10 @@
   transition: background 0.18s, color 0.18s;
 }
 
+.sla-sidebar .sla-nav-icon {
+  display: inline-flex;
+}
+
 .sla-sidebar .sla-nav-link svg {
   flex-shrink: 0;
 }
@@ -162,7 +176,7 @@
 }
 
 /* =========================================
-   PARTE INFERIOR
+   PARTE INFERIOR DE LA BARRA
 ========================================= */
 
 .sla-sidebar .sla-sidebar-bottom {
@@ -171,7 +185,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 14px;
+  padding: 14px 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -231,13 +245,236 @@
 }
 
 /* =========================================
+   CONTENIDO: ANCHO Y CENTRADO
+========================================= */
+
+.sla-welcome,
+.sla-metrics,
+.sla-access-panel {
+  width: 100%;
+  max-width: var(--sla-content-max);
+  margin-inline: auto;
+}
+
+/* =========================================
+   RESUMEN OPERATIVO
+========================================= */
+
+.sla-welcome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.sla-welcome h2 {
+  margin: 0 0 4px;
+  font-size: 22px;
+  color: #10243e;
+}
+
+.sla-welcome p {
+  margin: 0;
+  font-size: 14px;
+  color: #5b6b82;
+}
+
+.sla-live-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #10243e;
+  background: #eaf0f8;
+}
+
+.sla-live-indicator span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+/* =========================================
+   INDICADORES (TARJETAS) - compactas, 4 en fila
+========================================= */
+
+.sla-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.sla-metric-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  height: auto;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid #e3e9f2;
+  box-shadow: 0 1px 3px rgba(16, 36, 62, 0.06);
+}
+
+.sla-metric-icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+}
+
+.sla-metric-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.sla-metric-icon.blue  { background: #eaf0f8; color: #2a6fdb; }
+.sla-metric-icon.red   { background: #fde8ee; color: #e4003a; }
+.sla-metric-icon.green { background: #e3f6ee; color: #0b8a62; }
+
+.sla-metric-card > p {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #44546b;
+}
+
+.sla-metric-value {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+}
+
+.sla-metric-value strong {
+  font-size: 24px;
+  line-height: 1.1;
+  color: #10243e;
+}
+
+.sla-metric-value span {
+  font-size: 12px;
+  color: #7a8aa0;
+}
+
+.sla-metric-footer {
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid #eef2f8;
+  font-size: 11.5px;
+  color: #7a8aa0;
+}
+
+/* Pantallas medianas: 2 por fila */
+@media (max-width: 1100px) {
+  .sla-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Móvil: 1 por fila */
+@media (max-width: 600px) {
+  .sla-metrics {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================
+   ACCESO DE EMPLEADOS
+========================================= */
+
+.sla-access-panel {
+  max-width: var(--sla-access-max);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid #e3e9f2;
+  box-shadow: 0 1px 3px rgba(16, 36, 62, 0.06);
+}
+
+.sla-access-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.sla-access-icon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: #10243e;
+  color: #fff;
+}
+
+.sla-access-header h3 {
+  margin: 0 0 6px;
+  font-size: 18px;
+  color: #10243e;
+}
+
+.sla-access-header p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #5b6b82;
+}
+
+.sla-access-body {
+  display: flex;
+  justify-content: center;
+}
+
+.sla-access-button {
+  width: 100%;
+  max-width: 360px;
+}
+
+.sla-access-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding-top: 14px;
+  border-top: 1px solid #eef2f8;
+  font-size: 12px;
+  color: #7a8aa0;
+}
+
+.sla-access-security {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* =========================================
    RESPONSIVE: SOLO ÍCONOS (menos de 768px)
 ========================================= */
 
 @media (max-width: 767px) {
   .sla-sidebar {
-    width: 76px;
-    min-width: 76px;
+    width: var(--sla-sidebar-width-mini);
+    min-width: var(--sla-sidebar-width-mini);
+  }
+
+  .sla-main {
+    padding: 16px;
   }
 
   /* Logo */
@@ -309,5 +546,15 @@
 
   .sla-sidebar .sla-sidebar-note {
     display: none;
+  }
+
+  /* Contenido */
+  .sla-welcome {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sla-access-header {
+    flex-direction: column;
   }
 }
