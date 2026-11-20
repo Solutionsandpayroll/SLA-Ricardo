@@ -1,10 +1,24 @@
-
 import type { NextAuthOptions } from "next-auth";
 import AzureADProvider from "next-auth/providers/azure-ad";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
 import type { Role } from "@prisma/client";
 import { prisma } from "./prisma";
+
+// Obtiene el correo normalizado desde el usuario o el perfil de Microsoft.
+// Algunas cuentas de Microsoft traen el correo vacío y solo "preferred_username".
+function obtenerCorreo(
+  user?: { email?: string | null } | null,
+  profile?: unknown
+): string | null {
+  const p = profile as
+    | { email?: string; preferred_username?: string }
+    | undefined;
+
+  const correo = user?.email ?? p?.email ?? p?.preferred_username;
+
+  return correo ? correo.trim().toLowerCase() : null;
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -14,6 +28,8 @@ export const authOptions: NextAuthOptions = {
     AzureADProvider({
       clientId: process.env.AZURE_AD_CLIENT_ID!,
       clientSecret: process.env.AZURE_AD_CLIENT_SECRET!,
+      // IMPORTANTE: debe ser el ID real de tu tenant (no "common" ni "organizations"),
+      // porque es lo que limita el acceso a cuentas de tu empresa.
       tenantId: process.env.AZURE_AD_TENANT_ID!,
 
       authorization: {
@@ -58,18 +74,11 @@ export const authOptions: NextAuthOptions = {
           },
         });
 
-        if (
-          !user ||
-          user.role !== "ADMIN" ||
-          !user.passwordHash
-        ) {
+        if (!user || user.role !== "ADMIN" || !user.passwordHash) {
           return null;
         }
 
-        const passwordValida = await compare(
-          password,
-          user.passwordHash
-        );
+        const passwordValida = await compare(password, user.passwordHash);
 
         if (!passwordValida) return null;
 
@@ -83,31 +92,38 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
 
-  // ==========================================
-  // VALIDAR QUIÉN PUEDE ENTRAR
-  // ==========================================
   callbacks: {
-    async signIn({ user, account }) {
+    // ==========================================
+    // VALIDAR QUIÉN PUEDE ENTRAR
+    // ==========================================
+    async signIn({ user, account, profile }) {
       if (account?.provider === "azure-ad") {
-        const email = user.email?.trim();
+        const email = obtenerCorreo(user, profile);
 
         if (!email) return false;
 
         const dbUser = await prisma.user.findFirst({
           where: {
-            email: {
-              equals: email,
-              mode: "insensitive",
-            },
+            email: { equals: email, mode: "insensitive" },
           },
-          select: {
-            id: true,
-            role: true,
-          },
+          select: { id: true },
         });
 
-        // Solo empleados registrados pueden entrar con Microsoft.
-        return dbUser?.role === "USER";
+        // Si es la primera vez que entra, se crea como empleado (USER).
+        // Solo llegan aquí cuentas del tenant configurado en AZURE_AD_TENANT_ID.
+        if (!dbUser) {
+          await prisma.user.create({
+            data: {
+              email,
+              name: user.name ?? email,
+              image: user.image,
+              role: "USER",
+            },
+          });
+        }
+
+        // Pueden entrar empleados y también administradores.
+        return true;
       }
 
       if (account?.provider === "admin-credentials") {
@@ -120,7 +136,7 @@ export const authOptions: NextAuthOptions = {
     // ==========================================
     // JWT
     // ==========================================
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account, profile }) {
       // Primer inicio de sesión.
       if (user) {
         let dbUser;
@@ -128,29 +144,18 @@ export const authOptions: NextAuthOptions = {
         if (account?.provider === "admin-credentials") {
           dbUser = await prisma.user.findUnique({
             where: { id: user.id },
-            select: {
-              id: true,
-              email: true,
-              role: true,
-            },
+            select: { id: true, email: true, role: true },
           });
         } else {
-          const email = user.email?.trim();
+          const email = obtenerCorreo(user, profile);
 
           if (!email) return token;
 
           dbUser = await prisma.user.findFirst({
             where: {
-              email: {
-                equals: email,
-                mode: "insensitive",
-              },
+              email: { equals: email, mode: "insensitive" },
             },
-            select: {
-              id: true,
-              email: true,
-              role: true,
-            },
+            select: { id: true, email: true, role: true },
           });
         }
 
@@ -163,11 +168,7 @@ export const authOptions: NextAuthOptions = {
         // Comprobar que el usuario siga existiendo.
         const dbUser = await prisma.user.findUnique({
           where: { id: token.id as string },
-          select: {
-            id: true,
-            email: true,
-            role: true,
-          },
+          select: { id: true, email: true, role: true },
         });
 
         if (dbUser) {
